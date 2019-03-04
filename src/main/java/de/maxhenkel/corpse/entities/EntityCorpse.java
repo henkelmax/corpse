@@ -1,5 +1,6 @@
 package de.maxhenkel.corpse.entities;
 
+import de.maxhenkel.corpse.Config;
 import de.maxhenkel.corpse.Main;
 import de.maxhenkel.corpse.gui.ContainerCorpse;
 import net.minecraft.entity.Entity;
@@ -74,6 +75,14 @@ public class EntityCorpse extends EntityCorpseInventoryBase {
     @Override
     public boolean processInitialInteract(EntityPlayer player, EnumHand hand) {
         if (!world.isRemote && player instanceof EntityPlayerMP) {
+            EntityPlayerMP playerMP = (EntityPlayerMP) player;
+            if (Config.SERVER.onlyOwnerAccess.get()) {
+                boolean isOp = playerMP.hasPermissionLevel(playerMP.server.getOpPermissionLevel());
+
+                if (!isOp || !playerMP.getUniqueID().equals(getCorpseUUID())) {
+                    return true;
+                }
+            }
             NetworkHooks.openGui((EntityPlayerMP) player, new InterfaceCorpse(), packetBuffer -> {
                 packetBuffer.writeLong(getUniqueID().getMostSignificantBits());
                 packetBuffer.writeLong(getUniqueID().getLeastSignificantBits());

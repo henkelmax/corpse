@@ -45,7 +45,7 @@ public class Main {
         instance = this;
         FMLJavaModLoadingContext.get().getModEventBus().addGenericListener(Item.class, this::registerItems);
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::commonSetup);
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::configEvent);
+        //FMLJavaModLoadingContext.get().getModEventBus().addListener(this::configEvent);
 
         ModLoadingContext.get().registerConfig(ModConfig.Type.SERVER, Config.SERVER_SPEC);
         ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, Config.CLIENT_SPEC);
@@ -55,14 +55,14 @@ public class Main {
         });
     }
 
-    @SubscribeEvent
+    /*@SubscribeEvent
     public void configEvent(ModConfig.ModConfigEvent event) {
         if (event.getConfig().getType() == ModConfig.Type.SERVER) {
             Config.loadServer();
         } else if (event.getConfig().getType() == ModConfig.Type.CLIENT) {
             Config.loadClient();
         }
-    }
+    }*/
 
     @SubscribeEvent
     public void commonSetup(FMLCommonSetupEvent event) {

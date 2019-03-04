@@ -24,31 +24,14 @@ public class Config {
         CLIENT = specPairClient.getLeft();
     }
 
-    public static SimpleDateFormat imageDateFormat=new SimpleDateFormat("MM/dd/yyyy HH:mm");
-    public static long imageCooldown=5000;
-
-    public static void loadServer() {
-        imageDateFormat=new SimpleDateFormat(SERVER.imageDateFormat.get());
-        imageCooldown=SERVER.imageCooldown.get();
-    }
-
-    public static void loadClient(){
-
-    }
-
     public static class ServerConfig {
-        public ForgeConfigSpec.LongValue imageCooldown;
-        public ForgeConfigSpec.ConfigValue<String> imageDateFormat;
+        public ForgeConfigSpec.BooleanValue onlyOwnerAccess;
 
         public ServerConfig(ForgeConfigSpec.Builder builder) {
-            imageCooldown = builder
-                    .comment("The time in milliseconds the CAMERA will be on cooldown after taking an IMAGE")
-                    .translation("image_cooldown")
-                    .defineInRange("image_cooldown", 5000L, 100L, Integer.MAX_VALUE);
-            imageDateFormat = builder
-                    .comment("The format the date will be displayed on the IMAGE")
-                    .translation("image_date_format")
-                    .define("image_date_format", "MM/dd/yyyy HH:mm");
+            onlyOwnerAccess = builder
+                    .comment("If only the owner of the corpse can access the inventory")
+                    .translation("only_owner_access")
+                    .define("only_owner_access", false);
         }
     }
 
