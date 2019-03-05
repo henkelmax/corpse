@@ -14,7 +14,7 @@ import java.util.UUID;
 
 public class PlayerSkins {
 
-    private static HashMap<String, GameProfile> players = new HashMap<String, GameProfile>();
+    private static HashMap<UUID, GameProfile> players = new HashMap();
 
     public static ResourceLocation getSkin(UUID uuid, String name) {
         GameProfile profile = getGameProfile(uuid, name);
@@ -29,12 +29,16 @@ public class PlayerSkins {
         }
     }
 
+    /*public static boolean isAvailable(GameProfile gameProfile) {
+        return gameProfile.isComplete() && gameProfile.getProperties().containsKey("textures");
+    }*/
+
     public static GameProfile getGameProfile(UUID uuid, String name) {
-        if (players.containsKey(uuid.toString())) {
-            return players.get(uuid.toString());
+        if (players.containsKey(uuid)) {
+            return players.get(uuid);
         } else {
             GameProfile profile = TileEntitySkull.updateGameProfile(new GameProfile(uuid, name));
-            players.put(uuid.toString(), profile);
+            players.put(uuid, profile);
             return profile;
         }
     }
