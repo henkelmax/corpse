@@ -5,15 +5,15 @@ import net.minecraft.inventory.Container;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.network.NetworkEvent;
 
-public class MessageSwitchPage implements Message {
+public class MessageSwitchInventoryPage implements Message {
 
     private int page;
 
-    public MessageSwitchPage() {
+    public MessageSwitchInventoryPage() {
 
     }
 
-    public MessageSwitchPage(int page) {
+    public MessageSwitchInventoryPage(int page) {
         this.page = page;
     }
 
@@ -33,7 +33,7 @@ public class MessageSwitchPage implements Message {
     }
 
     @Override
-    public MessageSwitchPage fromBytes(PacketBuffer buf) {
+    public MessageSwitchInventoryPage fromBytes(PacketBuffer buf) {
         page = buf.readInt();
         return this;
     }

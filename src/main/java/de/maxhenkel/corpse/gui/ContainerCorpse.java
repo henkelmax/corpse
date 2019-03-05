@@ -9,10 +9,12 @@ import net.minecraft.util.NonNullList;
 public class ContainerCorpse extends ContainerBase {
 
     private EntityCorpse corpse;
+    private boolean editable;
 
-    public ContainerCorpse(IInventory playerInventory, EntityCorpse corpse) {
+    public ContainerCorpse(IInventory playerInventory, EntityCorpse corpse, boolean editable) {
         super(playerInventory, corpse);
         this.corpse = corpse;
+        this.editable = editable;
 
         setSlots(0);
     }
@@ -22,7 +24,7 @@ public class ContainerCorpse extends ContainerBase {
         inventoryItemStacks = NonNullList.create();
         for (int j = 0; j < 6; j++) {
             for (int k = 0; k < 9; k++) {
-                addSlot(new SlotCorpse(corpse, start + k + j * 9, 8 + k * 18, 19 + j * 18));
+                addSlot(new SlotCorpse(corpse, start + k + j * 9, 8 + k * 18, 19 + j * 18, editable));
             }
         }
 

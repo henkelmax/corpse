@@ -1,9 +1,11 @@
 package de.maxhenkel.corpse.events;
 
+import de.maxhenkel.corpse.Death;
+import de.maxhenkel.corpse.DeathManager;
 import de.maxhenkel.corpse.entities.EntityCorpse;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
@@ -24,21 +26,18 @@ public class DeathEvents {
 
         Entity entity = event.getEntity();
 
-        if (!(entity instanceof EntityPlayer)) {
-            return;
-        }
-
         if (entity.world.isRemote) {
             return;
         }
 
-        Collection<EntityItem> drops = event.getDrops();
-
-        if (drops.isEmpty()) {
+        if (!(entity instanceof EntityPlayerMP)) {
             return;
         }
+
         try {
-            EntityPlayer player = (EntityPlayer) event.getEntity();
+            Collection<EntityItem> drops = event.getDrops();
+
+            EntityPlayerMP player = (EntityPlayerMP) event.getEntity();
 
             NonNullList<ItemStack> stacks = NonNullList.create();
 
@@ -50,13 +49,10 @@ public class DeathEvents {
 
             drops.clear();
 
-            EntityCorpse corpse = new EntityCorpse(player.world);
-            corpse.setCorpseUUID(player.getUniqueID());
-            corpse.setCorpseName(player.getName().getUnformattedComponentText());
-            corpse.setItems(stacks);
-            corpse.setPosition(player.posX, player.posY, player.posZ);
-            corpse.setCorpseRotation(player.rotationYaw);
-            player.world.spawnEntity(corpse);
+            Death death = Death.fromPlayer(player, stacks);
+            DeathManager.addDeath(player, death);
+
+            player.world.spawnEntity(EntityCorpse.createFromDeath(player, death));
         } catch (Exception e) {
             e.printStackTrace();
         }

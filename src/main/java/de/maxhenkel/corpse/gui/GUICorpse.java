@@ -2,18 +2,15 @@ package de.maxhenkel.corpse.gui;
 
 import de.maxhenkel.corpse.Main;
 import de.maxhenkel.corpse.entities.EntityCorpse;
-import de.maxhenkel.corpse.net.MessageSwitchPage;
+import de.maxhenkel.corpse.net.MessageSwitchInventoryPage;
 import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.gui.inventory.GuiContainer;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextComponentTranslation;
 
-public class GUICorpse extends GuiContainer {
+public class GUICorpse extends GUIBase {
 
     private static final ResourceLocation CORPSE_GUI_TEXTURE = new ResourceLocation(Main.MODID, "textures/gui/gui_corpse.png");
-    private static final int FONT_COLOR = 4210752;
 
     private IInventory playerInventory;
     private EntityCorpse corpse;
@@ -23,8 +20,8 @@ public class GUICorpse extends GuiContainer {
 
     private int page;
 
-    public GUICorpse(IInventory playerInventory, EntityCorpse corpse) {
-        super(new ContainerCorpse(playerInventory, corpse));
+    public GUICorpse(IInventory playerInventory, EntityCorpse corpse, boolean editable) {
+        super(CORPSE_GUI_TEXTURE, new ContainerCorpse(playerInventory, corpse, editable));
         this.playerInventory = playerInventory;
         this.corpse = corpse;
         this.page = 0;
@@ -50,7 +47,7 @@ public class GUICorpse extends GuiContainer {
                 if (page < 0) {
                     page = 0;
                 }
-                Main.SIMPLE_CHANNEL.sendToServer(new MessageSwitchPage(page));
+                Main.SIMPLE_CHANNEL.sendToServer(new MessageSwitchInventoryPage(page));
             }
         });
         next = addButton(new GuiButton(1, left + xSize - buttonWidth - padding, guiTop + 149 - buttonHeight, buttonWidth, buttonHeight, new TextComponentTranslation("button.next").getFormattedText()) {
@@ -61,7 +58,7 @@ public class GUICorpse extends GuiContainer {
                 if (page >= getPages()) {
                     page = getPages() - 1;
                 }
-                Main.SIMPLE_CHANNEL.sendToServer(new MessageSwitchPage(page));
+                Main.SIMPLE_CHANNEL.sendToServer(new MessageSwitchInventoryPage(page));
             }
         });
     }
@@ -98,10 +95,5 @@ public class GUICorpse extends GuiContainer {
         fontRenderer.drawString(pageName, xSize / 2 - pageWidth / 2, ySize - 113, FONT_COLOR);
     }
 
-    @Override
-    protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
-        GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-        mc.getTextureManager().bindTexture(CORPSE_GUI_TEXTURE);
-        this.drawTexturedModalRect(guiLeft, guiTop, 0, 0, xSize, ySize);
-    }
+
 }

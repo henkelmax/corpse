@@ -71,28 +71,5 @@ public abstract class ContainerBase extends Container {
         }
         return itemstack;
     }
-/*
-    @Override
-    public ItemStack slotClick(int slotId, int dragType, ClickType clickTypeIn, EntityPlayer player) {
-        Slot tmpSlot;
-        if (slotId >= 0 && slotId < inventorySlots.size()) {
-            tmpSlot = inventorySlots.get(slotId);
-        } else {
-            tmpSlot = null;
-        }
-        if (tmpSlot != null) {
-            if (tmpSlot.isHere(player.inventory, player.inventory.currentItem)) {
-                return tmpSlot.getStack();
-            }
-        }
-        if (clickTypeIn == ClickType.SWAP) {
-            ItemStack stack = player.inventory.getStackInSlot(dragType);
-            if (stack == player.inventory.getCurrentItem()) {
-                return ItemStack.EMPTY;
-            }
-        }
-        return super.slotClick(slotId, dragType, clickTypeIn, player);
-    }
-*/
 
 }

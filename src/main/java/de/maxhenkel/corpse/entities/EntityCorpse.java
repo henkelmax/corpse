@@ -1,8 +1,11 @@
 package de.maxhenkel.corpse.entities;
 
 import de.maxhenkel.corpse.Config;
+import de.maxhenkel.corpse.Death;
 import de.maxhenkel.corpse.Main;
 import de.maxhenkel.corpse.gui.ContainerCorpse;
+import de.maxhenkel.corpse.gui.GUIManager;
+import de.maxhenkel.corpse.gui.InteractionObjectCorpse;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.MoverType;
 import net.minecraft.entity.player.EntityPlayer;
@@ -46,6 +49,16 @@ public class EntityCorpse extends EntityCorpseInventoryBase {
         boundingBox = NULL_AABB;
     }
 
+    public static EntityCorpse createFromDeath(EntityPlayer player, Death death){
+        EntityCorpse corpse = new EntityCorpse(player.world);
+        corpse.setCorpseUUID(death.getPlayerUUID());
+        corpse.setCorpseName(death.getPlayerName());
+        corpse.setItems(death.getItems());
+        corpse.setPosition(death.getPosX(), death.getPosY(), death.getPosZ());
+        corpse.setCorpseRotation(player.rotationYaw);
+        return corpse;
+    }
+
     @Override
     public void tick() {
         super.tick();
@@ -83,41 +96,9 @@ public class EntityCorpse extends EntityCorpseInventoryBase {
                     return true;
                 }
             }
-            NetworkHooks.openGui((EntityPlayerMP) player, new InterfaceCorpse(), packetBuffer -> {
-                packetBuffer.writeLong(getUniqueID().getMostSignificantBits());
-                packetBuffer.writeLong(getUniqueID().getLeastSignificantBits());
-            });
+            GUIManager.openCorpseGUI((EntityPlayerMP) player, this);
         }
         return true;
-    }
-
-    public class InterfaceCorpse implements IInteractionObject {
-
-        @Override
-        public Container createContainer(InventoryPlayer playerInventory, EntityPlayer playerIn) {
-            return new ContainerCorpse(playerInventory, EntityCorpse.this);
-        }
-
-        @Override
-        public String getGuiID() {
-            return Main.MODID + ":corpse";
-        }
-
-        @Override
-        public ITextComponent getName() {
-            return EntityCorpse.this.getDisplayName();
-        }
-
-        @Override
-        public boolean hasCustomName() {
-            return EntityCorpse.this.hasCustomName();
-        }
-
-        @Nullable
-        @Override
-        public ITextComponent getCustomName() {
-            return EntityCorpse.this.getCustomName();
-        }
     }
 
     public void recalculateBoundingBox() {
