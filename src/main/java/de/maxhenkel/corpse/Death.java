@@ -104,7 +104,7 @@ public class Death {
         death.playerName = compound.getString("PlayerName");
 
         death.items = NonNullList.create();
-        if(compound.hasKey("Items")){
+        if (compound.hasKey("Items")) {
             NBTTagList itemList = compound.getList("Items", 10);
             for (int i = 0; i < itemList.size(); i++) {
                 death.items.add(ItemStack.read(itemList.getCompound(i)));
@@ -133,7 +133,7 @@ public class Death {
         compound.setLong("PlayerUuidLeast", playerUUID.getLeastSignificantBits());
         compound.setString("PlayerName", playerName);
 
-        if(withItems){
+        if (withItems) {
             NBTTagList itemList = new NBTTagList();
             for (ItemStack stack : items) {
                 itemList.add(stack.write(new NBTTagCompound()));

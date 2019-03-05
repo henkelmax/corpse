@@ -1,7 +1,7 @@
 modLoader="javafml"
 loaderVersion="${mod_forge_version}"
-# issueTrackerURL="https://minecraft.curseforge.com/projects/xxx/issues"
-# displayURL="http://minecraft.curseforge.com/projects/xxx"
+issueTrackerURL="https://minecraft.curseforge.com/projects/corpse-mod/issues"
+displayURL="https://minecraft.curseforge.com/projects/corpse-mod"
 # logoFile="corpse.png"
 # credits=""
 authors="${mod_vendor}"
@@ -10,7 +10,10 @@ modId="${mod_id}"
 version="${mod_version}"
 displayName="${mod_name}"
 updateJSONURL="https://maxhenkel.de/update/corpse.json"
-description=''''''
+description='''
+This mod brings a corpse into the game.
+It will spawn upon your death containing all items that you had in your inventory.
+'''
 [[dependencies.${mod_id}]]
     modId="forge"
     mandatory=true

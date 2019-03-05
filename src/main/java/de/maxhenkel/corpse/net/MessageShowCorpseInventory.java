@@ -31,7 +31,7 @@ public class MessageShowCorpseInventory implements Message {
 
     @Override
     public MessageShowCorpseInventory fromBytes(PacketBuffer buf) {
-        uuid=new UUID(buf.readLong(), buf.readLong());
+        uuid = new UUID(buf.readLong(), buf.readLong());
         return this;
     }
 

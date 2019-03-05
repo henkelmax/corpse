@@ -1,6 +1,5 @@
 package de.maxhenkel.corpse.gui;
 
-
 import com.mojang.authlib.GameProfile;
 import de.maxhenkel.corpse.Death;
 import de.maxhenkel.corpse.Main;

@@ -13,7 +13,7 @@ public abstract class GUIBase extends GuiContainer {
 
     public GUIBase(ResourceLocation texture, Container inventorySlotsIn) {
         super(inventorySlotsIn);
-        this.texture=texture;
+        this.texture = texture;
     }
 
     @Override

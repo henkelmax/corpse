@@ -3,15 +3,11 @@ package de.maxhenkel.corpse.entities;
 import de.maxhenkel.corpse.Config;
 import de.maxhenkel.corpse.Death;
 import de.maxhenkel.corpse.Main;
-import de.maxhenkel.corpse.gui.ContainerCorpse;
 import de.maxhenkel.corpse.gui.GUIManager;
-import de.maxhenkel.corpse.gui.InteractionObjectCorpse;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.MoverType;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.Container;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
@@ -21,11 +17,9 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentTranslation;
-import net.minecraft.world.IInteractionObject;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.fml.network.NetworkHooks;
 
 import javax.annotation.Nullable;
 import java.util.Optional;
@@ -49,7 +43,7 @@ public class EntityCorpse extends EntityCorpseInventoryBase {
         boundingBox = NULL_AABB;
     }
 
-    public static EntityCorpse createFromDeath(EntityPlayer player, Death death){
+    public static EntityCorpse createFromDeath(EntityPlayer player, Death death) {
         EntityCorpse corpse = new EntityCorpse(player.world);
         corpse.setCorpseUUID(death.getPlayerUUID());
         corpse.setCorpseName(death.getPlayerName());

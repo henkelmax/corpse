@@ -8,7 +8,6 @@ import net.minecraftforge.fml.network.NetworkDirection;
 import net.minecraftforge.fml.network.NetworkEvent;
 
 import java.util.List;
-import java.util.UUID;
 
 public class MessageRequestDeathHistory implements Message {
 

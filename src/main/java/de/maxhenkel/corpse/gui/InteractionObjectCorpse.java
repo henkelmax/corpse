@@ -17,7 +17,7 @@ public class InteractionObjectCorpse implements IInteractionObject {
 
     public InteractionObjectCorpse(EntityCorpse corpse, boolean editable) {
         this.corpse = corpse;
-        this.editable=editable;
+        this.editable = editable;
     }
 
     @Override
