@@ -11,5 +11,7 @@
   "gui.death_history.location": "Location",
   "button.show_items": "Items",
   "key.death_history": "Open Death History",
-  "message.no_death_history": "No Death History"
+  "message.no_death_history": "No Death History",
+  "chat.teleport_death_location": "Teleport to death location %s",
+  "tooltip.teleport": "Teleport"
 }

@@ -35,4 +35,14 @@ You can retrieve lost items if you are in creative mode.
 You can retrieve lost items by pressing the "Items" button in the death history GUI.
 Note that you can only take out items if you are in creative mode.
 
+## Teleporting to the Death Location
+
+By clicking on the "Location" area in the death history GUI, the command to teleport you to the death location will be displayed in chat.
+It includes the coordinates and the dimension.
+
+![](https://i.imgur.com/EvRsWwp.png)
+
+![](https://i.imgur.com/e7xZeen.png)
+
+
 [Gallery](https://imgur.com/a/H1ltydQ)

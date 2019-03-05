@@ -4,14 +4,22 @@ import com.mojang.authlib.GameProfile;
 import de.maxhenkel.corpse.Death;
 import de.maxhenkel.corpse.Main;
 import de.maxhenkel.corpse.net.MessageShowCorpseInventory;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.audio.SimpleSound;
 import net.minecraft.client.entity.EntityOtherPlayerMP;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.inventory.GuiInventory;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.text.TextComponentUtils;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.event.ClickEvent;
+import net.minecraft.util.text.event.HoverEvent;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -81,6 +89,20 @@ public class GUIDeathHistory extends GUIBase {
     }
 
     @Override
+    public boolean mouseClicked(double x, double y, int clickType) {
+        if (x >= guiLeft + 7 && x <= guiLeft + hSplit && y >= guiTop + 70 && y <= guiTop + 100 + fontRenderer.FONT_HEIGHT) {
+            BlockPos pos = getCurrentDeath().getBlockPos();
+            ITextComponent teleport = TextComponentUtils.wrapInSquareBrackets(new TextComponentTranslation("chat.coordinates", pos.getX(), pos.getY(), pos.getZ())).applyTextStyle((style) -> {
+                style.setColor(TextFormatting.GREEN).setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/execute in " + getCurrentDeath().getDimension() + " run tp @s " + pos.getX() + " " + pos.getY() + " " + pos.getZ())).setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponentTranslation("chat.coordinates.tooltip")));
+            });
+            mc.player.sendMessage(new TextComponentTranslation("chat.teleport_death_location", teleport));
+            mc.getSoundHandler().play(SimpleSound.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1.0F));
+            mc.displayGuiScreen(null);
+        }
+        return super.mouseClicked(x, y, clickType);
+    }
+
+    @Override
     public void render(int mouseX, int mouseY, float partialTicks) {
         super.render(mouseX, mouseY, partialTicks);
         Death death = getCurrentDeath();
@@ -123,6 +145,10 @@ public class GUIDeathHistory extends GUIBase {
         EntityPlayer player = new EntityOtherPlayerMP(mc.world, new GameProfile(death.getPlayerUUID(), death.getPlayerName()));
         player.height = Float.MAX_VALUE;
         GuiInventory.drawEntityOnScreen(guiLeft + xSize - (xSize - hSplit) / 2, guiTop + ySize / 2 + 30, 40, (guiLeft + xSize - (xSize - hSplit) / 2) - mouseX, (guiTop + ySize / 2) - mouseY, player);
+
+        if (mouseX >= guiLeft + 7 && mouseX <= guiLeft + hSplit && mouseY >= guiTop + 70 && mouseY <= guiTop + 100 + fontRenderer.FONT_HEIGHT) {
+            drawHoveringText(new TextComponentTranslation("tooltip.teleport").getFormattedText(), mouseX, mouseY);
+        }
     }
 
 
