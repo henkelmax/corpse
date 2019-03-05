@@ -4,7 +4,6 @@ import com.mojang.authlib.GameProfile;
 import de.maxhenkel.corpse.Death;
 import de.maxhenkel.corpse.Main;
 import de.maxhenkel.corpse.net.MessageShowCorpseInventory;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.SimpleSound;
 import net.minecraft.client.entity.EntityOtherPlayerMP;
 import net.minecraft.client.gui.GuiButton;
