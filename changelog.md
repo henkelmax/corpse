@@ -1,0 +1,1 @@
+- Fixed /deathhistory command not working in some cases

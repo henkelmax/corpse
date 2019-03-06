@@ -53,7 +53,7 @@ public class Main {
 
         //FMLJavaModLoadingContext.get().getModEventBus().addGenericListener(Item.class, this::registerItems);
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::commonSetup);
-        //FMLJavaModLoadingContext.get().getModEventBus().addListener(this::serverLoad);
+        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::serverLoad);
         //FMLJavaModLoadingContext.get().getModEventBus().addListener(this::configEvent);
 
         ModLoadingContext.get().registerConfig(ModConfig.Type.SERVER, Config.SERVER_SPEC);
