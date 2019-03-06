@@ -42,6 +42,7 @@ public class EntityCorpse extends EntityCorpseInventoryBase {
         width = 2F;
         height = 0.5F;
         boundingBox = NULL_AABB;
+        preventEntitySpawning = true;
     }
 
     public static EntityCorpse createFromDeath(EntityPlayer player, Death death) {
