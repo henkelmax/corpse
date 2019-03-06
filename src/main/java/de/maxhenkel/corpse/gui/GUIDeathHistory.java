@@ -71,7 +71,7 @@ public class GUIDeathHistory extends GUIBase {
             @Override
             public void onClick(double x, double y) {
                 super.onClick(x, y);
-                Main.SIMPLE_CHANNEL.sendToServer(new MessageShowCorpseInventory(getCurrentDeath().getId()));
+                Main.SIMPLE_CHANNEL.sendToServer(new MessageShowCorpseInventory(getCurrentDeath().getPlayerUUID(), getCurrentDeath().getId()));
             }
         });
 

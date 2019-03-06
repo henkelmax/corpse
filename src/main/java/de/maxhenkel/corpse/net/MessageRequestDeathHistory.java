@@ -3,11 +3,13 @@ package de.maxhenkel.corpse.net;
 import de.maxhenkel.corpse.Death;
 import de.maxhenkel.corpse.DeathManager;
 import de.maxhenkel.corpse.Main;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.network.NetworkDirection;
 import net.minecraftforge.fml.network.NetworkEvent;
 
 import java.util.List;
+import java.util.UUID;
 
 public class MessageRequestDeathHistory implements Message {
 
@@ -17,8 +19,7 @@ public class MessageRequestDeathHistory implements Message {
 
     @Override
     public void executeServerSide(NetworkEvent.Context context) {
-        List<Death> deaths = DeathManager.getDeaths(context.getSender());
-        Main.SIMPLE_CHANNEL.sendTo(new MessageOpenHistory(deaths), context.getSender().connection.netManager, NetworkDirection.PLAY_TO_CLIENT);
+        sendDeathHistory(context.getSender());
     }
 
     @Override
@@ -34,5 +35,14 @@ public class MessageRequestDeathHistory implements Message {
     @Override
     public void toBytes(PacketBuffer buf) {
 
+    }
+
+    public static void sendDeathHistory(EntityPlayerMP player) {
+        sendDeathHistory(player, player.getUniqueID());
+    }
+
+    public static void sendDeathHistory(EntityPlayerMP playerToSend, UUID playerUUID) {
+        List<Death> deaths = DeathManager.getDeaths(playerToSend, playerUUID);
+        Main.SIMPLE_CHANNEL.sendTo(new MessageOpenHistory(deaths), playerToSend.connection.netManager, NetworkDirection.PLAY_TO_CLIENT);
     }
 }

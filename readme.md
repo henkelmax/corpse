@@ -36,6 +36,15 @@ You can retrieve lost items if you are in creative mode.
 ![](https://i.imgur.com/mg68xFT.png)
 
 
+## Viewing the Death Hisory of other Players
+
+By typing `/deathhistory <player>` as an operator, you can view the death history of another player.
+
+![](https://i.imgur.com/RzYuMFX.png)
+
+![](https://i.imgur.com/OaPMXl6.png)
+
+
 ## Recovering Lost Items
 
 You can retrieve lost items by pressing the "Items" button in the death history GUI.

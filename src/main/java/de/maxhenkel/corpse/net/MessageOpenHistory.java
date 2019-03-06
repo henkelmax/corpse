@@ -7,6 +7,8 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.network.NetworkEvent;
 
 import java.util.ArrayList;
@@ -30,11 +32,12 @@ public class MessageOpenHistory implements Message {
 
     }
 
+    @OnlyIn(Dist.CLIENT)
     @Override
     public void executeClientSide(NetworkEvent.Context context) {
         if (deaths.size() > 0) {
             Minecraft.getInstance().displayGuiScreen(new GUIDeathHistory(deaths));
-        }else{
+        } else {
             Minecraft.getInstance().player.sendStatusMessage(new TextComponentTranslation("message.no_death_history"), true);
         }
     }

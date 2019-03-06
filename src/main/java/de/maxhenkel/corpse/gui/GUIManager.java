@@ -41,13 +41,13 @@ public class GUIManager {
         });
     }
 
-    public static void openCorpseGUI(EntityPlayerMP player, UUID uuid) {
+    public static void openCorpseGUI(EntityPlayerMP playerToShow, EntityPlayerMP player, UUID uuid) {
         Death death = DeathManager.getDeath(player, uuid);
         if (death == null) {
             return;
         }
-        EntityCorpse corpse = EntityCorpse.createFromDeath(player, death);
-        NetworkHooks.openGui(player, new InteractionObjectCorpse(corpse, player.abilities.isCreativeMode), packetBuffer -> {
+        EntityCorpse corpse = EntityCorpse.createFromDeath(playerToShow, death);
+        NetworkHooks.openGui(playerToShow, new InteractionObjectCorpse(corpse, playerToShow.abilities.isCreativeMode), packetBuffer -> {
             packetBuffer.writeBoolean(true);
             packetBuffer.writeCompoundTag(death.toNBT());
         });

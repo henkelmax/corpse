@@ -32,7 +32,15 @@ public class DeathManager {
     }
 
     public static List<Death> getDeaths(EntityPlayerMP player) {
-        File playerDeathFolder = getPlayerDeathFolder(player);
+        return getDeaths(player);
+    }
+
+    public static List<Death> getDeaths(EntityPlayerMP context, EntityPlayerMP player) {
+        return getDeaths(context, player);
+    }
+
+    public static List<Death> getDeaths(EntityPlayerMP context, UUID playerUUID) {
+        File playerDeathFolder = getPlayerDeathFolder(context, playerUUID);
 
         if (!playerDeathFolder.exists()) {
             return Collections.emptyList();
@@ -72,7 +80,11 @@ public class DeathManager {
     }
 
     public static File getPlayerDeathFolder(EntityPlayerMP player) {
-        return new File(getDeathFolder(player.getServerWorld()), player.getUniqueID().toString());
+        return getPlayerDeathFolder(player, player.getUniqueID());
+    }
+
+    public static File getPlayerDeathFolder(EntityPlayerMP context, UUID uuid) {
+        return new File(getDeathFolder(context.getServerWorld()), uuid.toString());
     }
 
     public static File getDeathFolder(WorldServer world) {
