@@ -30,6 +30,7 @@ public class EntityCorpse extends EntityCorpseInventoryBase {
     private static final DataParameter<Optional<UUID>> ID = EntityDataManager.createKey(EntityCorpse.class, DataSerializers.OPTIONAL_UNIQUE_ID);
     private static final DataParameter<String> NAME = EntityDataManager.createKey(EntityCorpse.class, DataSerializers.STRING);
     private static final DataParameter<Float> ROTATION = EntityDataManager.createKey(EntityCorpse.class, DataSerializers.FLOAT);
+    private static final DataParameter<Integer> AGE = EntityDataManager.createKey(EntityCorpse.class, DataSerializers.VARINT);
 
     private static final AxisAlignedBB NULL_AABB = new AxisAlignedBB(0D, 0D, 0D, 0D, 0D, 0D);
     private static final UUID NULL_UUID = new UUID(0L, 0L);
@@ -57,6 +58,7 @@ public class EntityCorpse extends EntityCorpseInventoryBase {
     public void tick() {
         super.tick();
         recalculateBoundingBox();
+        setCorpseAge(getCorpseAge() + 1);
 
         if (!collidedVertically && posY > 0D) {
             motionY = Math.max(-2D, motionY - 0.0625D);
@@ -195,12 +197,21 @@ public class EntityCorpse extends EntityCorpseInventoryBase {
         recalculateBoundingBox();
     }
 
+    public int getCorpseAge() {
+        return dataManager.get(AGE);
+    }
+
+    public void setCorpseAge(int age) {
+        dataManager.set(AGE, age);
+    }
+
     @Override
     protected void registerData() {
         super.registerData();
         dataManager.register(ID, Optional.of(NULL_UUID));
         dataManager.register(NAME, "");
         dataManager.register(ROTATION, 0F);
+        dataManager.register(AGE, 0);
     }
 
     public void writeAdditional(NBTTagCompound compound) {
@@ -213,6 +224,7 @@ public class EntityCorpse extends EntityCorpseInventoryBase {
         }
         compound.setString("Name", getCorpseName());
         compound.setFloat("Rotation", getCorpseRotation());
+        compound.setInt("Age", getCorpseAge());
     }
 
     public void readAdditional(NBTTagCompound compound) {
@@ -223,5 +235,6 @@ public class EntityCorpse extends EntityCorpseInventoryBase {
         }
         setCorpseName(compound.getString("Name"));
         setCorpseRotation(compound.getFloat("Rotation"));
+        setCorpseAge(compound.getInt("Age"));
     }
 }

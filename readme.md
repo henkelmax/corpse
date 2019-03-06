@@ -3,6 +3,7 @@
 This mod brings a corpse into the game.
 It will spawn upon your death containing all items that you had in your inventory.
 
+
 # Features
 
 The corpse will appear at the players location upon death.
@@ -15,13 +16,17 @@ You can access the items by right-clicking the corpse.
 When you take out all items, the corpse will disappear.
 The corpse can't fall into the void or burn in lava.
 
+![](https://i.imgur.com/WfIoIXE.png)
+
 ![](https://i.imgur.com/p574CdX.png)
 
 ![](https://i.imgur.com/ioFPSdL.png)
 
-##### Optional
+After 1 hour, the corpse will turn into a skeleton, indicating that it existed for a longer time.
+This won't change the functionality of the corpse.
 
-Only the owner of the corpse can access the inventory (Config option)
+![](https://i.imgur.com/pzChrfC.png)
+
 
 ## Death History
 
@@ -30,10 +35,12 @@ You can retrieve lost items if you are in creative mode.
 
 ![](https://i.imgur.com/mg68xFT.png)
 
+
 ## Recovering Lost Items
 
 You can retrieve lost items by pressing the "Items" button in the death history GUI.
 Note that you can only take out items if you are in creative mode.
+
 
 ## Teleporting to the Death Location
 
@@ -44,5 +51,11 @@ It includes the coordinates and the dimension.
 
 ![](https://i.imgur.com/e7xZeen.png)
 
+
+## Optional Features
+
+Only the owner of the corpse can access the inventory (Config option)
+
+---
 
 [Gallery](https://imgur.com/a/H1ltydQ)

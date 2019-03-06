@@ -7,6 +7,8 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.entity.model.ModelPlayer;
+import net.minecraft.client.renderer.entity.model.ModelSkeleton;
+import net.minecraft.entity.Entity;
 import net.minecraft.util.ResourceLocation;
 
 import javax.annotation.Nullable;
@@ -14,17 +16,27 @@ import java.util.UUID;
 
 public class RenderCorpse extends Render<EntityCorpse> {
 
+    private static final ResourceLocation SKELETON_TEXTURE = new ResourceLocation("textures/entity/skeleton/skeleton.png");
+
     private Minecraft mc;
     private ModelPlayer modelPlayer;
     private ModelPlayer modelPlayerSlim;
+    private ModelSkeleton modelSkeleton;
 
     public RenderCorpse(RenderManager renderManager) {
         super(renderManager);
         mc = Minecraft.getInstance();
         modelPlayer = new ModelPlayer(0F, false);
         modelPlayerSlim = new ModelPlayer(0F, true);
+        modelSkeleton = new ModelSkeleton() {
+            @Override
+            public void setRotationAngles(float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scaleFactor, Entity entityIn) {
+
+            }
+        };
         modelPlayer.isChild = false;
         modelPlayerSlim.isChild = false;
+        modelSkeleton.isChild = false;
     }
 
     @Override
@@ -36,12 +48,16 @@ public class RenderCorpse extends Render<EntityCorpse> {
         GlStateManager.rotatef(90, 1F, 0F, 0F);
         GlStateManager.translated(0D, -0.5D, -2D / 16D);
 
-        bindTexture(getEntityTexture(entity));
-
-        if (isSlim(entity.getCorpseUUID())) {
-            modelPlayerSlim.render(entity, 0F, 0F, 0F, 0F, 0F, 0.0625F);
+        if (entity.getCorpseAge() >= 20 * 60 * 60) {
+            bindTexture(SKELETON_TEXTURE);
+            modelSkeleton.render(entity, 0F, 0F, 0F, 0F, 0F, 0.0625F);
         } else {
-            modelPlayer.render(entity, 0F, 0F, 0F, 0F, 0F, 0.0625F);
+            bindTexture(getEntityTexture(entity));
+            if (isSlim(entity.getCorpseUUID())) {
+                modelPlayerSlim.render(entity, 0F, 0F, 0F, 0F, 0F, 0.0625F);
+            } else {
+                modelPlayer.render(entity, 0F, 0F, 0F, 0F, 0F, 0.0625F);
+            }
         }
         GlStateManager.popMatrix();
         super.doRender(entity, x, y, z, entityYaw, partialTicks);
