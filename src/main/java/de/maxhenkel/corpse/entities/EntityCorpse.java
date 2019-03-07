@@ -51,7 +51,7 @@ public class EntityCorpse extends EntityCorpseInventoryBase {
         corpse.setCorpseUUID(death.getPlayerUUID());
         corpse.setCorpseName(death.getPlayerName());
         corpse.setItems(death.getItems());
-        corpse.setPosition(death.getPosX(), death.getPosY(), death.getPosZ());
+        corpse.setPosition(death.getPosX(), death.getPosY() < 0D ? 0D : death.getPosY(), death.getPosZ());
         corpse.setCorpseRotation(player.rotationYaw);
         return corpse;
     }

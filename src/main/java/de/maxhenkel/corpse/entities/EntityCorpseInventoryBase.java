@@ -67,7 +67,7 @@ public abstract class EntityCorpseInventoryBase extends Entity implements IInven
 
         NBTTagList nbttaglist = compound.getTagList("Inventory", 10);
 
-        inventory = new InventoryBasic(new TextComponentString(""), size);
+        inventory = new InventoryBasic("", false, size);
 
         for (int i = 0; i < nbttaglist.tagCount(); i++) {
             NBTTagCompound nbttagcompound = nbttaglist.getCompoundTagAt(i);

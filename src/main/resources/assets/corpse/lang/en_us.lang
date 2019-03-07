@@ -1,4 +1,4 @@
-entity.corpse.corpse=Corpse
+entity.corpse.name=Corpse
 entity.corpse.corpse_of=Corpse of %s
 button.previous=Previous
 button.next=Next
