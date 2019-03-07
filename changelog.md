@@ -1,1 +1,1 @@
-- Fixed /deathhistory command not working in some cases
+- Downport to 1.12.2
