@@ -5,9 +5,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.NonNullList;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.dimension.DimensionType;
 
 import java.util.UUID;
 
@@ -22,7 +20,7 @@ public class Death {
     private double posX;
     private double posY;
     private double posZ;
-    private String dimension;
+    private int dimension;
 
     private Death() {
 
@@ -68,12 +66,8 @@ public class Death {
         return new BlockPos(posX, posY, posZ);
     }
 
-    public String getDimension() {
+    public int getDimension() {
         return dimension;
-    }
-
-    public DimensionType getDimensionType() {
-        return DimensionType.byName(new ResourceLocation(dimension));
     }
 
     @Override
@@ -85,14 +79,14 @@ public class Death {
         Death death = new Death();
         death.id = UUID.randomUUID();
         death.playerUUID = player.getUniqueID();
-        death.playerName = player.getName().getUnformattedComponentText();
+        death.playerName = player.getName();
         death.items = items;
         death.timestamp = System.currentTimeMillis();
         death.experience = player.experienceLevel;
         death.posX = player.posX;
         death.posY = player.posY;
         death.posZ = player.posZ;
-        death.dimension = DimensionType.func_212678_a(player.dimension).toString();
+        death.dimension = player.dimension;
 
         return death;
     }
@@ -105,18 +99,18 @@ public class Death {
 
         death.items = NonNullList.create();
         if (compound.hasKey("Items")) {
-            NBTTagList itemList = compound.getList("Items", 10);
-            for (int i = 0; i < itemList.size(); i++) {
-                death.items.add(ItemStack.read(itemList.getCompound(i)));
+            NBTTagList itemList = compound.getTagList("Items", 10);
+            for (int i = 0; i < itemList.tagCount(); i++) {
+                death.items.add(new ItemStack(itemList.getCompoundTagAt(i)));
             }
         }
 
         death.timestamp = compound.getLong("Timestamp");
-        death.experience = compound.getInt("Experience");
+        death.experience = compound.getInteger("Experience");
         death.posX = compound.getDouble("PosX");
         death.posY = compound.getDouble("PosY");
         death.posZ = compound.getDouble("PosZ");
-        death.dimension = compound.getString("Dimension");
+        death.dimension = compound.getInteger("Dimension");
 
         return death;
     }
@@ -136,17 +130,17 @@ public class Death {
         if (withItems) {
             NBTTagList itemList = new NBTTagList();
             for (ItemStack stack : items) {
-                itemList.add(stack.write(new NBTTagCompound()));
+                itemList.appendTag(stack.writeToNBT(new NBTTagCompound()));
             }
             compound.setTag("Items", itemList);
         }
 
         compound.setLong("Timestamp", timestamp);
-        compound.setInt("Experience", experience);
+        compound.setInteger("Experience", experience);
         compound.setDouble("PosX", posX);
         compound.setDouble("PosY", posY);
         compound.setDouble("PosZ", posZ);
-        compound.setString("Dimension", dimension);
+        compound.setInteger("Dimension", dimension);
 
         return compound;
     }

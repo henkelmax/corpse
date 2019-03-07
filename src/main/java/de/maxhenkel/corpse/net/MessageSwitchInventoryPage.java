@@ -1,11 +1,11 @@
 package de.maxhenkel.corpse.net;
 
 import de.maxhenkel.corpse.gui.ContainerCorpse;
+import io.netty.buffer.ByteBuf;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.Container;
-import net.minecraft.network.PacketBuffer;
-import net.minecraftforge.fml.network.NetworkEvent;
 
-public class MessageSwitchInventoryPage implements Message {
+public class MessageSwitchInventoryPage extends MessageToServer<MessageSwitchInventoryPage> {
 
     private int page;
 
@@ -17,29 +17,22 @@ public class MessageSwitchInventoryPage implements Message {
         this.page = page;
     }
 
-
     @Override
-    public void executeServerSide(NetworkEvent.Context context) {
-        Container container = context.getSender().openContainer;
+    public void execute(EntityPlayerMP player, MessageSwitchInventoryPage message) {
+        Container container = player.openContainer;
         if (container instanceof ContainerCorpse) {
             ContainerCorpse containerCorpse = (ContainerCorpse) container;
-            containerCorpse.setSlots(page * 54);
+            containerCorpse.setSlots(message.page * 54);
         }
     }
 
     @Override
-    public void executeClientSide(NetworkEvent.Context context) {
-
-    }
-
-    @Override
-    public MessageSwitchInventoryPage fromBytes(PacketBuffer buf) {
+    public void fromBytes(ByteBuf buf) {
         page = buf.readInt();
-        return this;
     }
 
     @Override
-    public void toBytes(PacketBuffer buf) {
+    public void toBytes(ByteBuf buf) {
         buf.writeInt(page);
     }
 }

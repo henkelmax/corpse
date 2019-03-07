@@ -19,7 +19,7 @@ public class PlayerSkins {
     public static ResourceLocation getSkin(UUID uuid, String name) {
         GameProfile profile = getGameProfile(uuid, name);
 
-        Minecraft minecraft = Minecraft.getInstance();
+        Minecraft minecraft = Minecraft.getMinecraft();
         Map<Type, MinecraftProfileTexture> map = minecraft.getSkinManager().loadSkinFromCache(profile);
 
         if (map.containsKey(Type.SKIN)) {
@@ -37,7 +37,7 @@ public class PlayerSkins {
         if (players.containsKey(uuid)) {
             return players.get(uuid);
         } else {
-            GameProfile profile = TileEntitySkull.updateGameProfile(new GameProfile(uuid, name));
+            GameProfile profile = TileEntitySkull.updateGameprofile(new GameProfile(uuid, name));
             players.put(uuid, profile);
             return profile;
         }

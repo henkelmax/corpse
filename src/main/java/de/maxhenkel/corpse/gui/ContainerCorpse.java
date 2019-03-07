@@ -24,7 +24,7 @@ public class ContainerCorpse extends ContainerBase {
         inventoryItemStacks = NonNullList.create();
         for (int j = 0; j < 6; j++) {
             for (int k = 0; k < 9; k++) {
-                addSlot(new SlotCorpse(corpse, start + k + j * 9, 8 + k * 18, 19 + j * 18, editable));
+                addSlotToContainer(new SlotCorpse(corpse, start + k + j * 9, 8 + k * 18, 19 + j * 18, editable));
             }
         }
 

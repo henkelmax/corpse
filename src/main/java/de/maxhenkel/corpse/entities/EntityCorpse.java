@@ -1,9 +1,10 @@
 package de.maxhenkel.corpse.entities;
 
-import de.maxhenkel.corpse.Config;
+import com.google.common.base.Optional;
 import de.maxhenkel.corpse.Death;
 import de.maxhenkel.corpse.Main;
-import de.maxhenkel.corpse.gui.GUIManager;
+import de.maxhenkel.corpse.gui.GuiHandler;
+import de.maxhenkel.corpse.proxy.CommonProxy;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.MoverType;
 import net.minecraft.entity.player.EntityPlayer;
@@ -15,14 +16,14 @@ import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nullable;
-import java.util.Optional;
 import java.util.UUID;
 
 public class EntityCorpse extends EntityCorpseInventoryBase {
@@ -38,7 +39,7 @@ public class EntityCorpse extends EntityCorpseInventoryBase {
     private AxisAlignedBB boundingBox;
 
     public EntityCorpse(World world) {
-        super(Main.CORPSE_ENTITY_TYPE, world);
+        super(world);
         width = 2F;
         height = 0.5F;
         boundingBox = NULL_AABB;
@@ -56,8 +57,9 @@ public class EntityCorpse extends EntityCorpseInventoryBase {
     }
 
     @Override
-    public void tick() {
-        super.tick();
+    public void onUpdate() {
+        super.onUpdate();
+
         recalculateBoundingBox();
         setCorpseAge(getCorpseAge() + 1);
 
@@ -78,7 +80,7 @@ public class EntityCorpse extends EntityCorpseInventoryBase {
         }
 
         if (isEmpty() && ticksExisted > 200) {
-            remove();
+            setDead();
         }
     }
 
@@ -86,27 +88,29 @@ public class EntityCorpse extends EntityCorpseInventoryBase {
     public boolean processInitialInteract(EntityPlayer player, EnumHand hand) {
         if (!world.isRemote && player instanceof EntityPlayerMP) {
             EntityPlayerMP playerMP = (EntityPlayerMP) player;
-            if (Config.SERVER.onlyOwnerAccess.get()) {
-                boolean isOp = playerMP.hasPermissionLevel(playerMP.server.getOpPermissionLevel());
+            if (CommonProxy.onlyOwnerAccess) {
+                boolean isOp = playerMP.canUseCommand(playerMP.mcServer.getOpPermissionLevel(), "op");
 
                 if (!isOp || !playerMP.getUniqueID().equals(getCorpseUUID())) {
                     return true;
                 }
             }
-            GUIManager.openCorpseGUI((EntityPlayerMP) player, this);
         }
+        BlockPos pos = getPosition();
+        player.openGui(Main.MODID, GuiHandler.GUI_CORPSE, player.world, pos.getX(), pos.getY(), pos.getZ());
+
         return true;
     }
 
     public void recalculateBoundingBox() {
         EnumFacing facing = dataManager == null ? EnumFacing.NORTH : EnumFacing.fromAngle(getCorpseRotation());
         boundingBox = new AxisAlignedBB(
-                posX - (facing.getXOffset() != 0 ? 1D : 0.5D),
+                posX - (facing.getFrontOffsetX() != 0 ? 1D : 0.5D),
                 posY,
-                posZ - (facing.getZOffset() != 0 ? 1D : 0.5D),
-                posX + (facing.getXOffset() != 0 ? 1D : 0.5D),
+                posZ - (facing.getFrontOffsetZ() != 0 ? 1D : 0.5D),
+                posX + (facing.getFrontOffsetX() != 0 ? 1D : 0.5D),
                 posY + 0.5D,
-                posZ + (facing.getZOffset() != 0 ? 1D : 0.5D)
+                posZ + (facing.getFrontOffsetZ() != 0 ? 1D : 0.5D)
         );
     }
 
@@ -126,13 +130,13 @@ public class EntityCorpse extends EntityCorpseInventoryBase {
     }
 
     @Override
-    public AxisAlignedBB getBoundingBox() {
+    public AxisAlignedBB getEntityBoundingBox() {
         return boundingBox;
     }
 
     @Override
-    public void setBoundingBox(AxisAlignedBB boundingBox) {
-        this.boundingBox = boundingBox;
+    public void setEntityBoundingBox(AxisAlignedBB bb) {
+        this.boundingBox = bb;
     }
 
     @Override
@@ -153,15 +157,15 @@ public class EntityCorpse extends EntityCorpseInventoryBase {
         return null;
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @SideOnly(Side.CLIENT)
     @Override
     public AxisAlignedBB getRenderBoundingBox() {
-        return getBoundingBox();
+        return getEntityBoundingBox();
     }
 
     @Override
     public boolean canBeCollidedWith() {
-        return !removed;
+        return !isDead;
     }
 
     public UUID getCorpseUUID() {
@@ -207,17 +211,17 @@ public class EntityCorpse extends EntityCorpseInventoryBase {
     }
 
     @Override
-    protected void registerData() {
-        super.registerData();
+    protected void entityInit() {
+        super.entityInit();
         dataManager.register(ID, Optional.of(NULL_UUID));
         dataManager.register(NAME, "");
         dataManager.register(ROTATION, 0F);
         dataManager.register(AGE, 0);
     }
 
-    public void writeAdditional(NBTTagCompound compound) {
-        super.writeAdditional(compound);
-
+    @Override
+    protected void writeEntityToNBT(NBTTagCompound compound) {
+        super.writeEntityToNBT(compound);
         UUID uuid = getCorpseUUID();
         if (uuid != null) {
             compound.setLong("IDMost", uuid.getMostSignificantBits());
@@ -225,17 +229,17 @@ public class EntityCorpse extends EntityCorpseInventoryBase {
         }
         compound.setString("Name", getCorpseName());
         compound.setFloat("Rotation", getCorpseRotation());
-        compound.setInt("Age", getCorpseAge());
+        compound.setInteger("Age", getCorpseAge());
     }
 
-    public void readAdditional(NBTTagCompound compound) {
-        super.readAdditional(compound);
-
+    @Override
+    protected void readEntityFromNBT(NBTTagCompound compound) {
+        super.readEntityFromNBT(compound);
         if (compound.hasKey("IDMost") && compound.hasKey("IDLeast")) {
             setCorpseUUID(new UUID(compound.getLong("IDMost"), compound.getLong("IDLeast")));
         }
         setCorpseName(compound.getString("Name"));
         setCorpseRotation(compound.getFloat("Rotation"));
-        setCorpseAge(compound.getInt("Age"));
+        setCorpseAge(compound.getInteger("Age"));
     }
 }

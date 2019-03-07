@@ -1,7 +1,6 @@
 package de.maxhenkel.corpse.entities;
 
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryBasic;
@@ -21,13 +20,13 @@ public abstract class EntityCorpseInventoryBase extends Entity implements IInven
 
     protected IInventory inventory;
 
-    public EntityCorpseInventoryBase(EntityType<?> entityTypeIn, World worldIn) {
-        super(entityTypeIn, worldIn);
+    public EntityCorpseInventoryBase(World worldIn) {
+        super(worldIn);
     }
 
     private IInventory getInventory() {
         if (inventory == null) {
-            inventory = new InventoryBasic(new TextComponentString(""), getFittingInventorySize(dataManager.get(INVENTORY_SIZE)));
+            inventory = new InventoryBasic("", false, getFittingInventorySize(dataManager.get(INVENTORY_SIZE)));
         }
         return inventory;
     }
@@ -55,44 +54,46 @@ public abstract class EntityCorpseInventoryBase extends Entity implements IInven
         }
     }
 
+
     @Override
-    protected void registerData() {
+    protected void entityInit() {
         dataManager.register(INVENTORY_SIZE, 54);
     }
 
-    @Override
-    protected void readAdditional(NBTTagCompound compound) {
-        int size = compound.getInt("InventorySize");
 
-        NBTTagList nbttaglist = compound.getList("Inventory", 10);
+    @Override
+    protected void readEntityFromNBT(NBTTagCompound compound) {
+        int size = compound.getInteger("InventorySize");
+
+        NBTTagList nbttaglist = compound.getTagList("Inventory", 10);
 
         inventory = new InventoryBasic(new TextComponentString(""), size);
 
-        for (int i = 0; i < nbttaglist.size(); i++) {
-            NBTTagCompound nbttagcompound = nbttaglist.getCompound(i);
-            int j = nbttagcompound.getInt("Slot");
+        for (int i = 0; i < nbttaglist.tagCount(); i++) {
+            NBTTagCompound nbttagcompound = nbttaglist.getCompoundTagAt(i);
+            int j = nbttagcompound.getInteger("Slot");
 
             if (j >= 0 && j < inventory.getSizeInventory()) {
-                inventory.setInventorySlotContents(j, ItemStack.read(nbttagcompound));
+                inventory.setInventorySlotContents(j, new ItemStack(nbttagcompound));
             }
         }
     }
 
     @Override
-    protected void writeAdditional(NBTTagCompound compound) {
+    protected void writeEntityToNBT(NBTTagCompound compound) {
         NBTTagList nbttaglist = new NBTTagList();
 
         for (int i = 0; i < getSizeInventory(); i++) {
             if (!getStackInSlot(i).isEmpty()) {
                 NBTTagCompound nbttagcompound = new NBTTagCompound();
-                nbttagcompound.setInt("Slot", i);
-                getStackInSlot(i).write(nbttagcompound);
-                nbttaglist.add(nbttagcompound);
+                nbttagcompound.setInteger("Slot", i);
+                getStackInSlot(i).writeToNBT(nbttagcompound);
+                nbttaglist.appendTag(nbttagcompound);
             }
         }
 
         compound.setTag("Inventory", nbttaglist);
-        compound.setInt("InventorySize", getSizeInventory());
+        compound.setInteger("InventorySize", getSizeInventory());
     }
 
     @Override

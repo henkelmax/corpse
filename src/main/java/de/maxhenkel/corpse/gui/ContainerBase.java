@@ -20,12 +20,12 @@ public abstract class ContainerBase extends Container {
         if (playerInventory != null) {
             for (int i = 0; i < 3; i++) {
                 for (int j = 0; j < 9; j++) {
-                    addSlot(new Slot(playerInventory, j + i * 9 + 9, 8 + j * 18, 84 + i * 18 + getInvOffset()));
+                    addSlotToContainer(new Slot(playerInventory, j + i * 9 + 9, 8 + j * 18, 84 + i * 18 + getInvOffset()));
                 }
             }
 
             for (int k = 0; k < 9; k++) {
-                addSlot(new Slot(playerInventory, k, 8 + k * 18, 142 + getInvOffset()));
+                addSlotToContainer(new Slot(playerInventory, k, 8 + k * 18, 142 + getInvOffset()));
             }
         }
     }

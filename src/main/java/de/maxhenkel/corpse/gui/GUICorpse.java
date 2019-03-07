@@ -3,10 +3,13 @@ package de.maxhenkel.corpse.gui;
 import de.maxhenkel.corpse.Main;
 import de.maxhenkel.corpse.entities.EntityCorpse;
 import de.maxhenkel.corpse.net.MessageSwitchInventoryPage;
+import de.maxhenkel.corpse.proxy.CommonProxy;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextComponentTranslation;
+
+import java.io.IOException;
 
 public class GUICorpse extends GUIBase {
 
@@ -31,41 +34,40 @@ public class GUICorpse extends GUIBase {
     }
 
     @Override
-    protected void initGui() {
+    public void initGui() {
         super.initGui();
 
-        buttons.clear();
+        buttonList.clear();
         int left = (width - xSize) / 2;
         int padding = 7;
         int buttonWidth = 50;
         int buttonHeight = 20;
-        previous = addButton(new GuiButton(0, left + padding, guiTop + 149 - buttonHeight, buttonWidth, buttonHeight, new TextComponentTranslation("button.previous").getFormattedText()) {
-            @Override
-            public void onClick(double x, double y) {
-                super.onClick(x, y);
-                page--;
-                if (page < 0) {
-                    page = 0;
-                }
-                Main.SIMPLE_CHANNEL.sendToServer(new MessageSwitchInventoryPage(page));
-            }
-        });
-        next = addButton(new GuiButton(1, left + xSize - buttonWidth - padding, guiTop + 149 - buttonHeight, buttonWidth, buttonHeight, new TextComponentTranslation("button.next").getFormattedText()) {
-            @Override
-            public void onClick(double x, double y) {
-                super.onClick(x, y);
-                page++;
-                if (page >= getPages()) {
-                    page = getPages() - 1;
-                }
-                Main.SIMPLE_CHANNEL.sendToServer(new MessageSwitchInventoryPage(page));
-            }
-        });
+        previous = addButton(new GuiButton(0, left + padding, guiTop + 149 - buttonHeight, buttonWidth, buttonHeight, new TextComponentTranslation("button.previous").getFormattedText()));
+        next = addButton(new GuiButton(1, left + xSize - buttonWidth - padding, guiTop + 149 - buttonHeight, buttonWidth, buttonHeight, new TextComponentTranslation("button.next").getFormattedText()));
     }
 
     @Override
-    public void tick() {
-        super.tick();
+    protected void actionPerformed(GuiButton button) throws IOException {
+        super.actionPerformed(button);
+
+        if (button.id == 0) {
+            page--;
+            if (page < 0) {
+                page = 0;
+            }
+            CommonProxy.simpleNetworkWrapper.sendToServer(new MessageSwitchInventoryPage(page));
+        } else if (button.id == 1) {
+            page++;
+            if (page >= getPages()) {
+                page = getPages() - 1;
+            }
+            CommonProxy.simpleNetworkWrapper.sendToServer(new MessageSwitchInventoryPage(page));
+        }
+    }
+
+    @Override
+    public void updateScreen() {
+        super.updateScreen();
         if (page <= 0) {
             previous.enabled = false;
         } else {

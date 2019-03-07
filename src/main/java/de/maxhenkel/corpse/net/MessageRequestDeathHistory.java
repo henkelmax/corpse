@@ -2,38 +2,31 @@ package de.maxhenkel.corpse.net;
 
 import de.maxhenkel.corpse.Death;
 import de.maxhenkel.corpse.DeathManager;
-import de.maxhenkel.corpse.Main;
+import de.maxhenkel.corpse.proxy.CommonProxy;
+import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.network.PacketBuffer;
-import net.minecraftforge.fml.network.NetworkDirection;
-import net.minecraftforge.fml.network.NetworkEvent;
 
 import java.util.List;
 import java.util.UUID;
 
-public class MessageRequestDeathHistory implements Message {
+public class MessageRequestDeathHistory extends MessageToServer<MessageRequestDeathHistory> {
 
     public MessageRequestDeathHistory() {
 
     }
 
     @Override
-    public void executeServerSide(NetworkEvent.Context context) {
-        sendDeathHistory(context.getSender());
+    public void execute(EntityPlayerMP player, MessageRequestDeathHistory message) {
+        sendDeathHistory(player);
     }
 
     @Override
-    public void executeClientSide(NetworkEvent.Context context) {
+    public void fromBytes(ByteBuf buf) {
 
     }
 
     @Override
-    public MessageRequestDeathHistory fromBytes(PacketBuffer buf) {
-        return this;
-    }
-
-    @Override
-    public void toBytes(PacketBuffer buf) {
+    public void toBytes(ByteBuf buf) {
 
     }
 
@@ -43,6 +36,6 @@ public class MessageRequestDeathHistory implements Message {
 
     public static void sendDeathHistory(EntityPlayerMP playerToSend, UUID playerUUID) {
         List<Death> deaths = DeathManager.getDeaths(playerToSend, playerUUID);
-        Main.SIMPLE_CHANNEL.sendTo(new MessageOpenHistory(deaths), playerToSend.connection.netManager, NetworkDirection.PLAY_TO_CLIENT);
+        CommonProxy.simpleNetworkWrapper.sendTo(new MessageOpenHistory(deaths), playerToSend);
     }
 }

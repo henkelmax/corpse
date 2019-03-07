@@ -4,22 +4,18 @@ import com.mojang.authlib.GameProfile;
 import de.maxhenkel.corpse.Death;
 import de.maxhenkel.corpse.Main;
 import de.maxhenkel.corpse.net.MessageShowCorpseInventory;
-import net.minecraft.client.audio.SimpleSound;
+import de.maxhenkel.corpse.net.MessageTeleport;
+import de.maxhenkel.corpse.proxy.CommonProxy;
 import net.minecraft.client.entity.EntityOtherPlayerMP;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.inventory.GuiInventory;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.SoundEvents;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentTranslation;
-import net.minecraft.util.text.TextComponentUtils;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.event.ClickEvent;
-import net.minecraft.util.text.event.HoverEvent;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -49,61 +45,59 @@ public class GUIDeathHistory extends GUIBase {
     }
 
     @Override
-    protected void initGui() {
+    public void initGui() {
         super.initGui();
 
-        buttons.clear();
+        buttonList.clear();
         int padding = 7;
         int buttonWidth = 50;
         int buttonHeight = 20;
-        previous = addButton(new GuiButton(0, guiLeft + padding, guiTop + ySize - buttonHeight - padding, buttonWidth, buttonHeight, new TextComponentTranslation("button.previous").getFormattedText()) {
-            @Override
-            public void onClick(double x, double y) {
-                super.onClick(x, y);
-                index--;
-                if (index < 0) {
-                    index = 0;
-                }
-            }
-        });
+        previous = addButton(new GuiButton(0, guiLeft + padding, guiTop + ySize - buttonHeight - padding, buttonWidth, buttonHeight, new TextComponentTranslation("button.previous").getFormattedText()));
 
-        addButton(new GuiButton(0, guiLeft + (xSize - buttonWidth) / 2, guiTop + ySize - buttonHeight - padding, buttonWidth, buttonHeight, new TextComponentTranslation("button.show_items").getFormattedText()) {
-            @Override
-            public void onClick(double x, double y) {
-                super.onClick(x, y);
-                Main.SIMPLE_CHANNEL.sendToServer(new MessageShowCorpseInventory(getCurrentDeath().getPlayerUUID(), getCurrentDeath().getId()));
-            }
-        });
+        addButton(new GuiButton(2, guiLeft + (xSize - buttonWidth) / 2, guiTop + ySize - buttonHeight - padding, buttonWidth, buttonHeight, new TextComponentTranslation("button.show_items").getFormattedText()));
 
-        next = addButton(new GuiButton(1, guiLeft + xSize - buttonWidth - padding, guiTop + ySize - buttonHeight - padding, buttonWidth, buttonHeight, new TextComponentTranslation("button.next").getFormattedText()) {
-            @Override
-            public void onClick(double x, double y) {
-                super.onClick(x, y);
-                index++;
-                if (index >= deaths.size()) {
-                    index = deaths.size() - 1;
-                }
-            }
-        });
+        next = addButton(new GuiButton(1, guiLeft + xSize - buttonWidth - padding, guiTop + ySize - buttonHeight - padding, buttonWidth, buttonHeight, new TextComponentTranslation("button.next").getFormattedText()));
     }
 
     @Override
-    public boolean mouseClicked(double x, double y, int clickType) {
-        if (x >= guiLeft + 7 && x <= guiLeft + hSplit && y >= guiTop + 70 && y <= guiTop + 100 + fontRenderer.FONT_HEIGHT) {
-            BlockPos pos = getCurrentDeath().getBlockPos();
+    protected void actionPerformed(GuiButton button) throws IOException {
+        super.actionPerformed(button);
+        if (button.id == 0) {
+            index--;
+            if (index < 0) {
+                index = 0;
+            }
+        } else if (button.id == 1) {
+            index++;
+            if (index >= deaths.size()) {
+                index = deaths.size() - 1;
+            }
+        } else if (button.id == 2) {
+            CommonProxy.simpleNetworkWrapper.sendToServer(new MessageShowCorpseInventory(getCurrentDeath().getPlayerUUID(), getCurrentDeath().getId()));
+        }
+    }
+
+    @Override
+    protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
+        super.mouseClicked(mouseX, mouseY, mouseButton);
+
+        if (mouseX >= guiLeft + 7 && mouseX <= guiLeft + hSplit && mouseY >= guiTop + 70 && mouseY <= guiTop + 100 + fontRenderer.FONT_HEIGHT) {
+            /*BlockPos pos = getCurrentDeath().getBlockPos();
             ITextComponent teleport = TextComponentUtils.wrapInSquareBrackets(new TextComponentTranslation("chat.coordinates", pos.getX(), pos.getY(), pos.getZ())).applyTextStyle((style) -> {
                 style.setColor(TextFormatting.GREEN).setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/execute in " + getCurrentDeath().getDimension() + " run tp @s " + pos.getX() + " " + pos.getY() + " " + pos.getZ())).setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponentTranslation("chat.coordinates.tooltip")));
             });
             mc.player.sendMessage(new TextComponentTranslation("chat.teleport_death_location", teleport));
             mc.getSoundHandler().play(SimpleSound.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1.0F));
-            mc.displayGuiScreen(null);
+            mc.displayGuiScreen(null);*/
+
+            CommonProxy.simpleNetworkWrapper.sendToServer(new MessageTeleport(getCurrentDeath()));
         }
-        return super.mouseClicked(x, y, clickType);
     }
 
+
     @Override
-    public void render(int mouseX, int mouseY, float partialTicks) {
-        super.render(mouseX, mouseY, partialTicks);
+    public void drawScreen(int mouseX, int mouseY, float partialTicks) {
+        super.drawScreen(mouseX, mouseY, partialTicks);
         Death death = getCurrentDeath();
 
         // Title
@@ -127,7 +121,7 @@ public class GUIDeathHistory extends GUIBase {
         String textDimension = new TextComponentTranslation("gui.death_history.dimension").getFormattedText() + ":";
         drawLeft(TextFormatting.DARK_GRAY + textDimension, guiTop + 55);
 
-        String dimension = death.getDimension().split(":")[1];
+        String dimension = "Dim " + death.getDimension();
         drawRight(TextFormatting.GRAY + dimension, guiTop + 55);
 
         // Location
@@ -139,7 +133,7 @@ public class GUIDeathHistory extends GUIBase {
         drawRight(TextFormatting.GRAY + "" + Math.round(death.getPosZ()) + " Z", guiTop + 100);
 
         // Player
-        GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
+        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 
         EntityPlayer player = new EntityOtherPlayerMP(mc.world, new GameProfile(death.getPlayerUUID(), death.getPlayerName()));
         player.height = Float.MAX_VALUE;
@@ -150,10 +144,9 @@ public class GUIDeathHistory extends GUIBase {
         }
     }
 
-
     @Override
-    public void tick() {
-        super.tick();
+    public void updateScreen() {
+        super.updateScreen();
         if (index <= 0) {
             previous.enabled = false;
         } else {

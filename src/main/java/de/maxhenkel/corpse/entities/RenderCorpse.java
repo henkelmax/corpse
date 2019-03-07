@@ -2,12 +2,12 @@ package de.maxhenkel.corpse.entities;
 
 import de.maxhenkel.corpse.PlayerSkins;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.model.ModelPlayer;
+import net.minecraft.client.model.ModelSkeleton;
 import net.minecraft.client.network.NetworkPlayerInfo;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
-import net.minecraft.client.renderer.entity.model.ModelPlayer;
-import net.minecraft.client.renderer.entity.model.ModelSkeleton;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.ResourceLocation;
 
@@ -25,7 +25,7 @@ public class RenderCorpse extends Render<EntityCorpse> {
 
     public RenderCorpse(RenderManager renderManager) {
         super(renderManager);
-        mc = Minecraft.getInstance();
+        mc = Minecraft.getMinecraft();
         modelPlayer = new ModelPlayer(0F, false);
         modelPlayerSlim = new ModelPlayer(0F, true);
         modelSkeleton = new ModelSkeleton() {
@@ -43,10 +43,10 @@ public class RenderCorpse extends Render<EntityCorpse> {
     public void doRender(EntityCorpse entity, double x, double y, double z, float entityYaw, float partialTicks) {
 
         GlStateManager.pushMatrix();
-        GlStateManager.translated(x, y, z);
-        GlStateManager.rotatef(360F - entity.getCorpseRotation(), 0F, 1F, 0F);
-        GlStateManager.rotatef(90, 1F, 0F, 0F);
-        GlStateManager.translated(0D, -0.5D, -2D / 16D);
+        GlStateManager.translate(x, y, z);
+        GlStateManager.rotate(360F - entity.getCorpseRotation(), 0F, 1F, 0F);
+        GlStateManager.rotate(90, 1F, 0F, 0F);
+        GlStateManager.translate(0D, -0.5D, -2D / 16D);
 
         if (entity.getCorpseAge() >= 20 * 60 * 60) {
             bindTexture(SKELETON_TEXTURE);
