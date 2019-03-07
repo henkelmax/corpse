@@ -1,1 +1,1 @@
-- Fixed /deathhistory command not working in some cases
+- Fixed corpses disappearing when falling into the void

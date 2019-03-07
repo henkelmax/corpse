@@ -67,7 +67,7 @@ public class GUIDeathHistory extends GUIBase {
             }
         });
 
-        addButton(new GuiButton(0, guiLeft + (xSize - buttonWidth) / 2, guiTop + ySize - buttonHeight - padding, buttonWidth, buttonHeight, new TextComponentTranslation("button.show_items").getFormattedText()) {
+        addButton(new GuiButton(2, guiLeft + (xSize - buttonWidth) / 2, guiTop + ySize - buttonHeight - padding, buttonWidth, buttonHeight, new TextComponentTranslation("button.show_items").getFormattedText()) {
             @Override
             public void onClick(double x, double y) {
                 super.onClick(x, y);
