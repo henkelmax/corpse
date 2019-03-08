@@ -65,6 +65,25 @@ It includes the coordinates and the dimension.
 
 Only the owner of the corpse can access the inventory (Config option)
 
+## Config
+
+### Server
+
+``` toml
+#The time passed after a corpse despawns (only if empty)
+corpse_despawn_time = 600
+#If only the owner of the corpse can access the inventory
+only_owner_access = false
+#The time passed after a corpse turns into a skeleton
+corpse_skeleton_time = 72000
+```
+
+### Client
+
+``` toml
+
+```
+
 ---
 
 [Gallery](https://imgur.com/a/H1ltydQ)
