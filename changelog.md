@@ -1,1 +1,1 @@
-- Fixed corpses disappearing when falling into the void
+- Added config option for timings

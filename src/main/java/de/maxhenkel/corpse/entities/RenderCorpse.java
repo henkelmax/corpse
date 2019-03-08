@@ -1,5 +1,6 @@
 package de.maxhenkel.corpse.entities;
 
+import de.maxhenkel.corpse.Config;
 import de.maxhenkel.corpse.PlayerSkins;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.network.NetworkPlayerInfo;
@@ -48,7 +49,7 @@ public class RenderCorpse extends Render<EntityCorpse> {
         GlStateManager.rotatef(90, 1F, 0F, 0F);
         GlStateManager.translated(0D, -0.5D, -2D / 16D);
 
-        if (entity.getCorpseAge() >= 20 * 60 * 60) {
+        if (entity.getCorpseAge() >= Config.SERVER.corpseSkeletonTime.get()) {
             bindTexture(SKELETON_TEXTURE);
             modelSkeleton.render(entity, 0F, 0F, 0F, 0F, 0F, 0.0625F);
         } else {

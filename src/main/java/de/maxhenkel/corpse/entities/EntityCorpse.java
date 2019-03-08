@@ -77,7 +77,7 @@ public class EntityCorpse extends EntityCorpseInventoryBase {
             return;
         }
 
-        if (isEmpty() && ticksExisted > 200) {
+        if (isEmpty() && getCorpseAge() > Config.SERVER.corpseDespawnTime.get()) {
             remove();
         }
     }
