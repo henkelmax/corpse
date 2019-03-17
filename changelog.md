@@ -1,1 +1,2 @@
-- Added config option for timings
+- Add russian translation
+- Add german translation
