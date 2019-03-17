@@ -1,1 +1,2 @@
-- Downport to 1.12.2
+- Add russian translation
+- Add german translation

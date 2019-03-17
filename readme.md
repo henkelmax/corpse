@@ -65,6 +65,11 @@ It includes the coordinates and the dimension.
 
 Only the owner of the corpse can access the inventory (Config option)
 
+
+## Credits
+
+Russian translation [ghost_screa_m](https://minecraft.curseforge.com/members/ghost_screa_m)
+
 ---
 
 [Gallery](https://imgur.com/a/H1ltydQ)
