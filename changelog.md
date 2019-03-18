@@ -1,1 +1,1 @@
-- Added portuguese translation
+- 

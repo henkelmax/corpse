@@ -29,6 +29,7 @@ import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.network.NetworkRegistry;
 import net.minecraftforge.fml.network.simple.SimpleChannel;
+import org.lwjgl.glfw.GLFW;
 
 @Mod(Main.MODID)
 @Mod.EventBusSubscriber
@@ -100,7 +101,7 @@ public class Main {
     public void clientSetup(FMLClientSetupEvent event) {
         RenderingRegistry.registerEntityRenderingHandler(EntityCorpse.class, manager -> new RenderCorpse(manager));
         GUIManager.clientSetup();
-        KEY_DEATH_HISTORY = new KeyBinding("key.death_history", 85, "key.categories.misc");
+        KEY_DEATH_HISTORY = new KeyBinding("key.death_history", GLFW.GLFW_KEY_U, "key.categories.misc");
         ClientRegistry.registerKeyBinding(KEY_DEATH_HISTORY);
         MinecraftForge.EVENT_BUS.register(new KeyEvents());
     }
