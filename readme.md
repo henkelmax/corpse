@@ -89,6 +89,8 @@ corpse_skeleton_time = 72000
 
 Russian translation [ghost_screa_m](https://minecraft.curseforge.com/members/ghost_screa_m)
 
+Portuguese translation [srbedrock](https://minecraft.curseforge.com/members/srbedrock)
+
 
 ---
 

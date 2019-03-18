@@ -1,2 +1,1 @@
-- Add russian translation
-- Add german translation
+- Added portuguese translation
