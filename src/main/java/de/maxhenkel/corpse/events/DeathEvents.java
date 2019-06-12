@@ -2,20 +2,18 @@ package de.maxhenkel.corpse.events;
 
 import de.maxhenkel.corpse.Death;
 import de.maxhenkel.corpse.DeathManager;
-import de.maxhenkel.corpse.entities.EntityCorpse;
+import de.maxhenkel.corpse.entities.CorpseEntity;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.item.EntityItem;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.item.ItemEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
 
 import java.util.Collection;
 
-@Mod.EventBusSubscriber
 public class DeathEvents {
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
@@ -30,18 +28,18 @@ public class DeathEvents {
             return;
         }
 
-        if (!(entity instanceof EntityPlayerMP)) {
+        if (!(entity instanceof ServerPlayerEntity)) {
             return;
         }
 
         try {
-            Collection<EntityItem> drops = event.getDrops();
+            Collection<ItemEntity> drops = event.getDrops();
 
-            EntityPlayerMP player = (EntityPlayerMP) event.getEntity();
+            ServerPlayerEntity player = (ServerPlayerEntity) event.getEntity();
 
             NonNullList<ItemStack> stacks = NonNullList.create();
 
-            for (EntityItem item : drops) {
+            for (ItemEntity item : drops) {
                 if (!item.getItem().isEmpty()) {
                     stacks.add(item.getItem());
                 }
@@ -52,7 +50,7 @@ public class DeathEvents {
             Death death = Death.fromPlayer(player, stacks);
             DeathManager.addDeath(player, death);
 
-            player.world.spawnEntity(EntityCorpse.createFromDeath(player, death));
+            player.world.func_217376_c(CorpseEntity.createFromDeath(player, death));
         } catch (Exception e) {
             e.printStackTrace();
         }

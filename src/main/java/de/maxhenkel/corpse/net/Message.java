@@ -11,6 +11,4 @@ public interface Message<T> {
     T fromBytes(PacketBuffer buf);
 
     void toBytes(PacketBuffer buf);
-
-
 }

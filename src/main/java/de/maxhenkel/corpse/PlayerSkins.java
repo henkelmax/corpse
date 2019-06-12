@@ -5,7 +5,7 @@ import com.mojang.authlib.minecraft.MinecraftProfileTexture;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture.Type;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.DefaultPlayerSkin;
-import net.minecraft.tileentity.TileEntitySkull;
+import net.minecraft.tileentity.SkullTileEntity;
 import net.minecraft.util.ResourceLocation;
 
 import java.util.HashMap;
@@ -29,15 +29,17 @@ public class PlayerSkins {
         }
     }
 
-    /*public static boolean isAvailable(GameProfile gameProfile) {
+    /*
+    public static boolean isAvailable(GameProfile gameProfile) {
         return gameProfile.isComplete() && gameProfile.getProperties().containsKey("textures");
-    }*/
+    }
+    */
 
     public static GameProfile getGameProfile(UUID uuid, String name) {
         if (players.containsKey(uuid)) {
             return players.get(uuid);
         } else {
-            GameProfile profile = TileEntitySkull.updateGameProfile(new GameProfile(uuid, name));
+            GameProfile profile = SkullTileEntity.updateGameProfile(new GameProfile(uuid, name));
             players.put(uuid, profile);
             return profile;
         }

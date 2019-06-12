@@ -3,7 +3,7 @@ package de.maxhenkel.corpse.net;
 import de.maxhenkel.corpse.Death;
 import de.maxhenkel.corpse.DeathManager;
 import de.maxhenkel.corpse.Main;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.network.NetworkDirection;
 import net.minecraftforge.fml.network.NetworkEvent;
@@ -37,11 +37,11 @@ public class MessageRequestDeathHistory implements Message {
 
     }
 
-    public static void sendDeathHistory(EntityPlayerMP player) {
+    public static void sendDeathHistory(ServerPlayerEntity player) {
         sendDeathHistory(player, player.getUniqueID());
     }
 
-    public static void sendDeathHistory(EntityPlayerMP playerToSend, UUID playerUUID) {
+    public static void sendDeathHistory(ServerPlayerEntity playerToSend, UUID playerUUID) {
         List<Death> deaths = DeathManager.getDeaths(playerToSend, playerUUID);
         Main.SIMPLE_CHANNEL.sendTo(new MessageOpenHistory(deaths), playerToSend.connection.netManager, NetworkDirection.PLAY_TO_CLIENT);
     }

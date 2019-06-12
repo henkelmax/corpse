@@ -1,15 +1,15 @@
 package de.maxhenkel.corpse.gui;
 
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.Slot;
+import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 
-public class SlotCorpse extends Slot {
+public class CorpseSlot extends Slot {
 
     private boolean editable;
 
-    public SlotCorpse(IInventory inventoryIn, int index, int xPosition, int yPosition, boolean editable) {
+    public CorpseSlot(IInventory inventoryIn, int index, int xPosition, int yPosition, boolean editable) {
         super(inventoryIn, index, xPosition, yPosition);
         this.editable = editable;
     }
@@ -20,7 +20,7 @@ public class SlotCorpse extends Slot {
     }
 
     @Override
-    public boolean canTakeStack(EntityPlayer playerIn) {
+    public boolean canTakeStack(PlayerEntity playerIn) {
         return editable ? super.canTakeStack(playerIn) : false;
     }
 }

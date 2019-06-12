@@ -3,20 +3,21 @@ package de.maxhenkel.corpse.entities;
 import de.maxhenkel.corpse.Config;
 import de.maxhenkel.corpse.Death;
 import de.maxhenkel.corpse.Main;
-import de.maxhenkel.corpse.gui.GUIManager;
+import de.maxhenkel.corpse.gui.ScreenManager;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.MoverType;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Hand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -25,28 +26,30 @@ import javax.annotation.Nullable;
 import java.util.Optional;
 import java.util.UUID;
 
-public class EntityCorpse extends EntityCorpseInventoryBase {
+public class CorpseEntity extends CorpseInventoryBaseEntity {
 
-    private static final DataParameter<Optional<UUID>> ID = EntityDataManager.createKey(EntityCorpse.class, DataSerializers.OPTIONAL_UNIQUE_ID);
-    private static final DataParameter<String> NAME = EntityDataManager.createKey(EntityCorpse.class, DataSerializers.STRING);
-    private static final DataParameter<Float> ROTATION = EntityDataManager.createKey(EntityCorpse.class, DataSerializers.FLOAT);
-    private static final DataParameter<Integer> AGE = EntityDataManager.createKey(EntityCorpse.class, DataSerializers.VARINT);
+    private static final DataParameter<Optional<UUID>> ID = EntityDataManager.createKey(CorpseEntity.class, DataSerializers.field_187203_m);
+    private static final DataParameter<String> NAME = EntityDataManager.createKey(CorpseEntity.class, DataSerializers.field_187194_d);
+    private static final DataParameter<Float> ROTATION = EntityDataManager.createKey(CorpseEntity.class, DataSerializers.field_187193_c);
+    private static final DataParameter<Integer> AGE = EntityDataManager.createKey(CorpseEntity.class, DataSerializers.field_187192_b);
 
     private static final AxisAlignedBB NULL_AABB = new AxisAlignedBB(0D, 0D, 0D, 0D, 0D, 0D);
     private static final UUID NULL_UUID = new UUID(0L, 0L);
 
     private AxisAlignedBB boundingBox;
 
-    public EntityCorpse(World world) {
-        super(Main.CORPSE_ENTITY_TYPE, world);
-        width = 2F;
-        height = 0.5F;
+    public CorpseEntity(EntityType type, World world) {
+        super(type, world);
         boundingBox = NULL_AABB;
         preventEntitySpawning = true;
     }
 
-    public static EntityCorpse createFromDeath(EntityPlayer player, Death death) {
-        EntityCorpse corpse = new EntityCorpse(player.world);
+    public CorpseEntity(World world) {
+        this(Main.CORPSE_ENTITY_TYPE, world);
+    }
+
+    public static CorpseEntity createFromDeath(PlayerEntity player, Death death) {
+        CorpseEntity corpse = new CorpseEntity(player.world);
         corpse.setCorpseUUID(death.getPlayerUUID());
         corpse.setCorpseName(death.getPlayerName());
         corpse.setItems(death.getItems());
@@ -62,16 +65,16 @@ public class EntityCorpse extends EntityCorpseInventoryBase {
         setCorpseAge(getCorpseAge() + 1);
 
         if (!collidedVertically && posY > 0D) {
-            motionY = Math.max(-2D, motionY - 0.0625D);
+            setMotion(getMotion().x, Math.max(-2D, getMotion().y - 0.0625D), getMotion().z);
         } else {
-            motionY = 0D;
+            setMotion(getMotion().x, 0D, getMotion().z);
         }
 
         if (posY < 0D) {
             setPositionAndUpdate(posX, 0F, posZ);
         }
 
-        move(MoverType.SELF, motionX, motionY, motionZ);
+        move(MoverType.SELF, getMotion());
 
         if (world.isRemote) {
             return;
@@ -83,9 +86,9 @@ public class EntityCorpse extends EntityCorpseInventoryBase {
     }
 
     @Override
-    public boolean processInitialInteract(EntityPlayer player, EnumHand hand) {
-        if (!world.isRemote && player instanceof EntityPlayerMP) {
-            EntityPlayerMP playerMP = (EntityPlayerMP) player;
+    public boolean processInitialInteract(PlayerEntity player, Hand hand) {
+        if (!world.isRemote && player instanceof ServerPlayerEntity) {
+            ServerPlayerEntity playerMP = (ServerPlayerEntity) player;
             if (Config.SERVER.onlyOwnerAccess.get()) {
                 boolean isOp = playerMP.hasPermissionLevel(playerMP.server.getOpPermissionLevel());
 
@@ -93,13 +96,13 @@ public class EntityCorpse extends EntityCorpseInventoryBase {
                     return true;
                 }
             }
-            GUIManager.openCorpseGUI((EntityPlayerMP) player, this);
+            ScreenManager.openCorpseGUI((ServerPlayerEntity) player, this);
         }
         return true;
     }
 
     public void recalculateBoundingBox() {
-        EnumFacing facing = dataManager == null ? EnumFacing.NORTH : EnumFacing.fromAngle(getCorpseRotation());
+        Direction facing = dataManager == null ? Direction.NORTH : Direction.fromAngle(getCorpseRotation());
         boundingBox = new AxisAlignedBB(
                 posX - (facing.getXOffset() != 0 ? 1D : 0.5D),
                 posY,
@@ -116,7 +119,7 @@ public class EntityCorpse extends EntityCorpseInventoryBase {
         if (name == null || name.trim().isEmpty()) {
             return super.getDisplayName();
         } else {
-            return new TextComponentTranslation("entity.corpse.corpse_of", getCorpseName());
+            return new TranslationTextComponent("entity.corpse.corpse_of", getCorpseName());
         }
     }
 
@@ -215,23 +218,23 @@ public class EntityCorpse extends EntityCorpseInventoryBase {
         dataManager.register(AGE, 0);
     }
 
-    public void writeAdditional(NBTTagCompound compound) {
+    public void writeAdditional(CompoundNBT compound) {
         super.writeAdditional(compound);
 
         UUID uuid = getCorpseUUID();
         if (uuid != null) {
-            compound.setLong("IDMost", uuid.getMostSignificantBits());
-            compound.setLong("IDLeast", uuid.getLeastSignificantBits());
+            compound.putLong("IDMost", uuid.getMostSignificantBits());
+            compound.putLong("IDLeast", uuid.getLeastSignificantBits());
         }
-        compound.setString("Name", getCorpseName());
-        compound.setFloat("Rotation", getCorpseRotation());
-        compound.setInt("Age", getCorpseAge());
+        compound.putString("Name", getCorpseName());
+        compound.putFloat("Rotation", getCorpseRotation());
+        compound.putInt("Age", getCorpseAge());
     }
 
-    public void readAdditional(NBTTagCompound compound) {
+    public void readAdditional(CompoundNBT compound) {
         super.readAdditional(compound);
 
-        if (compound.hasKey("IDMost") && compound.hasKey("IDLeast")) {
+        if (compound.contains("IDMost") && compound.contains("IDLeast")) {
             setCorpseUUID(new UUID(compound.getLong("IDMost"), compound.getLong("IDLeast")));
         }
         setCorpseName(compound.getString("Name"));

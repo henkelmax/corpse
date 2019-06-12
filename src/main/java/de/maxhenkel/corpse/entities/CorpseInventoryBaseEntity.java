@@ -2,32 +2,33 @@ package de.maxhenkel.corpse.entities;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.InventoryBasic;
+import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.ListNBT;
+import net.minecraft.network.IPacket;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.NonNullList;
-import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.network.NetworkHooks;
 
-public abstract class EntityCorpseInventoryBase extends Entity implements IInventory {
+public abstract class CorpseInventoryBaseEntity extends Entity implements IInventory {
 
-    private static final DataParameter<Integer> INVENTORY_SIZE = EntityDataManager.createKey(EntityCorpse.class, DataSerializers.VARINT);
+    private static final DataParameter<Integer> INVENTORY_SIZE = EntityDataManager.createKey(CorpseEntity.class, DataSerializers.field_187192_b);
 
     protected IInventory inventory;
 
-    public EntityCorpseInventoryBase(EntityType<?> entityTypeIn, World worldIn) {
+    public CorpseInventoryBaseEntity(EntityType<?> entityTypeIn, World worldIn) {
         super(entityTypeIn, worldIn);
     }
 
     private IInventory getInventory() {
         if (inventory == null) {
-            inventory = new InventoryBasic(new TextComponentString(""), getFittingInventorySize(dataManager.get(INVENTORY_SIZE)));
+            inventory = new Inventory(getFittingInventorySize(dataManager.get(INVENTORY_SIZE)));
         }
         return inventory;
     }
@@ -61,15 +62,15 @@ public abstract class EntityCorpseInventoryBase extends Entity implements IInven
     }
 
     @Override
-    protected void readAdditional(NBTTagCompound compound) {
+    protected void readAdditional(CompoundNBT compound) {
         int size = compound.getInt("InventorySize");
 
-        NBTTagList nbttaglist = compound.getList("Inventory", 10);
+        ListNBT nbttaglist = compound.getList("Inventory", 10);
 
-        inventory = new InventoryBasic(new TextComponentString(""), size);
+        inventory = new Inventory(size);
 
         for (int i = 0; i < nbttaglist.size(); i++) {
-            NBTTagCompound nbttagcompound = nbttaglist.getCompound(i);
+            CompoundNBT nbttagcompound = nbttaglist.getCompound(i);
             int j = nbttagcompound.getInt("Slot");
 
             if (j >= 0 && j < inventory.getSizeInventory()) {
@@ -79,20 +80,20 @@ public abstract class EntityCorpseInventoryBase extends Entity implements IInven
     }
 
     @Override
-    protected void writeAdditional(NBTTagCompound compound) {
-        NBTTagList nbttaglist = new NBTTagList();
+    protected void writeAdditional(CompoundNBT compound) {
+        ListNBT nbttaglist = new ListNBT();
 
         for (int i = 0; i < getSizeInventory(); i++) {
             if (!getStackInSlot(i).isEmpty()) {
-                NBTTagCompound nbttagcompound = new NBTTagCompound();
-                nbttagcompound.setInt("Slot", i);
+                CompoundNBT nbttagcompound = new CompoundNBT();
+                nbttagcompound.putInt("Slot", i);
                 getStackInSlot(i).write(nbttagcompound);
                 nbttaglist.add(nbttagcompound);
             }
         }
 
-        compound.setTag("Inventory", nbttaglist);
-        compound.setInt("InventorySize", getSizeInventory());
+        compound.put("Inventory", nbttaglist);
+        compound.putInt("InventorySize", getSizeInventory());
     }
 
     @Override
@@ -136,17 +137,17 @@ public abstract class EntityCorpseInventoryBase extends Entity implements IInven
     }
 
     @Override
-    public boolean isUsableByPlayer(EntityPlayer player) {
+    public boolean isUsableByPlayer(PlayerEntity player) {
         return getInventory().isUsableByPlayer(player);
     }
 
     @Override
-    public void openInventory(EntityPlayer player) {
+    public void openInventory(PlayerEntity player) {
         getInventory().openInventory(player);
     }
 
     @Override
-    public void closeInventory(EntityPlayer player) {
+    public void closeInventory(PlayerEntity player) {
         getInventory().closeInventory(player);
     }
 
@@ -156,23 +157,12 @@ public abstract class EntityCorpseInventoryBase extends Entity implements IInven
     }
 
     @Override
-    public int getField(int id) {
-        return 0;
-    }
-
-    @Override
-    public void setField(int id, int value) {
-
-    }
-
-    @Override
-    public int getFieldCount() {
-        return 0;
-    }
-
-    @Override
     public void clear() {
         getInventory().clear();
     }
 
+    @Override
+    public IPacket<?> createSpawnPacket() {
+        return NetworkHooks.getEntitySpawningPacket(this);
+    }
 }

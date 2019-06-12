@@ -1,9 +1,9 @@
 package de.maxhenkel.corpse;
 
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.ListNBT;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
@@ -81,7 +81,7 @@ public class Death {
         return "Death{name=" + playerName + "timestamp=" + timestamp + "}";
     }
 
-    public static Death fromPlayer(EntityPlayer player, NonNullList<ItemStack> items) {
+    public static Death fromPlayer(PlayerEntity player, NonNullList<ItemStack> items) {
         Death death = new Death();
         death.id = UUID.randomUUID();
         death.playerUUID = player.getUniqueID();
@@ -92,20 +92,20 @@ public class Death {
         death.posX = player.posX;
         death.posY = player.posY;
         death.posZ = player.posZ;
-        death.dimension = DimensionType.func_212678_a(player.dimension).toString();
+        death.dimension = DimensionType.getKey(player.dimension).toString();
 
         return death;
     }
 
-    public static Death fromNBT(NBTTagCompound compound) {
+    public static Death fromNBT(CompoundNBT compound) {
         Death death = new Death();
         death.id = new UUID(compound.getLong("IdMost"), compound.getLong("IdLeast"));
         death.playerUUID = new UUID(compound.getLong("PlayerUuidMost"), compound.getLong("PlayerUuidLeast"));
         death.playerName = compound.getString("PlayerName");
 
         death.items = NonNullList.create();
-        if (compound.hasKey("Items")) {
-            NBTTagList itemList = compound.getList("Items", 10);
+        if (compound.contains("Items")) {
+            ListNBT itemList = compound.getList("Items", 10);
             for (int i = 0; i < itemList.size(); i++) {
                 death.items.add(ItemStack.read(itemList.getCompound(i)));
             }
@@ -121,34 +121,33 @@ public class Death {
         return death;
     }
 
-    public NBTTagCompound toNBT() {
+    public CompoundNBT toNBT() {
         return toNBT(true);
     }
 
-    public NBTTagCompound toNBT(boolean withItems) {
-        NBTTagCompound compound = new NBTTagCompound();
-        compound.setLong("IdMost", id.getMostSignificantBits());
-        compound.setLong("IdLeast", id.getLeastSignificantBits());
-        compound.setLong("PlayerUuidMost", playerUUID.getMostSignificantBits());
-        compound.setLong("PlayerUuidLeast", playerUUID.getLeastSignificantBits());
-        compound.setString("PlayerName", playerName);
+    public CompoundNBT toNBT(boolean withItems) {
+        CompoundNBT compound = new CompoundNBT();
+        compound.putLong("IdMost", id.getMostSignificantBits());
+        compound.putLong("IdLeast", id.getLeastSignificantBits());
+        compound.putLong("PlayerUuidMost", playerUUID.getMostSignificantBits());
+        compound.putLong("PlayerUuidLeast", playerUUID.getLeastSignificantBits());
+        compound.putString("PlayerName", playerName);
 
         if (withItems) {
-            NBTTagList itemList = new NBTTagList();
+            ListNBT itemList = new ListNBT();
             for (ItemStack stack : items) {
-                itemList.add(stack.write(new NBTTagCompound()));
+                itemList.add(stack.write(new CompoundNBT()));
             }
-            compound.setTag("Items", itemList);
+            compound.put("Items", itemList);
         }
 
-        compound.setLong("Timestamp", timestamp);
-        compound.setInt("Experience", experience);
-        compound.setDouble("PosX", posX);
-        compound.setDouble("PosY", posY);
-        compound.setDouble("PosZ", posZ);
-        compound.setString("Dimension", dimension);
+        compound.putLong("Timestamp", timestamp);
+        compound.putInt("Experience", experience);
+        compound.putDouble("PosX", posX);
+        compound.putDouble("PosY", posY);
+        compound.putDouble("PosZ", posZ);
+        compound.putString("Dimension", dimension);
 
         return compound;
     }
-
 }

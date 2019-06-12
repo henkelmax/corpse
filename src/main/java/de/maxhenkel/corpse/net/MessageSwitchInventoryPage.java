@@ -1,7 +1,7 @@
 package de.maxhenkel.corpse.net;
 
-import de.maxhenkel.corpse.gui.ContainerCorpse;
-import net.minecraft.inventory.Container;
+import de.maxhenkel.corpse.gui.CorpseContainer;
+import net.minecraft.inventory.container.Container;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.network.NetworkEvent;
 
@@ -21,8 +21,8 @@ public class MessageSwitchInventoryPage implements Message {
     @Override
     public void executeServerSide(NetworkEvent.Context context) {
         Container container = context.getSender().openContainer;
-        if (container instanceof ContainerCorpse) {
-            ContainerCorpse containerCorpse = (ContainerCorpse) container;
+        if (container instanceof CorpseContainer) {
+            CorpseContainer containerCorpse = (CorpseContainer) container;
             containerCorpse.setSlots(page * 54);
         }
     }

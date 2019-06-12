@@ -1,7 +1,10 @@
 package de.maxhenkel.corpse.gui;
 
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.*;
+import net.minecraft.inventory.container.Container;
+import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 
 import javax.annotation.Nullable;
@@ -11,7 +14,8 @@ public abstract class ContainerBase extends Container {
     protected IInventory inventory;
     protected IInventory playerInventory;
 
-    public ContainerBase(IInventory playerInventory, IInventory inventory) {
+    public ContainerBase(ContainerType containerType, int id, IInventory playerInventory, IInventory inventory) {
+        super(containerType, id);
         this.playerInventory = playerInventory;
         this.inventory = inventory;
     }
@@ -37,7 +41,7 @@ public abstract class ContainerBase extends Container {
     public abstract int getInventorySize();
 
     @Override
-    public boolean canInteractWith(EntityPlayer playerIn) {
+    public boolean canInteractWith(PlayerEntity playerIn) {
         return true;
     }
 
@@ -47,7 +51,7 @@ public abstract class ContainerBase extends Container {
     }
 
     @Override
-    public ItemStack transferStackInSlot(EntityPlayer playerIn, int index) {
+    public ItemStack transferStackInSlot(PlayerEntity playerIn, int index) {
         ItemStack itemstack = ItemStack.EMPTY;
         Slot slot = inventorySlots.get(index);
 
