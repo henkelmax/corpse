@@ -14,6 +14,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
+import org.lwjgl.input.Mouse;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -146,7 +147,7 @@ public class GUIDeathHistory extends GUIBase {
 
     @Override
     public void updateScreen() {
-        super.updateScreen();
+        //super.updateScreen();  // TODO this may cause crashes
         if (index <= 0) {
             previous.enabled = false;
         } else {
@@ -158,6 +159,7 @@ public class GUIDeathHistory extends GUIBase {
         } else {
             next.enabled = true;
         }
+        Mouse.setGrabbed(false);
     }
 
     public void drawLeft(String string, int height) {
