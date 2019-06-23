@@ -32,7 +32,7 @@ public class ScreenManager {
             return;
         }
         CorpseEntity corpse = CorpseEntity.createFromDeath(playerToShow, death);
-        NetworkHooks.openGui(playerToShow, new CorpseContainerProvider(corpse, playerToShow.playerAbilities.isCreativeMode), packetBuffer -> {
+        NetworkHooks.openGui(playerToShow, new CorpseContainerProvider(corpse, playerToShow.abilities.isCreativeMode), packetBuffer -> {
             packetBuffer.writeBoolean(true);
             packetBuffer.writeCompoundTag(death.toNBT());
         });

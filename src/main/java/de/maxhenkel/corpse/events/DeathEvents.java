@@ -50,7 +50,7 @@ public class DeathEvents {
             Death death = Death.fromPlayer(player, stacks);
             DeathManager.addDeath(player, death);
 
-            player.world.func_217376_c(CorpseEntity.createFromDeath(player, death));
+            player.world.addEntity(CorpseEntity.createFromDeath(player, death));
         } catch (Exception e) {
             e.printStackTrace();
         }

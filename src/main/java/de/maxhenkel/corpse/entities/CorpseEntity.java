@@ -28,10 +28,10 @@ import java.util.UUID;
 
 public class CorpseEntity extends CorpseInventoryBaseEntity {
 
-    private static final DataParameter<Optional<UUID>> ID = EntityDataManager.createKey(CorpseEntity.class, DataSerializers.field_187203_m);
-    private static final DataParameter<String> NAME = EntityDataManager.createKey(CorpseEntity.class, DataSerializers.field_187194_d);
-    private static final DataParameter<Float> ROTATION = EntityDataManager.createKey(CorpseEntity.class, DataSerializers.field_187193_c);
-    private static final DataParameter<Integer> AGE = EntityDataManager.createKey(CorpseEntity.class, DataSerializers.field_187192_b);
+    private static final DataParameter<Optional<UUID>> ID = EntityDataManager.createKey(CorpseEntity.class, DataSerializers.OPTIONAL_UNIQUE_ID);
+    private static final DataParameter<String> NAME = EntityDataManager.createKey(CorpseEntity.class, DataSerializers.STRING);
+    private static final DataParameter<Float> ROTATION = EntityDataManager.createKey(CorpseEntity.class, DataSerializers.FLOAT);
+    private static final DataParameter<Integer> AGE = EntityDataManager.createKey(CorpseEntity.class, DataSerializers.VARINT);
 
     private static final AxisAlignedBB NULL_AABB = new AxisAlignedBB(0D, 0D, 0D, 0D, 0D, 0D);
     private static final UUID NULL_UUID = new UUID(0L, 0L);

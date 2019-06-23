@@ -60,6 +60,8 @@ public class Main {
         ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, Config.CLIENT_SPEC);
 
         DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> {
+            // Moved here from clientSetup because of entities not rendering
+            RenderingRegistry.registerEntityRenderingHandler(CorpseEntity.class, manager -> new CorpseRenderer(manager));
             FMLJavaModLoadingContext.get().getModEventBus().addListener(Main.this::clientSetup);
         });
     }
@@ -84,7 +86,6 @@ public class Main {
     @OnlyIn(Dist.CLIENT)
     @SubscribeEvent
     public void clientSetup(FMLClientSetupEvent event) {
-        RenderingRegistry.registerEntityRenderingHandler(CorpseEntity.class, manager -> new CorpseRenderer(manager));
         ScreenManager.clientSetup();
         KEY_DEATH_HISTORY = new KeyBinding("key.death_history", GLFW.GLFW_KEY_U, "key.categories.misc");
         ClientRegistry.registerKeyBinding(KEY_DEATH_HISTORY);

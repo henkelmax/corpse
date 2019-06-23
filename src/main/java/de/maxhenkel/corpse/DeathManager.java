@@ -88,6 +88,6 @@ public class DeathManager {
     }
 
     public static File getDeathFolder(ServerWorld world) {
-        return new File(world.func_217485_w().getWorldDirectory(), "deaths");
+        return new File(world.getSaveHandler().getWorldDirectory(), "deaths");
     }
 }

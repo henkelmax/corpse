@@ -31,16 +31,15 @@ public class CorpseRenderer extends EntityRenderer<CorpseEntity> {
         modelPlayer = new PlayerModel(0F, false);
         modelPlayerSlim = new PlayerModel(0F, true);
         modelSkeleton = new SkeletonModel() {
-            // setRotationAngles
             @Override
-            public void func_212844_a_(Entity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scaleFactor) {
+            public void setRotationAngles(Entity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scaleFactor) {
 
             }
         };
         fakeLivingEntity = new FakeLivingEntity();
-        modelPlayer.field_217114_e = false;
-        modelPlayerSlim.field_217114_e = false;
-        modelSkeleton.field_217114_e = false;
+        modelPlayer.isChild = false;
+        modelPlayerSlim.isChild = false;
+        modelSkeleton.isChild = false;
     }
 
     @Override

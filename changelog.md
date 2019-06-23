@@ -1,1 +1,2 @@
-- Updated to 1.14.2
+- Updated forge mappings
+- Fixed entity rendering bug

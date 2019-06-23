@@ -18,7 +18,7 @@ import net.minecraftforge.fml.network.NetworkHooks;
 
 public abstract class CorpseInventoryBaseEntity extends Entity implements IInventory {
 
-    private static final DataParameter<Integer> INVENTORY_SIZE = EntityDataManager.createKey(CorpseEntity.class, DataSerializers.field_187192_b);
+    private static final DataParameter<Integer> INVENTORY_SIZE = EntityDataManager.createKey(CorpseEntity.class, DataSerializers.VARINT);
 
     protected IInventory inventory;
 
