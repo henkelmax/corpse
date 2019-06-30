@@ -48,8 +48,14 @@ public class CorpseRenderer extends EntityRenderer<CorpseEntity> {
         GlStateManager.pushMatrix();
         GlStateManager.translated(x, y, z);
         GlStateManager.rotatef(360F - entity.getCorpseRotation(), 0F, 1F, 0F);
-        GlStateManager.rotatef(90, 1F, 0F, 0F);
-        GlStateManager.translated(0D, -0.5D, -2D / 16D);
+
+        if (Config.SERVER.spawnCorpseOnFace.get()) {
+            GlStateManager.rotatef(-90, 1F, 0F, 0F);
+            GlStateManager.translated(0D, -0.5D, 2D / 16D);
+        } else {
+            GlStateManager.rotatef(90, 1F, 0F, 0F);
+            GlStateManager.translated(0D, -0.5D, -2D / 16D);
+        }
 
         fakeLivingEntity.setPosition(x, y, z);
         if (entity.getCorpseAge() >= Config.SERVER.corpseSkeletonTime.get()) {
