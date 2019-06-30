@@ -60,10 +60,15 @@ public class Main {
         ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, Config.CLIENT_SPEC);
 
         DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> {
-            // Moved here from clientSetup because of entities not rendering
-            RenderingRegistry.registerEntityRenderingHandler(CorpseEntity.class, manager -> new CorpseRenderer(manager));
-            FMLJavaModLoadingContext.get().getModEventBus().addListener(Main.this::clientSetup);
+            clientStart();
         });
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public void clientStart() {
+        FMLJavaModLoadingContext.get().getModEventBus().addListener(Main.this::clientSetup);
+        // Moved here from clientSetup because of entities not rendering
+        RenderingRegistry.registerEntityRenderingHandler(CorpseEntity.class, manager -> new CorpseRenderer(manager));
     }
 
     @SubscribeEvent

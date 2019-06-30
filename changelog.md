@@ -1,2 +1,1 @@
-- Updated forge mappings
-- Fixed entity rendering bug
+- Fixed crash on servers
