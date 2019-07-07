@@ -1,19 +1,16 @@
 package de.maxhenkel.corpse.entities;
 
-import net.minecraft.entity.EntityClassification;
-import net.minecraft.entity.EntitySize;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.*;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.HandSide;
 
 import java.util.Collections;
 
-public class FakeLivingEntity extends LivingEntity {
+public class FakeMobEntity extends MobEntity {
 
-    protected FakeLivingEntity() {
-        super(new EntityType<FakeLivingEntity>(null, EntityClassification.MISC, false, false, false, null, EntitySize.fixed(1F, 1F), null, null, null, null), null);
+    protected FakeMobEntity() {
+        super(new EntityType<FakeMobEntity>(null, EntityClassification.MISC, false, false, false, null, EntitySize.fixed(1F, 1F), null, null, null, null), null);
 
     }
 

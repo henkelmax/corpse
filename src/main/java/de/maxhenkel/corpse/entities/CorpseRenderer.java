@@ -23,7 +23,7 @@ public class CorpseRenderer extends EntityRenderer<CorpseEntity> {
     private PlayerModel modelPlayer;
     private PlayerModel modelPlayerSlim;
     private SkeletonModel modelSkeleton;
-    private FakeLivingEntity fakeLivingEntity;
+    private FakeMobEntity fakeLivingEntity;
 
     public CorpseRenderer(EntityRendererManager renderManager) {
         super(renderManager);
@@ -36,7 +36,7 @@ public class CorpseRenderer extends EntityRenderer<CorpseEntity> {
 
             }
         };
-        fakeLivingEntity = new FakeLivingEntity();
+        fakeLivingEntity = new FakeMobEntity();
         modelPlayer.isChild = false;
         modelPlayerSlim.isChild = false;
         modelSkeleton.isChild = false;
