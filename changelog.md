@@ -1,1 +1,1 @@
-- Added a config option to spawn the corpse on its face
+- Fixed a bug crashing the game

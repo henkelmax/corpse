@@ -23,7 +23,7 @@ public class CorpseRenderer extends EntityRenderer<CorpseEntity> {
     private PlayerModel modelPlayer;
     private PlayerModel modelPlayerSlim;
     private SkeletonModel modelSkeleton;
-    private FakeLivingEntity fakeLivingEntity;
+    private FakeMobEntity fakeMobEntity;
 
     public CorpseRenderer(EntityRendererManager renderManager) {
         super(renderManager);
@@ -36,7 +36,7 @@ public class CorpseRenderer extends EntityRenderer<CorpseEntity> {
 
             }
         };
-        fakeLivingEntity = new FakeLivingEntity();
+        fakeMobEntity = new FakeMobEntity();
         modelPlayer.isChild = false;
         modelPlayerSlim.isChild = false;
         modelSkeleton.isChild = false;
@@ -56,16 +56,16 @@ public class CorpseRenderer extends EntityRenderer<CorpseEntity> {
             GlStateManager.translated(0D, -0.5D, -2D / 16D);
         }
 
-        fakeLivingEntity.setPosition(x, y, z);
+        fakeMobEntity.setPosition(x, y, z);
         if (entity.getCorpseAge() >= Config.SERVER.corpseSkeletonTime.get()) {
             bindTexture(SKELETON_TEXTURE);
-            modelSkeleton.render(fakeLivingEntity, 0F, 0F, 0F, 0F, 0F, 0.0625F);
+            modelSkeleton.render(fakeMobEntity, 0F, 0F, 0F, 0F, 0F, 0.0625F);
         } else {
             bindTexture(getEntityTexture(entity));
             if (isSlim(entity.getCorpseUUID())) {
-                modelPlayerSlim.render(fakeLivingEntity, 0F, 0F, 0F, 0F, 0F, 0.0625F);
+                modelPlayerSlim.render(fakeMobEntity, 0F, 0F, 0F, 0F, 0F, 0.0625F);
             } else {
-                modelPlayer.render(fakeLivingEntity, 0F, 0F, 0F, 0F, 0F, 0.0625F);
+                modelPlayer.render(fakeMobEntity, 0F, 0F, 0F, 0F, 0F, 0.0625F);
             }
         }
         GlStateManager.popMatrix();
