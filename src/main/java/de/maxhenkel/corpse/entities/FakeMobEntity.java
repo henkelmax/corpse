@@ -10,7 +10,7 @@ import java.util.Collections;
 public class FakeMobEntity extends MobEntity {
 
     protected FakeMobEntity() {
-        super(new EntityType<FakeMobEntity>(null, EntityClassification.MISC, false, false, false, null, EntitySize.fixed(1F, 1F), null, null, null, null), null);
+        super(new EntityType<FakeMobEntity>(null, EntityClassification.MISC, false, false, false, false, EntitySize.fixed(1F, 1F), null, null, null, null), null);
 
     }
 

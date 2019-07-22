@@ -2,7 +2,7 @@ package de.maxhenkel.corpse;
 
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.nbt.CompressedStreamTools;
-import net.minecraft.world.ServerWorld;
+import net.minecraft.world.server.ServerWorld;
 
 import javax.annotation.Nullable;
 import java.io.File;
