@@ -1,1 +1,1 @@
-- Updated to 1.14.4
+- Added force despawn config option

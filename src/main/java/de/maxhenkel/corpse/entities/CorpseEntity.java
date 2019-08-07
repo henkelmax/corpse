@@ -80,7 +80,7 @@ public class CorpseEntity extends CorpseInventoryBaseEntity {
             return;
         }
 
-        if (isEmpty() && getCorpseAge() > Config.SERVER.corpseDespawnTime.get()) {
+        if ((isEmpty() && getCorpseAge() > Config.SERVER.corpseDespawnTime.get()) || (Config.SERVER.corpseForceDespawnTime.get() > 0 && getCorpseAge() > Config.SERVER.corpseForceDespawnTime.get())) {
             remove();
         }
     }
