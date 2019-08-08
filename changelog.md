@@ -1,2 +1,1 @@
-- Fixed game crashing bug when opening the death history GUI
-- Fixed cursor invisible when openening the death history GUI
+- Added force despawn config option

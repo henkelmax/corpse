@@ -79,7 +79,7 @@ public class EntityCorpse extends EntityCorpseInventoryBase {
             return;
         }
 
-        if (isEmpty() && ticksExisted > 200) {
+        if ((isEmpty() && getCorpseAge() > 200) || (CommonProxy.forceDespawnTime > 0 && getCorpseAge() > CommonProxy.forceDespawnTime)) {
             setDead();
         }
     }

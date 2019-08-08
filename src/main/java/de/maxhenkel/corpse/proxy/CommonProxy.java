@@ -31,11 +31,13 @@ public class CommonProxy {
     public static SimpleNetworkWrapper simpleNetworkWrapper;
 
     public static boolean onlyOwnerAccess = false;
+    public static int forceDespawnTime = -1;
 
     public void preinit(FMLPreInitializationEvent event) {
         try {
             Configuration config = new Configuration(event.getSuggestedConfigurationFile());
             onlyOwnerAccess = config.getBoolean("only_owner_access", "corpse", false, "If only the owner of the corpse can access the inventory");
+            forceDespawnTime = config.getInt("force_despawn_time", "corpse", -1, -1, Integer.MAX_VALUE, "The time passed after a corpse despawns even if its not empty (-1 = never)");
             config.save();
         } catch (Exception e) {
             e.printStackTrace();
