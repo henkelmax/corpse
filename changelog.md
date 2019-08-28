@@ -1,1 +1,1 @@
-- Added force despawn config option
+- Added pl_pl translation
