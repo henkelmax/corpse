@@ -1,0 +1,17 @@
+{
+  "entity.corpse.corpse": "Ciało",
+  "entity.corpse.corpse_of": "Ciało %s",
+  "button.previous": "Poprzednie",
+  "button.next": "Następne",
+  "gui.corpse.page": "%s z %s",
+  "gui.death_history.title": "Historia śmierci",
+  "gui.death_history.name": "Nazwa",
+  "gui.death_history.date_format": "dd/MM/yyyy HH:mm:ss",
+  "gui.death_history.dimension": "Wymiar",
+  "gui.death_history.location": "Lokacja",
+  "button.show_items": "Przedmioty",
+  "key.death_history": "Otwórz historię śmierci",
+  "message.no_death_history": "Brak historii śmierci",
+  "chat.teleport_death_location": "Teleportuj do lokacji śmierci %s",
+  "tooltip.teleport": "Teleport"
+}

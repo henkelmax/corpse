@@ -76,12 +76,10 @@ corpse_despawn_time = 600
 only_owner_access = false
 #The time passed after a corpse turns into a skeleton
 corpse_skeleton_time = 72000
-```
-
-### Client
-
-``` toml
-
+#If the corpse should spawn on its face
+spawn_corpse_on_face = true
+#The time passed after a corpse despawns even if its not empty (-1 = never)
+corpse_force_despawn_time = -1
 ```
 
 
@@ -91,6 +89,7 @@ Russian translation [ghost_screa_m](https://minecraft.curseforge.com/members/gho
 
 Portuguese translation [srbedrock](https://minecraft.curseforge.com/members/srbedrock)
 
+Polish translation [DarkKnightComes](https://www.curseforge.com/members/darkknightcomes)
 
 ---
 
