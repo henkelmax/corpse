@@ -68,7 +68,7 @@ public class Main {
     public void clientStart() {
         FMLJavaModLoadingContext.get().getModEventBus().addListener(Main.this::clientSetup);
         // Moved here from clientSetup because of entities not rendering
-        RenderingRegistry.registerEntityRenderingHandler(CorpseEntity.class, manager -> new CorpseRenderer(manager));
+        RenderingRegistry.registerEntityRenderingHandler(CorpseEntity.class, CorpseRenderer::new);
     }
 
     @SubscribeEvent
@@ -82,10 +82,10 @@ public class Main {
         MinecraftForge.EVENT_BUS.register(new DeathEvents());
 
         SIMPLE_CHANNEL = NetworkRegistry.newSimpleChannel(new ResourceLocation(Main.MODID, "default"), () -> "1.0.0", s -> true, s -> true);
-        SIMPLE_CHANNEL.registerMessage(0, MessageSwitchInventoryPage.class, (msg, buf) -> msg.toBytes(buf), (buf) -> new MessageSwitchInventoryPage().fromBytes(buf), (msg, fun) -> msg.executeServerSide(fun.get()));
-        SIMPLE_CHANNEL.registerMessage(1, MessageOpenHistory.class, (msg, buf) -> msg.toBytes(buf), (buf) -> new MessageOpenHistory().fromBytes(buf), (msg, fun) -> msg.executeClientSide(fun.get()));
-        SIMPLE_CHANNEL.registerMessage(2, MessageShowCorpseInventory.class, (msg, buf) -> msg.toBytes(buf), (buf) -> new MessageShowCorpseInventory().fromBytes(buf), (msg, fun) -> msg.executeServerSide(fun.get()));
-        SIMPLE_CHANNEL.registerMessage(3, MessageRequestDeathHistory.class, (msg, buf) -> msg.toBytes(buf), (buf) -> new MessageRequestDeathHistory().fromBytes(buf), (msg, fun) -> msg.executeServerSide(fun.get()));
+        SIMPLE_CHANNEL.registerMessage(0, MessageSwitchInventoryPage.class, MessageSwitchInventoryPage::toBytes, (buf) -> new MessageSwitchInventoryPage().fromBytes(buf), (msg, fun) -> msg.executeServerSide(fun.get()));
+        SIMPLE_CHANNEL.registerMessage(1, MessageOpenHistory.class, MessageOpenHistory::toBytes, (buf) -> new MessageOpenHistory().fromBytes(buf), (msg, fun) -> msg.executeClientSide(fun.get()));
+        SIMPLE_CHANNEL.registerMessage(2, MessageShowCorpseInventory.class, MessageShowCorpseInventory::toBytes, (buf) -> new MessageShowCorpseInventory().fromBytes(buf), (msg, fun) -> msg.executeServerSide(fun.get()));
+        SIMPLE_CHANNEL.registerMessage(3, MessageRequestDeathHistory.class, MessageRequestDeathHistory::toBytes, (buf) -> new MessageRequestDeathHistory().fromBytes(buf), (msg, fun) -> msg.executeServerSide(fun.get()));
     }
 
     @OnlyIn(Dist.CLIENT)
