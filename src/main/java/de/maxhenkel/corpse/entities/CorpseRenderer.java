@@ -58,7 +58,7 @@ public class CorpseRenderer extends EntityRenderer<CorpseEntity> {
         }
 
         fakeLivingEntity.setPosition(x, y, z);
-        if (entity.getCorpseAge() >= Config.SERVER.corpseSkeletonTime.get()) {
+        if (entity.isSkeleton()) {
             bindTexture(SKELETON_TEXTURE);
             modelSkeleton.render(fakeLivingEntity, 0F, 0F, 0F, 0F, 0F, 0.0625F);
         } else {

@@ -23,6 +23,7 @@ public class Config {
 
     public static class ServerConfig {
         public ForgeConfigSpec.BooleanValue onlyOwnerAccess;
+        public ForgeConfigSpec.BooleanValue skeletonAccess;
         public ForgeConfigSpec.IntValue corpseDespawnTime;
         public ForgeConfigSpec.IntValue corpseForceDespawnTime;
         public ForgeConfigSpec.IntValue corpseSkeletonTime;
@@ -32,6 +33,9 @@ public class Config {
             onlyOwnerAccess = builder
                     .comment("If only the owner of the corpse can access the inventory")
                     .define("only_owner_access", false);
+            skeletonAccess = builder
+                    .comment("If everybody can access the corpse in the skeleton stage (Only if only_owner_access is set to true)")
+                    .define("skeleton_access", false);
             corpseDespawnTime = builder
                     .comment("The time passed after a corpse despawns (only if empty)")
                     .defineInRange("corpse_despawn_time", 20 * 30, 20, Integer.MAX_VALUE);

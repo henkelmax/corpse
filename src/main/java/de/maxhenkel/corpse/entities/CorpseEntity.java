@@ -90,15 +90,20 @@ public class CorpseEntity extends CorpseInventoryBaseEntity {
         if (!world.isRemote && player instanceof ServerPlayerEntity) {
             ServerPlayerEntity playerMP = (ServerPlayerEntity) player;
             if (Config.SERVER.onlyOwnerAccess.get()) {
-                boolean isOp = playerMP.hasPermissionLevel(playerMP.server.getOpPermissionLevel());
-
-                if (!isOp || !playerMP.getUniqueID().equals(getCorpseUUID())) {
-                    return true;
+                if (!Config.SERVER.skeletonAccess.get() || !isSkeleton()) {
+                    boolean isOp = playerMP.hasPermissionLevel(playerMP.server.getOpPermissionLevel());
+                    if (!isOp || !playerMP.getUniqueID().equals(getCorpseUUID())) {
+                        return true;
+                    }
                 }
             }
             ScreenManager.openCorpseGUI((ServerPlayerEntity) player, this);
         }
         return true;
+    }
+
+    public boolean isSkeleton() {
+        return getCorpseAge() >= Config.SERVER.corpseSkeletonTime.get();
     }
 
     public void recalculateBoundingBox() {
