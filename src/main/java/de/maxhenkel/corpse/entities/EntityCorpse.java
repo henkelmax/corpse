@@ -95,10 +95,9 @@ public class EntityCorpse extends EntityCorpseInventoryBase {
                     return true;
                 }
             }
+            BlockPos pos = getPosition();
+            player.openGui(Main.MODID, GuiHandler.GUI_CORPSE, player.world, pos.getX(), pos.getY(), pos.getZ());
         }
-        BlockPos pos = getPosition();
-        player.openGui(Main.MODID, GuiHandler.GUI_CORPSE, player.world, pos.getX(), pos.getY(), pos.getZ());
-
         return true;
     }
 

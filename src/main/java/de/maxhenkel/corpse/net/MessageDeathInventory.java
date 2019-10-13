@@ -1,8 +1,6 @@
 package de.maxhenkel.corpse.net;
 
 import de.maxhenkel.corpse.Death;
-import de.maxhenkel.corpse.Main;
-import de.maxhenkel.corpse.gui.GuiHandler;
 import de.maxhenkel.corpse.proxy.CommonProxy;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.client.Minecraft;
@@ -32,7 +30,6 @@ public class MessageDeathInventory implements IMessage, IMessageHandler<MessageD
     public IMessage onMessage(MessageDeathInventory message, MessageContext ctx) {
         EntityPlayer player = Minecraft.getMinecraft().player;
         CommonProxy.setDeathToShow(player, message.death);
-        player.openGui(Main.MODID, GuiHandler.GUI_DEATH_HISTORY, player.world, 0, 0, 0);
         return null;
     }
 

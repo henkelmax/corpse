@@ -1,1 +1,1 @@
-- Added pl_pl translation
+- Fixed corpse inventory issues
