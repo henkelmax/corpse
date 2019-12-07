@@ -1,1 +1,1 @@
-- Fixed corpse inventory issues
+- Fixed update notification issue
