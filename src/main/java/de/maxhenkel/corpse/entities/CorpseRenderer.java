@@ -1,10 +1,12 @@
 package de.maxhenkel.corpse.entities;
 
-import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import de.maxhenkel.corpse.Config;
 import de.maxhenkel.corpse.PlayerSkins;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.network.play.NetworkPlayerInfo;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.client.renderer.entity.model.PlayerModel;
@@ -12,7 +14,6 @@ import net.minecraft.client.renderer.entity.model.SkeletonModel;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.ResourceLocation;
 
-import javax.annotation.Nullable;
 import java.util.UUID;
 
 public class CorpseRenderer extends EntityRenderer<CorpseEntity> {
@@ -23,7 +24,6 @@ public class CorpseRenderer extends EntityRenderer<CorpseEntity> {
     private PlayerModel modelPlayer;
     private PlayerModel modelPlayerSlim;
     private SkeletonModel modelSkeleton;
-    private FakeMobEntity fakeLivingEntity;
 
     public CorpseRenderer(EntityRendererManager renderManager) {
         super(renderManager);
@@ -31,52 +31,52 @@ public class CorpseRenderer extends EntityRenderer<CorpseEntity> {
         modelPlayer = new PlayerModel(0F, false);
         modelPlayerSlim = new PlayerModel(0F, true);
         modelSkeleton = new SkeletonModel() {
+            // setRotationAngles
             @Override
-            public void setRotationAngles(Entity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scaleFactor) {
+            public void func_225597_a_(Entity entity, float f1, float f2, float f3, float f4, float f5) {
 
             }
         };
-        fakeLivingEntity = new FakeMobEntity();
         modelPlayer.isChild = false;
         modelPlayerSlim.isChild = false;
         modelSkeleton.isChild = false;
     }
 
     @Override
-    public void doRender(CorpseEntity entity, double x, double y, double z, float entityYaw, float partialTicks) {
-
-        GlStateManager.pushMatrix();
-        GlStateManager.translated(x, y, z);
-        GlStateManager.rotatef(360F - entity.getCorpseRotation(), 0F, 1F, 0F);
-
-        if (Config.SERVER.spawnCorpseOnFace.get()) {
-            GlStateManager.rotatef(-90, 1F, 0F, 0F);
-            GlStateManager.translated(0D, -0.5D, 2D / 16D);
-        } else {
-            GlStateManager.rotatef(90, 1F, 0F, 0F);
-            GlStateManager.translated(0D, -0.5D, -2D / 16D);
-        }
-
-        fakeLivingEntity.setPosition(x, y, z);
+    public ResourceLocation getEntityTexture(CorpseEntity entity) {
         if (entity.isSkeleton()) {
-            bindTexture(SKELETON_TEXTURE);
-            modelSkeleton.render(fakeLivingEntity, 0F, 0F, 0F, 0F, 0F, 0.0625F);
+            return SKELETON_TEXTURE;
         } else {
-            bindTexture(getEntityTexture(entity));
-            if (isSlim(entity.getCorpseUUID())) {
-                modelPlayerSlim.render(fakeLivingEntity, 0F, 0F, 0F, 0F, 0F, 0.0625F);
-            } else {
-                modelPlayer.render(fakeLivingEntity, 0F, 0F, 0F, 0F, 0F, 0.0625F);
-            }
+            return PlayerSkins.getSkin(entity.getCorpseUUID(), entity.getCorpseName());
         }
-        GlStateManager.popMatrix();
-        super.doRender(entity, x, y, z, entityYaw, partialTicks);
     }
 
-    @Nullable
     @Override
-    protected ResourceLocation getEntityTexture(CorpseEntity entity) {
-        return PlayerSkins.getSkin(entity.getCorpseUUID(), entity.getCorpseName());
+    public void func_225623_a_(CorpseEntity entity, float f1, float f2, MatrixStack matrixStack, IRenderTypeBuffer buffer, int i) {
+        super.func_225623_a_(entity, f1, f2, matrixStack, buffer, i);
+        matrixStack.func_227860_a_();
+
+        matrixStack.func_227863_a_(Vector3f.field_229181_d_.func_229187_a_(360F - entity.getCorpseRotation()));
+
+        if (Config.SERVER.spawnCorpseOnFace.get()) {
+            matrixStack.func_227863_a_(Vector3f.field_229179_b_.func_229187_a_(-90));
+            matrixStack.func_227861_a_(0D, -0.5D, 2.01D / 16D);
+        } else {
+            matrixStack.func_227863_a_(Vector3f.field_229179_b_.func_229187_a_(90));
+            matrixStack.func_227861_a_(0D, -0.5D, -2.01D / 16D);
+        }
+
+        if (entity.isSkeleton()) {
+            modelSkeleton.func_225598_a_(matrixStack, buffer.getBuffer(modelSkeleton.func_228282_a_(getEntityTexture(entity))), i, 0xFFFFFF, 1.0F, 1.0F, 1.0F, 1.0F);
+        } else {
+            if (isSlim(entity.getCorpseUUID())) {
+                modelPlayerSlim.func_225598_a_(matrixStack, buffer.getBuffer(modelPlayerSlim.func_228282_a_(getEntityTexture(entity))), i, 0xFFFFFF, 1.0F, 1.0F, 1.0F, 1.0F);
+            } else {
+                modelPlayer.func_225598_a_(matrixStack, buffer.getBuffer(modelPlayer.func_228282_a_(getEntityTexture(entity))), i, 0xFFFFFF, 1.0F, 1.0F, 1.0F, 1.0F);
+            }
+        }
+        matrixStack.func_227865_b_();
+
     }
 
     public boolean isSlim(UUID uuid) {

@@ -1,1 +1,1 @@
-- Added a config option that lets non owners only access the corpse in the skeleton stage
+- Updated to 1.15.1

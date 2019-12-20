@@ -67,8 +67,6 @@ public class Main {
     @OnlyIn(Dist.CLIENT)
     public void clientStart() {
         FMLJavaModLoadingContext.get().getModEventBus().addListener(Main.this::clientSetup);
-        // Moved here from clientSetup because of entities not rendering
-        RenderingRegistry.registerEntityRenderingHandler(CorpseEntity.class, CorpseRenderer::new);
     }
 
     @SubscribeEvent
@@ -95,6 +93,8 @@ public class Main {
         KEY_DEATH_HISTORY = new KeyBinding("key.death_history", GLFW.GLFW_KEY_U, "key.categories.misc");
         ClientRegistry.registerKeyBinding(KEY_DEATH_HISTORY);
         MinecraftForge.EVENT_BUS.register(new KeyEvents());
+
+        RenderingRegistry.registerEntityRenderingHandler(CORPSE_ENTITY_TYPE, CorpseRenderer::new);
     }
 
     @SubscribeEvent
