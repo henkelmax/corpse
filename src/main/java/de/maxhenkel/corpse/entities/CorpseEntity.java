@@ -64,14 +64,14 @@ public class CorpseEntity extends CorpseInventoryBaseEntity {
         recalculateBoundingBox();
         setCorpseAge(getCorpseAge() + 1);
 
-        if (!collidedVertically && getPositionVector().y > 0D) {
+        if (!collidedVertically && func_226278_cu_() > 0D) {
             setMotion(getMotion().x, Math.max(-2D, getMotion().y - 0.0625D), getMotion().z);
         } else {
             setMotion(getMotion().x, 0D, getMotion().z);
         }
 
-        if (getPositionVector().y < 0D) {
-            setPositionAndUpdate(getPositionVector().x, 0F, getPositionVector().z);
+        if (func_226278_cu_() < 0D) {
+            setPositionAndUpdate(func_226277_ct_(), 0F, func_226281_cx_());
         }
 
         move(MoverType.SELF, getMotion());
@@ -109,12 +109,12 @@ public class CorpseEntity extends CorpseInventoryBaseEntity {
     public void recalculateBoundingBox() {
         Direction facing = dataManager == null ? Direction.NORTH : Direction.fromAngle(getCorpseRotation());
         boundingBox = new AxisAlignedBB(
-                getPositionVector().x - (facing.getXOffset() != 0 ? 1D : 0.5D),
-                getPositionVector().y,
-                getPositionVector().z - (facing.getZOffset() != 0 ? 1D : 0.5D),
-                getPositionVector().x + (facing.getXOffset() != 0 ? 1D : 0.5D),
-                getPositionVector().y + 0.5D,
-                getPositionVector().z + (facing.getZOffset() != 0 ? 1D : 0.5D)
+                func_226277_ct_() - (facing.getXOffset() != 0 ? 1D : 0.5D),
+                func_226278_cu_(),
+                func_226281_cx_() - (facing.getZOffset() != 0 ? 1D : 0.5D),
+                func_226277_ct_() + (facing.getXOffset() != 0 ? 1D : 0.5D),
+                func_226278_cu_() + 0.5D,
+                func_226281_cx_() + (facing.getZOffset() != 0 ? 1D : 0.5D)
         );
     }
 

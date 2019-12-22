@@ -89,9 +89,9 @@ public class Death {
         death.items = items;
         death.timestamp = System.currentTimeMillis();
         death.experience = player.experienceLevel;
-        death.posX = player.getPositionVector().x;
-        death.posY = player.getPositionVector().y;
-        death.posZ = player.getPositionVector().z;
+        death.posX = player.func_226277_ct_();
+        death.posY = player.func_226278_cu_();
+        death.posZ = player.func_226281_cx_();
         death.dimension = DimensionType.getKey(player.dimension).toString();
 
         return death;

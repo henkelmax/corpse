@@ -59,10 +59,10 @@ public class CorpseRenderer extends EntityRenderer<CorpseEntity> {
         matrixStack.func_227863_a_(Vector3f.field_229181_d_.func_229187_a_(360F - entity.getCorpseRotation()));
 
         if (Config.SERVER.spawnCorpseOnFace.get()) {
-            matrixStack.func_227863_a_(Vector3f.field_229179_b_.func_229187_a_(-90));
+            matrixStack.func_227863_a_(Vector3f.field_229179_b_.func_229187_a_(-90F));
             matrixStack.func_227861_a_(0D, -0.5D, 2.01D / 16D);
         } else {
-            matrixStack.func_227863_a_(Vector3f.field_229179_b_.func_229187_a_(90));
+            matrixStack.func_227863_a_(Vector3f.field_229179_b_.func_229187_a_(90F));
             matrixStack.func_227861_a_(0D, -0.5D, -2.01D / 16D);
         }
 
