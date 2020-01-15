@@ -1,1 +1,1 @@
-- Updated to 1.15.1
+- Fixed corpse accessing bug

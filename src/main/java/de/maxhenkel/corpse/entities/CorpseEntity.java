@@ -90,14 +90,15 @@ public class CorpseEntity extends CorpseInventoryBaseEntity {
         if (!world.isRemote && player instanceof ServerPlayerEntity) {
             ServerPlayerEntity playerMP = (ServerPlayerEntity) player;
             if (Config.SERVER.onlyOwnerAccess.get()) {
-                if (!Config.SERVER.skeletonAccess.get() || !isSkeleton()) {
-                    boolean isOp = playerMP.hasPermissionLevel(playerMP.server.getOpPermissionLevel());
-                    if (!isOp || !playerMP.getUniqueID().equals(getCorpseUUID())) {
-                        return true;
-                    }
+                boolean isOp = playerMP.hasPermissionLevel(playerMP.server.getOpPermissionLevel());
+                if (isOp || playerMP.getUniqueID().equals(getCorpseUUID())) {
+                    ScreenManager.openCorpseGUI((ServerPlayerEntity) player, this);
+                }else if (Config.SERVER.skeletonAccess.get() && isSkeleton()) {
+                    ScreenManager.openCorpseGUI((ServerPlayerEntity) player, this);
                 }
+            } else {
+                ScreenManager.openCorpseGUI((ServerPlayerEntity) player, this);
             }
-            ScreenManager.openCorpseGUI((ServerPlayerEntity) player, this);
         }
         return true;
     }
