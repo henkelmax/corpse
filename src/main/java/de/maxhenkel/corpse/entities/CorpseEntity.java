@@ -64,14 +64,14 @@ public class CorpseEntity extends CorpseInventoryBaseEntity {
         recalculateBoundingBox();
         setCorpseAge(getCorpseAge() + 1);
 
-        if (!collidedVertically && func_226278_cu_() > 0D) {
+        if (!collidedVertically && getPosY() > 0D) {
             setMotion(getMotion().x, Math.max(-2D, getMotion().y - 0.0625D), getMotion().z);
         } else {
             setMotion(getMotion().x, 0D, getMotion().z);
         }
 
-        if (func_226278_cu_() < 0D) {
-            setPositionAndUpdate(func_226277_ct_(), 0F, func_226281_cx_());
+        if (getPosY() < 0D) {
+            setPositionAndUpdate(getPosX(), 0F, getPosZ());
         }
 
         move(MoverType.SELF, getMotion());
@@ -93,7 +93,7 @@ public class CorpseEntity extends CorpseInventoryBaseEntity {
                 boolean isOp = playerMP.hasPermissionLevel(playerMP.server.getOpPermissionLevel());
                 if (isOp || playerMP.getUniqueID().equals(getCorpseUUID())) {
                     ScreenManager.openCorpseGUI((ServerPlayerEntity) player, this);
-                }else if (Config.SERVER.skeletonAccess.get() && isSkeleton()) {
+                } else if (Config.SERVER.skeletonAccess.get() && isSkeleton()) {
                     ScreenManager.openCorpseGUI((ServerPlayerEntity) player, this);
                 }
             } else {
@@ -110,12 +110,12 @@ public class CorpseEntity extends CorpseInventoryBaseEntity {
     public void recalculateBoundingBox() {
         Direction facing = dataManager == null ? Direction.NORTH : Direction.fromAngle(getCorpseRotation());
         boundingBox = new AxisAlignedBB(
-                func_226277_ct_() - (facing.getXOffset() != 0 ? 1D : 0.5D),
-                func_226278_cu_(),
-                func_226281_cx_() - (facing.getZOffset() != 0 ? 1D : 0.5D),
-                func_226277_ct_() + (facing.getXOffset() != 0 ? 1D : 0.5D),
-                func_226278_cu_() + 0.5D,
-                func_226281_cx_() + (facing.getZOffset() != 0 ? 1D : 0.5D)
+                getPosX() - (facing.getXOffset() != 0 ? 1D : 0.5D),
+                getPosY(),
+                getPosZ() - (facing.getZOffset() != 0 ? 1D : 0.5D),
+                getPosX() + (facing.getXOffset() != 0 ? 1D : 0.5D),
+                getPosY() + 0.5D,
+                getPosZ() + (facing.getZOffset() != 0 ? 1D : 0.5D)
         );
     }
 
