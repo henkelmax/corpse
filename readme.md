@@ -15,6 +15,7 @@ You can access the items by right-clicking the corpse.
 
 When you take out all items, the corpse will disappear.
 The corpse can't fall into the void or burn in lava.
+It also floats in liquids like lava or water.
 
 ![](https://i.imgur.com/WfIoIXE.png)
 
