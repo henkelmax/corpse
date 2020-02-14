@@ -4,18 +4,18 @@ import de.maxhenkel.corpse.Config;
 import de.maxhenkel.corpse.Death;
 import de.maxhenkel.corpse.Main;
 import de.maxhenkel.corpse.gui.ScreenManager;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.MoverType;
+import net.minecraft.entity.*;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
+import net.minecraft.tags.FluidTags;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
@@ -59,22 +59,36 @@ public class CorpseEntity extends CorpseInventoryBaseEntity {
     }
 
     @Override
+    protected float getEyeHeight(Pose poseIn, EntitySize sizeIn) {
+        return sizeIn.height * 0.35F;
+    }
+
+    @Override
     public void tick() {
         super.tick();
         recalculateBoundingBox();
         setCorpseAge(getCorpseAge() + 1);
 
-        if (!collidedVertically && getPosY() > 0D) {
-            setMotion(getMotion().x, Math.max(-2D, getMotion().y - 0.0625D), getMotion().z);
-        } else {
-            setMotion(getMotion().x, 0D, getMotion().z);
-        }
+        if (!hasNoGravity()) {
+            double yMotion = 0D;
+            Vec3d motion = getMotion();
+            if (areEyesInFluid(FluidTags.WATER) || areEyesInFluid(FluidTags.LAVA)) {
+                if (motion.y < 0D) {
+                    yMotion = motion.y + (motion.y < 0.03D ? 0.01D : 0D);
+                } else {
+                    yMotion = motion.y + (motion.y < 0.03D ? 5E-4D : 0D);
+                }
+            } else if (getPosY() > 0D) {
+                yMotion = Math.max(-2D, motion.y - 0.0625D);
+            }
+            setMotion(getMotion().x * 0.75D, yMotion, getMotion().z * 0.75D);
 
-        if (getPosY() < 0D) {
-            setPositionAndUpdate(getPosX(), 0F, getPosZ());
-        }
+            if (getPosY() < 0D) {
+                setPositionAndUpdate(getPosX(), 0F, getPosZ());
+            }
 
-        move(MoverType.SELF, getMotion());
+            move(MoverType.SELF, getMotion());
+        }
 
         if (world.isRemote) {
             return;

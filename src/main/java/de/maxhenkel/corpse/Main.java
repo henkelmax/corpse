@@ -102,7 +102,7 @@ public class Main {
         CORPSE_ENTITY_TYPE = EntityType.Builder.<CorpseEntity>create(CorpseEntity::new, EntityClassification.MISC)
                 .setTrackingRange(128)
                 .setUpdateInterval(1)
-                .setShouldReceiveVelocityUpdates(false)
+                .setShouldReceiveVelocityUpdates(true)
                 .size(2F, 0.5F)
                 .setCustomClientFactory((spawnEntity, world) -> new CorpseEntity(world))
                 .build(Main.MODID + ":corpse");

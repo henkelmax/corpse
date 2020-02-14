@@ -1,1 +1,2 @@
-- Updated forge and mcp mappings
+- Fixed corpse has too high velocity in water
+- Added corpse floating in water and lava
