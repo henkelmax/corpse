@@ -1,0 +1,17 @@
+{
+  "entity.corpse.corpse": "遗体",
+  "entity.corpse.corpse_of": "%s 的遗体",
+  "button.previous": "上一页",
+  "button.next": "下一页",
+  "gui.corpse.page": "%s of %s",
+  "gui.death_history.title": "死亡历史",
+  "gui.death_history.name": "名字",
+  "gui.death_history.date_format": "yyyy/MM/dd HH:mm:ss",
+  "gui.death_history.dimension": "维度",
+  "gui.death_history.location": "地点",
+  "button.show_items": "物品栏",
+  "key.death_history": "打开死亡历史",
+  "message.no_death_history": "无死亡历史",
+  "chat.teleport_death_location": "传送至上次死亡地点 %s",
+  "tooltip.teleport": "传送"
+}

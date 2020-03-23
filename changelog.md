@@ -1,2 +1,1 @@
-- Fixed corpse has too high velocity in water
-- Added corpse floating in water and lava
+- Added chinese translation
