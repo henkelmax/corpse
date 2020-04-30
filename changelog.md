@@ -1,1 +1,2 @@
-- Added chinese translation
+- Updated forge version
+- Updated MCP mappings

@@ -1,6 +1,7 @@
 package de.maxhenkel.corpse.entities;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
 import de.maxhenkel.corpse.Config;
 import de.maxhenkel.corpse.PlayerSkins;
 import net.minecraft.client.Minecraft;
@@ -33,7 +34,7 @@ public class CorpseRenderer extends EntityRenderer<CorpseEntity> {
         modelSkeleton = new SkeletonModel() {
             // setRotationAngles
             @Override
-            public void render(Entity entity, float f1, float f2, float f3, float f4, float f5) {
+            public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
 
             }
         };

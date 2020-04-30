@@ -139,7 +139,7 @@ public class DeathHistoryScreen extends ScreenBase {
         };
         player.recalculateSize();
 
-        InventoryScreen.func_228187_a_(guiLeft + xSize - (xSize - hSplit) / 2, guiTop + ySize / 2 + 30, 40, (guiLeft + xSize - (xSize - hSplit) / 2) - mouseX, (guiTop + ySize / 2) - mouseY, player);
+        InventoryScreen.drawEntityOnScreen(guiLeft + xSize - (xSize - hSplit) / 2, guiTop + ySize / 2 + 30, 40, (guiLeft + xSize - (xSize - hSplit) / 2) - mouseX, (guiTop + ySize / 2) - mouseY, player);
 
         if (mouseX >= guiLeft + 7 && mouseX <= guiLeft + hSplit && mouseY >= guiTop + 70 && mouseY <= guiTop + 100 + font.FONT_HEIGHT) {
             renderTooltip(new TranslationTextComponent("tooltip.teleport").getFormattedText(), mouseX, mouseY);
