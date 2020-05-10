@@ -1,13 +1,13 @@
 buildscript {
     repositories {
         maven { url = "https://files.minecraftforge.net/maven" }
-        maven { url = 'https://maven.maxhenkel.de/artifactory/public' }
+        maven { url = 'https://maven.maxhenkel.de/repository/public' }
         jcenter()
         mavenCentral()
     }
     dependencies {
         classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
-        classpath group: 'de.maxhenkel.forge-update', name: 'forge-update', version: '1.0.1'
+        classpath group: 'de.maxhenkel.forge-update', name: 'forge-update', version: '1.0.2'
     }
 }
 
@@ -36,6 +36,10 @@ minecraft {
 }
 
 dependencies {
+    // compile against the JEI API but do not include it at runtime
+    deobfProvided "mezz.jei:jei_${project.minecraft.version}:${jei_version}:api"
+    // at runtime, use the full JEI jar
+    runtime "mezz.jei:jei_${project.minecraft.version}:${jei_version}"
 }
 
 processResources {
@@ -51,6 +55,19 @@ processResources {
 
     from(sourceSets.main.resources.srcDirs) {
         exclude 'mcmod.info'
+    }
+}
+
+repositories {
+    maven {
+        // location of the maven that hosts JEI files
+        name = "Progwml6 maven"
+        url = "http://dvs1.progwml6.com/files/maven"
+    }
+    maven {
+        // location of a maven mirror for JEI files, as a fallback
+        name = "ModMaven"
+        url = "modmaven.k-4u.nl"
     }
 }
 

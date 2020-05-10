@@ -1,1 +1,1 @@
-- Fixed update notification issue
+- Fixed JEI items showing up in the death history
