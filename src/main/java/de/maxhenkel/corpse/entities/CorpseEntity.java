@@ -29,6 +29,7 @@ import java.util.UUID;
 public class CorpseEntity extends CorpseInventoryBaseEntity {
 
     private static final DataParameter<Optional<UUID>> ID = EntityDataManager.createKey(CorpseEntity.class, DataSerializers.OPTIONAL_UNIQUE_ID);
+    private static final DataParameter<Optional<UUID>> DEATH_ID = EntityDataManager.createKey(CorpseEntity.class, DataSerializers.OPTIONAL_UNIQUE_ID);
     private static final DataParameter<String> NAME = EntityDataManager.createKey(CorpseEntity.class, DataSerializers.STRING);
     private static final DataParameter<Float> ROTATION = EntityDataManager.createKey(CorpseEntity.class, DataSerializers.FLOAT);
     private static final DataParameter<Integer> AGE = EntityDataManager.createKey(CorpseEntity.class, DataSerializers.VARINT);
@@ -51,9 +52,10 @@ public class CorpseEntity extends CorpseInventoryBaseEntity {
     public static CorpseEntity createFromDeath(PlayerEntity player, Death death) {
         CorpseEntity corpse = new CorpseEntity(player.world);
         corpse.setCorpseUUID(death.getPlayerUUID());
+        corpse.setDeathUUID(death.getId());
         corpse.setCorpseName(death.getPlayerName());
         corpse.setItems(death.getItems());
-        corpse.setPosition(death.getPosX(), death.getPosY() < 0D ? 0D : death.getPosY(), death.getPosZ());
+        corpse.setPosition(death.getPosX(), Math.max(death.getPosY(), 0D), death.getPosZ());
         corpse.setCorpseRotation(player.rotationYaw);
         return corpse;
     }
@@ -204,6 +206,18 @@ public class CorpseEntity extends CorpseInventoryBaseEntity {
         }
     }
 
+    public UUID getDeathUUID() {
+        return dataManager.get(DEATH_ID).orElse(null);
+    }
+
+    public void setDeathUUID(UUID uuid) {
+        if (uuid == null) {
+            dataManager.set(DEATH_ID, Optional.empty());
+        } else {
+            dataManager.set(DEATH_ID, Optional.of(uuid));
+        }
+    }
+
     public String getCorpseName() {
         return dataManager.get(NAME);
     }
@@ -233,6 +247,7 @@ public class CorpseEntity extends CorpseInventoryBaseEntity {
     protected void registerData() {
         super.registerData();
         dataManager.register(ID, Optional.of(NULL_UUID));
+        dataManager.register(DEATH_ID, Optional.empty());
         dataManager.register(NAME, "");
         dataManager.register(ROTATION, 0F);
         dataManager.register(AGE, 0);
@@ -246,6 +261,13 @@ public class CorpseEntity extends CorpseInventoryBaseEntity {
             compound.putLong("IDMost", uuid.getMostSignificantBits());
             compound.putLong("IDLeast", uuid.getLeastSignificantBits());
         }
+
+        UUID deathID = getDeathUUID();
+        if (deathID != null) {
+            compound.putLong("DeathIDMost", deathID.getMostSignificantBits());
+            compound.putLong("DeathIDLeast", deathID.getLeastSignificantBits());
+        }
+
         compound.putString("Name", getCorpseName());
         compound.putFloat("Rotation", getCorpseRotation());
         compound.putInt("Age", getCorpseAge());
@@ -257,6 +279,11 @@ public class CorpseEntity extends CorpseInventoryBaseEntity {
         if (compound.contains("IDMost") && compound.contains("IDLeast")) {
             setCorpseUUID(new UUID(compound.getLong("IDMost"), compound.getLong("IDLeast")));
         }
+
+        if (compound.contains("DeathIDMost") && compound.contains("DeathIDLeast")) {
+            setDeathUUID(new UUID(compound.getLong("DeathIDMost"), compound.getLong("DeathIDLeast")));
+        }
+
         setCorpseName(compound.getString("Name"));
         setCorpseRotation(compound.getFloat("Rotation"));
         setCorpseAge(compound.getInt("Age"));

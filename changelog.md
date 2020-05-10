@@ -1,2 +1,2 @@
-- Updated forge version
-- Updated MCP mappings
+- Added JEI support
+- Added HWYLA support

@@ -4,6 +4,7 @@ import com.mojang.authlib.GameProfile;
 import com.mojang.blaze3d.systems.RenderSystem;
 import de.maxhenkel.corpse.Death;
 import de.maxhenkel.corpse.Main;
+import de.maxhenkel.corpse.Tools;
 import de.maxhenkel.corpse.net.MessageShowCorpseInventory;
 import net.minecraft.client.audio.SimpleSound;
 import net.minecraft.client.entity.player.RemoteClientPlayerEntity;
@@ -21,8 +22,6 @@ import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.util.text.event.ClickEvent;
 import net.minecraft.util.text.event.HoverEvent;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 
 public class DeathHistoryScreen extends ScreenBase {
@@ -34,13 +33,11 @@ public class DeathHistoryScreen extends ScreenBase {
 
     private List<Death> deaths;
     private int index;
-    private SimpleDateFormat dateFormat;
     private int hSplit;
 
     public DeathHistoryScreen(List<Death> deaths) {
         super(DEATH_HISTORY_GUI_TEXTURE, new DeathHistoryContainer(), null, new TranslationTextComponent("gui.death_history.title"));
         this.deaths = deaths;
-        this.dateFormat = new SimpleDateFormat(new TranslationTextComponent("gui.death_history.date_format").getUnformattedComponentText());
         this.index = 0;
 
         xSize = 248;
@@ -102,7 +99,7 @@ public class DeathHistoryScreen extends ScreenBase {
         font.drawString(TextFormatting.BLACK + title, guiLeft + (xSize - titleWidth) / 2, guiTop + 7, 0);
 
         // Date
-        String date = dateFormat.format(new Date(death.getTimestamp()));
+        String date = Tools.getDate(death.getTimestamp()).getFormattedText();
         int dateWidth = font.getStringWidth(date);
         font.drawString(TextFormatting.DARK_GRAY + date, guiLeft + (xSize - dateWidth) / 2, guiTop + 20, 0);
 

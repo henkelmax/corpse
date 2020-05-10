@@ -13,5 +13,7 @@
   "key.death_history": "Todeshistorie öffnen",
   "message.no_death_history": "Keine Todeshistorie",
   "chat.teleport_death_location": "Zur Todesstelle teleportieren %s",
-  "tooltip.teleport": "Teleportieren"
+  "tooltip.teleport": "Teleportieren",
+  "tooltip.death_date": "Starb am %s",
+  "tooltip.item_count": "Enthält %s stack(s)"
 }
