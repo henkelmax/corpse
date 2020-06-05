@@ -32,9 +32,8 @@ public class CorpseRenderer extends EntityRenderer<CorpseEntity> {
         modelPlayer = new PlayerModel(0F, false);
         modelPlayerSlim = new PlayerModel(0F, true);
         modelSkeleton = new SkeletonModel() {
-            // setRotationAngles
             @Override
-            public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
+            public void setRotationAngles(Entity entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
 
             }
         };

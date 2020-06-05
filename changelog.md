@@ -1,2 +1,1 @@
-- Added JEI support
-- Added HWYLA support
+- Fixed skeleton model not rendering
