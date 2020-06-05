@@ -44,7 +44,7 @@ public class CorpseContainer extends ContainerBase {
 
     @Override
     public boolean canInteractWith(PlayerEntity playerIn) {
-        return true;
+        return corpse.isUsableByPlayer(playerIn) && corpse.getDistance(playerIn) < 8F && corpse.isAlive();
     }
 
     @Override

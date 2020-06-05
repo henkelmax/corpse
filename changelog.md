@@ -1,1 +1,2 @@
-- Fixed skeleton model not rendering
+- Fixed corpse instantly despawning when taking out items
+- Fixed corpse gui still showing up even if the corpse despawned

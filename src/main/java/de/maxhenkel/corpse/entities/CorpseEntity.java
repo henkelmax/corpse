@@ -38,11 +38,13 @@ public class CorpseEntity extends CorpseInventoryBaseEntity {
     private static final UUID NULL_UUID = new UUID(0L, 0L);
 
     private AxisAlignedBB boundingBox;
+    private int emptyAge;
 
     public CorpseEntity(EntityType type, World world) {
         super(type, world);
         boundingBox = NULL_AABB;
         preventEntitySpawning = true;
+        emptyAge = -1;
     }
 
     public CorpseEntity(World world) {
@@ -95,8 +97,14 @@ public class CorpseEntity extends CorpseInventoryBaseEntity {
         if (world.isRemote) {
             return;
         }
+        if (Config.SERVER.corpseForceDespawnTime.get() > 0 && getCorpseAge() > Config.SERVER.corpseForceDespawnTime.get()) {
+            remove();
+            return;
+        }
 
-        if ((isEmpty() && getCorpseAge() > Config.SERVER.corpseDespawnTime.get()) || (Config.SERVER.corpseForceDespawnTime.get() > 0 && getCorpseAge() > Config.SERVER.corpseForceDespawnTime.get())) {
+        if (isEmpty() && emptyAge < 0) {
+            emptyAge = getCorpseAge();
+        } else if (isEmpty() && getCorpseAge() - emptyAge >= Config.SERVER.corpseDespawnTime.get()) {
             remove();
         }
     }
@@ -271,6 +279,10 @@ public class CorpseEntity extends CorpseInventoryBaseEntity {
         compound.putString("Name", getCorpseName());
         compound.putFloat("Rotation", getCorpseRotation());
         compound.putInt("Age", getCorpseAge());
+
+        if (emptyAge >= 0) {
+            compound.putInt("EmptyAge", emptyAge);
+        }
     }
 
     public void readAdditional(CompoundNBT compound) {
@@ -287,5 +299,9 @@ public class CorpseEntity extends CorpseInventoryBaseEntity {
         setCorpseName(compound.getString("Name"));
         setCorpseRotation(compound.getFloat("Rotation"));
         setCorpseAge(compound.getInt("Age"));
+
+        if (compound.contains("EmptyAge")) {
+            emptyAge = compound.getInt("EmptyAge");
+        }
     }
 }
