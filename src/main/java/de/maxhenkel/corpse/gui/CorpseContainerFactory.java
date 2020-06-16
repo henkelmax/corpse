@@ -17,7 +17,7 @@ public class CorpseContainerFactory implements IContainerFactory {
         boolean isHistory = buffer.readBoolean();
         if (isHistory) {
             Death death = Death.fromNBT(buffer.readCompoundTag());
-            return new CorpseContainer(windowId, inv, CorpseEntity.createFromDeath(inv.player, death), inv.player.abilities.isCreativeMode);
+            return new CorpseContainer(windowId, inv, CorpseEntity.createFromDeath(inv.player, death), inv.player.abilities.isCreativeMode, isHistory);
         } else {
             UUID uuid = new UUID(buffer.readLong(), buffer.readLong());
 
@@ -33,7 +33,7 @@ public class CorpseContainerFactory implements IContainerFactory {
             if (!entity.isPresent()) {
                 return null;
             }
-            return new CorpseContainer(windowId, inv.player.inventory, entity.get(), true);
+            return new CorpseContainer(windowId, inv.player.inventory, entity.get(), true, isHistory);
         }
     }
 }

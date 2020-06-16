@@ -8,18 +8,19 @@ import net.minecraft.inventory.IInventory;
 public class CorpseContainer extends ContainerBase {
 
     private CorpseEntity corpse;
-    private boolean editable;
+    private boolean editable, history;
 
-    public CorpseContainer(int id, IInventory playerInventory, CorpseEntity corpse, boolean editable) {
+    public CorpseContainer(int id, IInventory playerInventory, CorpseEntity corpse, boolean editable, boolean history) {
         super(Main.CONTAINER_TYPE_CORPSE, id, playerInventory, corpse);
         this.corpse = corpse;
         this.editable = editable;
+        this.history = history;
 
         setSlots(0);
     }
 
     public CorpseContainer(int id, IInventory playerInventory, CorpseEntity corpse) {
-        this(id, playerInventory, corpse, false);
+        this(id, playerInventory, corpse, false, true);
     }
 
     public void setSlots(int start) {
@@ -42,8 +43,15 @@ public class CorpseContainer extends ContainerBase {
         return editable;
     }
 
+    public boolean isHistory() {
+        return history;
+    }
+
     @Override
     public boolean canInteractWith(PlayerEntity playerIn) {
+        if (history) {
+            return true;
+        }
         return corpse.isUsableByPlayer(playerIn) && corpse.getDistance(playerIn) < 8F && corpse.isAlive();
     }
 

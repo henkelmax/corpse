@@ -27,7 +27,7 @@ public class MessageShowCorpseInventory implements Message {
     public void executeServerSide(NetworkEvent.Context context) {
         PlayerEntity player = context.getSender().world.getPlayerByUuid(playerUUID);
 
-        if (player != null && player instanceof ServerPlayerEntity) {
+        if (player instanceof ServerPlayerEntity) {
             ScreenManager.openCorpseGUI(context.getSender(), (ServerPlayerEntity) player, deathID);
         }
     }

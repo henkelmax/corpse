@@ -19,7 +19,7 @@ public class ScreenManager {
     }
 
     public static void openCorpseGUI(ServerPlayerEntity player, CorpseEntity corpse) {
-        NetworkHooks.openGui(player, new CorpseContainerProvider(corpse, true), packetBuffer -> {
+        NetworkHooks.openGui(player, new CorpseContainerProvider(corpse, true, false), packetBuffer -> {
             packetBuffer.writeBoolean(false);
             packetBuffer.writeLong(corpse.getUniqueID().getMostSignificantBits());
             packetBuffer.writeLong(corpse.getUniqueID().getLeastSignificantBits());
@@ -32,7 +32,7 @@ public class ScreenManager {
             return;
         }
         CorpseEntity corpse = CorpseEntity.createFromDeath(playerToShow, death);
-        NetworkHooks.openGui(playerToShow, new CorpseContainerProvider(corpse, playerToShow.abilities.isCreativeMode), packetBuffer -> {
+        NetworkHooks.openGui(playerToShow, new CorpseContainerProvider(corpse, playerToShow.abilities.isCreativeMode, true), packetBuffer -> {
             packetBuffer.writeBoolean(true);
             packetBuffer.writeCompoundTag(death.toNBT());
         });

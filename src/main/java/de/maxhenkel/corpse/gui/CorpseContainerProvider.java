@@ -12,11 +12,12 @@ import javax.annotation.Nullable;
 public class CorpseContainerProvider implements INamedContainerProvider {
 
     private CorpseEntity corpse;
-    private boolean editable;
+    private boolean editable, history;
 
-    public CorpseContainerProvider(CorpseEntity corpse, boolean editable) {
+    public CorpseContainerProvider(CorpseEntity corpse, boolean editable, boolean history) {
         this.corpse = corpse;
         this.editable = editable;
+        this.history = history;
     }
 
     @Override
@@ -27,6 +28,6 @@ public class CorpseContainerProvider implements INamedContainerProvider {
     @Nullable
     @Override
     public Container createMenu(int id, PlayerInventory playerInventory, PlayerEntity playerEntity) {
-        return new CorpseContainer(id, playerInventory, corpse, editable);
+        return new CorpseContainer(id, playerInventory, corpse, editable, history);
     }
 }
