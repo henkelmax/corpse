@@ -1,1 +1,1 @@
-- Fixed history gui closing bug
+- Updated to 1.16.1

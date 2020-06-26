@@ -1,5 +1,5 @@
 package de.maxhenkel.corpse.integration.waila;
-
+/*
 import de.maxhenkel.corpse.Death;
 import de.maxhenkel.corpse.DeathManager;
 import de.maxhenkel.corpse.Tools;
@@ -68,4 +68,4 @@ public class HUDHandlerCorpse implements IEntityComponentProvider, IServerDataPr
 
         compoundNBT.putInt("item_count", Tools.getStackCount(corpse));
     }
-}
+}*/

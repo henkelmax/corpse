@@ -1,5 +1,6 @@
 package de.maxhenkel.corpse.gui;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import de.maxhenkel.corpse.Main;
 import de.maxhenkel.corpse.entities.CorpseEntity;
 import de.maxhenkel.corpse.net.MessageSwitchInventoryPage;
@@ -32,22 +33,22 @@ public class CorpseScreen extends ScreenBase<CorpseContainer> {
     }
 
     @Override
-    protected void init() {
-        super.init();
+    protected void func_231160_c_() {
+        super.func_231160_c_();
 
-        buttons.clear();
-        int left = (width - xSize) / 2;
+        field_230710_m_.clear();
+        int left = (field_230708_k_ - xSize) / 2;
         int padding = 7;
         int buttonWidth = 50;
         int buttonHeight = 20;
-        previous = addButton(new Button(left + padding, guiTop + 149 - buttonHeight, buttonWidth, buttonHeight, new TranslationTextComponent("button.previous").getFormattedText(), button -> {
+        previous = func_230480_a_(new Button(left + padding, guiTop + 149 - buttonHeight, buttonWidth, buttonHeight, new TranslationTextComponent("button.previous"), button -> {
             page--;
             if (page < 0) {
                 page = 0;
             }
             Main.SIMPLE_CHANNEL.sendToServer(new MessageSwitchInventoryPage(page));
         }));
-        next = addButton(new Button(left + xSize - buttonWidth - padding, guiTop + 149 - buttonHeight, buttonWidth, buttonHeight, new TranslationTextComponent("button.next").getFormattedText(), button -> {
+        next = func_230480_a_(new Button(left + xSize - buttonWidth - padding, guiTop + 149 - buttonHeight, buttonWidth, buttonHeight, new TranslationTextComponent("button.next"), button -> {
             page++;
             if (page >= getPages()) {
                 page = getPages() - 1;
@@ -57,18 +58,18 @@ public class CorpseScreen extends ScreenBase<CorpseContainer> {
     }
 
     @Override
-    public void tick() {
-        super.tick();
+    public void func_231023_e_() {
+        super.func_231023_e_();
         if (page <= 0) {
-            previous.active = false;
+            previous.field_230693_o_ = false;
         } else {
-            previous.active = true;
+            previous.field_230693_o_ = true;
         }
 
         if (page >= getPages() - 1) {
-            next.active = false;
+            next.field_230693_o_ = false;
         } else {
-            next.active = true;
+            next.field_230693_o_ = true;
         }
     }
 
@@ -77,14 +78,15 @@ public class CorpseScreen extends ScreenBase<CorpseContainer> {
     }
 
     @Override
-    protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        super.drawGuiContainerForegroundLayer(mouseX, mouseY);
+    public void func_230430_a_(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
+        super.func_230430_a_(matrixStack, mouseX, mouseY, partialTicks);
 
-        font.drawString(corpse.getDisplayName().getFormattedText(), 7, 7, FONT_COLOR);
-        font.drawString(playerInventory.getDisplayName().getFormattedText(), 7, ySize - 96 + 2, FONT_COLOR);
+        field_230712_o_.func_238421_b_(matrixStack, corpse.getDisplayName().getString(), guiLeft + 7, guiTop + 7, FONT_COLOR);
+        field_230712_o_.func_238421_b_(matrixStack, playerInventory.getDisplayName().getString(), guiLeft + 7, guiTop + ySize - 96 + 2, FONT_COLOR);
 
-        String pageName = new TranslationTextComponent("gui.corpse.page", page + 1, getPages()).getFormattedText();
-        int pageWidth = font.getStringWidth(pageName);
-        font.drawString(pageName, xSize / 2 - pageWidth / 2, ySize - 113, FONT_COLOR);
+        String pageName = new TranslationTextComponent("gui.corpse.page", page + 1, getPages()).getString();
+        int pageWidth = field_230712_o_.getStringWidth(pageName);
+        field_230712_o_.func_238421_b_(matrixStack, pageName, guiLeft + xSize / 2 - pageWidth / 2, guiTop + ySize - 113, FONT_COLOR);
     }
+
 }

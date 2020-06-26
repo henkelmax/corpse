@@ -12,10 +12,11 @@ import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.tags.FluidTags;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
@@ -75,7 +76,7 @@ public class CorpseEntity extends CorpseInventoryBaseEntity {
 
         if (!hasNoGravity()) {
             double yMotion = 0D;
-            Vec3d motion = getMotion();
+            Vector3d motion = getMotion();
             if (areEyesInFluid(FluidTags.WATER) || areEyesInFluid(FluidTags.LAVA)) {
                 if (motion.y < 0D) {
                     yMotion = motion.y + (motion.y < 0.03D ? 0.01D : 0D);
@@ -110,7 +111,7 @@ public class CorpseEntity extends CorpseInventoryBaseEntity {
     }
 
     @Override
-    public boolean processInitialInteract(PlayerEntity player, Hand hand) {
+    public ActionResultType processInitialInteract(PlayerEntity player, Hand hand) {
         if (!world.isRemote && player instanceof ServerPlayerEntity) {
             ServerPlayerEntity playerMP = (ServerPlayerEntity) player;
             if (Config.SERVER.onlyOwnerAccess.get()) {
@@ -124,7 +125,7 @@ public class CorpseEntity extends CorpseInventoryBaseEntity {
                 ScreenManager.openCorpseGUI((ServerPlayerEntity) player, this);
             }
         }
-        return true;
+        return ActionResultType.SUCCESS;
     }
 
     public boolean isSkeleton() {

@@ -3,6 +3,7 @@ package de.maxhenkel.corpse;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.world.server.ServerWorld;
+import net.minecraft.world.storage.FolderName;
 
 import javax.annotation.Nullable;
 import java.io.File;
@@ -10,6 +11,8 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class DeathManager {
+
+    public static FolderName DEATHS = new FolderName("deaths");
 
     public static void addDeath(ServerPlayerEntity player, Death death) {
         try {
@@ -88,6 +91,6 @@ public class DeathManager {
     }
 
     public static File getDeathFolder(ServerWorld world) {
-        return new File(world.getSaveHandler().getWorldDirectory(), "deaths");
+        return world.getServer().func_240776_a_(DEATHS).toFile();
     }
 }

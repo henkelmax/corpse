@@ -1,5 +1,7 @@
 package de.maxhenkel.corpse.entities;
 
+import com.google.common.collect.ImmutableSet;
+import net.minecraft.block.Block;
 import net.minecraft.entity.*;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
@@ -10,8 +12,7 @@ import java.util.Collections;
 public class FakeMobEntity extends MobEntity {
 
     protected FakeMobEntity() {
-        super(new EntityType<FakeMobEntity>(null, EntityClassification.MISC, false, false, false, false, EntitySize.fixed(1F, 1F), null, null, null, null), null);
-
+        super(new EntityType<FakeMobEntity>(null, EntityClassification.MISC, false, false, false, false, ImmutableSet.<Block>builder().build(), EntitySize.fixed(1F, 1F), 0, 0), null);
     }
 
     @Override

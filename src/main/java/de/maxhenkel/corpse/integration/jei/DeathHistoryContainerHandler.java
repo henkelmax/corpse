@@ -1,5 +1,5 @@
 package de.maxhenkel.corpse.integration.jei;
-
+/*
 import de.maxhenkel.corpse.gui.DeathHistoryScreen;
 import mezz.jei.api.gui.handlers.IGuiContainerHandler;
 import net.minecraft.client.renderer.Rectangle2d;
@@ -13,3 +13,4 @@ public class DeathHistoryContainerHandler implements IGuiContainerHandler<DeathH
         return Arrays.asList(new Rectangle2d(0, 0, containerScreen.width, containerScreen.height));
     }
 }
+*/

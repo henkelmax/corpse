@@ -5,9 +5,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.util.NonNullList;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.dimension.DimensionType;
 
 import java.util.UUID;
 
@@ -72,10 +70,6 @@ public class Death {
         return dimension;
     }
 
-    public DimensionType getDimensionType() {
-        return DimensionType.byName(new ResourceLocation(dimension));
-    }
-
     @Override
     public String toString() {
         return "Death{name=" + playerName + "timestamp=" + timestamp + "}";
@@ -92,7 +86,7 @@ public class Death {
         death.posX = player.getPosX();
         death.posY = player.getPosY();
         death.posZ = player.getPosZ();
-        death.dimension = DimensionType.getKey(player.dimension).toString();
+        death.dimension = player.world.func_234923_W_().func_240901_a_().toString();
 
         return death;
     }

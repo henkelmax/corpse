@@ -1,5 +1,5 @@
 package de.maxhenkel.corpse.integration.waila;
-
+/*
 import de.maxhenkel.corpse.entities.CorpseEntity;
 import mcp.mobius.waila.api.IRegistrar;
 import mcp.mobius.waila.api.IWailaPlugin;
@@ -18,3 +18,4 @@ public class PluginCorpse implements IWailaPlugin {
     }
 
 }
+*/

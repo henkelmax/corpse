@@ -1,5 +1,5 @@
 package de.maxhenkel.corpse.integration.jei;
-
+/*
 import de.maxhenkel.corpse.Main;
 import de.maxhenkel.corpse.gui.DeathHistoryScreen;
 import mezz.jei.api.IModPlugin;
@@ -19,3 +19,4 @@ public class JEIPlugin implements IModPlugin {
         registration.addGuiContainerHandler(DeathHistoryScreen.class, new DeathHistoryContainerHandler());
     }
 }
+*/
