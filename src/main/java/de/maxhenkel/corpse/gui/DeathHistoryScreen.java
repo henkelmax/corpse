@@ -91,41 +91,41 @@ public class DeathHistoryScreen extends ScreenBase {
     }
 
     @Override
-    public void func_230430_a_(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
-        super.func_230430_a_(matrixStack, mouseX, mouseY, partialTicks);
+    protected void func_230451_b_(MatrixStack matrixStack, int mouseX, int mouseY) {
+        super.func_230451_b_(matrixStack, mouseX, mouseY);
         Death death = getCurrentDeath();
 
         // Title
         String title = new TranslationTextComponent("gui.death_history.title").getString();
         int titleWidth = field_230712_o_.getStringWidth(title);
-        field_230712_o_.func_238421_b_(matrixStack, TextFormatting.BLACK + title, guiLeft + (xSize - titleWidth) / 2, guiTop + 7, 0);
+        field_230712_o_.func_238421_b_(matrixStack, TextFormatting.BLACK + title, (xSize - titleWidth) / 2, 7, 0);
 
         // Date
         String date = Tools.getDate(death.getTimestamp()).getString();
         int dateWidth = field_230712_o_.getStringWidth(date);
-        field_230712_o_.func_238421_b_(matrixStack, TextFormatting.DARK_GRAY + date, guiLeft + (xSize - dateWidth) / 2, guiTop + 20, 0);
+        field_230712_o_.func_238421_b_(matrixStack, TextFormatting.DARK_GRAY + date, (xSize - dateWidth) / 2, 20, 0);
 
         // Name
         String textName = new TranslationTextComponent("gui.death_history.name").getString() + ":";
-        drawLeft(matrixStack, TextFormatting.DARK_GRAY + textName, guiTop + 40);
+        drawLeft(matrixStack, TextFormatting.DARK_GRAY + textName, 40);
 
         String name = death.getPlayerName();
-        drawRight(matrixStack, TextFormatting.GRAY + name, guiTop + 40);
+        drawRight(matrixStack, TextFormatting.GRAY + name, 40);
 
         // Dimension
         String textDimension = new TranslationTextComponent("gui.death_history.dimension").getString() + ":";
-        drawLeft(matrixStack, TextFormatting.DARK_GRAY + textDimension, guiTop + 55);
+        drawLeft(matrixStack, TextFormatting.DARK_GRAY + textDimension, 55);
 
         String dimension = death.getDimension().split(":")[1];
-        drawRight(matrixStack, TextFormatting.GRAY + dimension, guiTop + 55);
+        drawRight(matrixStack, TextFormatting.GRAY + dimension, 55);
 
         // Location
         String textLocation = new TranslationTextComponent("gui.death_history.location").getString() + ":";
-        drawLeft(matrixStack, TextFormatting.DARK_GRAY + textLocation, guiTop + 70);
+        drawLeft(matrixStack, TextFormatting.DARK_GRAY + textLocation, 70);
 
-        drawRight(matrixStack, TextFormatting.GRAY + "" + Math.round(death.getPosX()) + " X", guiTop + 70);
-        drawRight(matrixStack, TextFormatting.GRAY + "" + Math.round(death.getPosY()) + " Y", guiTop + 85);
-        drawRight(matrixStack, TextFormatting.GRAY + "" + Math.round(death.getPosZ()) + " Z", guiTop + 100);
+        drawRight(matrixStack, TextFormatting.GRAY + "" + Math.round(death.getPosX()) + " X", 70);
+        drawRight(matrixStack, TextFormatting.GRAY + "" + Math.round(death.getPosY()) + " Y", 85);
+        drawRight(matrixStack, TextFormatting.GRAY + "" + Math.round(death.getPosZ()) + " Z", 100);
 
         // Player
         RenderSystem.color4f(1F, 1F, 1F, 1F);
@@ -138,13 +138,12 @@ public class DeathHistoryScreen extends ScreenBase {
         };
         player.recalculateSize();
 
-        InventoryScreen.drawEntityOnScreen(guiLeft + xSize - (xSize - hSplit) / 2, guiTop + ySize / 2 + 30, 40, (guiLeft + xSize - (xSize - hSplit) / 2) - mouseX, (guiTop + ySize / 2) - mouseY, player);
+        InventoryScreen.drawEntityOnScreen(xSize - (xSize - hSplit) / 2, ySize / 2 + 30, 40, (xSize - (xSize - hSplit) / 2) - mouseX, (ySize / 2) - mouseY, player);
 
         if (mouseX >= guiLeft + 7 && mouseX <= guiLeft + hSplit && mouseY >= guiTop + 70 && mouseY <= guiTop + 100 + field_230712_o_.FONT_HEIGHT) {
-            func_238654_b_(matrixStack, Arrays.asList(new TranslationTextComponent("tooltip.teleport")), mouseX, mouseY);
+            func_238654_b_(matrixStack, Arrays.asList(new TranslationTextComponent("tooltip.teleport")), mouseX - guiLeft, mouseY - guiTop);
         }
     }
-
 
     @Override
     public void func_231023_e_() {
@@ -164,13 +163,13 @@ public class DeathHistoryScreen extends ScreenBase {
 
     public void drawLeft(MatrixStack matrixStack, String string, int height) {
         int offset = 7;
-        int offsetLeft = guiLeft + offset;
+        int offsetLeft = offset;
         field_230712_o_.func_238421_b_(matrixStack, string, offsetLeft, height, 0);
     }
 
     public void drawRight(MatrixStack matrixStack, String string, int height) {
         int strWidth = field_230712_o_.getStringWidth(string);
-        field_230712_o_.func_238421_b_(matrixStack, string, guiLeft + hSplit - strWidth, height, 0);
+        field_230712_o_.func_238421_b_(matrixStack, string, hSplit - strWidth, height, 0);
     }
 
     public Death getCurrentDeath() {
