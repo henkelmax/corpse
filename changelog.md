@@ -1,1 +1,1 @@
-- Fixed death history gui
+- Fixed JEI integration
