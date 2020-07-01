@@ -13,6 +13,7 @@ import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.util.ActionResultType;
+import net.minecraft.util.DamageSource;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -83,12 +84,12 @@ public class CorpseEntity extends CorpseInventoryBaseEntity {
                 } else {
                     yMotion = motion.y + (motion.y < 0.03D ? 5E-4D : 0D);
                 }
-            } else if (getPosY() > 0D) {
+            } else if (Config.SERVER.fallIntoVoid.get() || getPosY() > 0D) {
                 yMotion = Math.max(-2D, motion.y - 0.0625D);
             }
             setMotion(getMotion().x * 0.75D, yMotion, getMotion().z * 0.75D);
 
-            if (getPosY() < 0D) {
+            if (!Config.SERVER.fallIntoVoid.get() && getPosY() < 0D) {
                 setPositionAndUpdate(getPosX(), 0F, getPosZ());
             }
 
@@ -108,6 +109,14 @@ public class CorpseEntity extends CorpseInventoryBaseEntity {
         } else if (isEmpty() && getCorpseAge() - emptyAge >= Config.SERVER.corpseDespawnTime.get()) {
             remove();
         }
+    }
+
+    @Override
+    public boolean attackEntityFrom(DamageSource source, float amount) {
+        if (Config.SERVER.lavaDamage.get() && source.isFireDamage() && amount >= 2F) {
+            remove();
+        }
+        return super.attackEntityFrom(source, amount);
     }
 
     @Override

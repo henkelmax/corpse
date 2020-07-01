@@ -1,1 +1,3 @@
-- Fixed JEI integration
+- Added a config option to allow the corpse to fall into the void
+- Added a config option to allow the corpse to get damage from lava
+- Reworked the config structure
