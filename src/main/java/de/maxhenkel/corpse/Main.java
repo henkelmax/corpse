@@ -90,7 +90,7 @@ public class Main {
     @SubscribeEvent
     public void clientSetup(FMLClientSetupEvent event) {
         ScreenManager.clientSetup();
-        KEY_DEATH_HISTORY = new KeyBinding("key.death_history", GLFW.GLFW_KEY_U, "key.categories.misc");
+        KEY_DEATH_HISTORY = new KeyBinding("key.corpse.death_history", GLFW.GLFW_KEY_U, "key.categories.misc");
         ClientRegistry.registerKeyBinding(KEY_DEATH_HISTORY);
         MinecraftForge.EVENT_BUS.register(new KeyEvents());
 

@@ -1,3 +1,2 @@
-- Added a config option to allow the corpse to fall into the void
-- Added a config option to allow the corpse to get damage from lava
-- Reworked the config structure
+- Fixed player rendering in death history
+- Updated translation names to avoid collisions

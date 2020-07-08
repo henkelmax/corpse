@@ -41,14 +41,14 @@ public class CorpseScreen extends ScreenBase<CorpseContainer> {
         int padding = 7;
         int buttonWidth = 50;
         int buttonHeight = 20;
-        previous = func_230480_a_(new Button(left + padding, guiTop + 149 - buttonHeight, buttonWidth, buttonHeight, new TranslationTextComponent("button.previous"), button -> {
+        previous = func_230480_a_(new Button(left + padding, guiTop + 149 - buttonHeight, buttonWidth, buttonHeight, new TranslationTextComponent("button.corpse.previous"), button -> {
             page--;
             if (page < 0) {
                 page = 0;
             }
             Main.SIMPLE_CHANNEL.sendToServer(new MessageSwitchInventoryPage(page));
         }));
-        next = func_230480_a_(new Button(left + xSize - buttonWidth - padding, guiTop + 149 - buttonHeight, buttonWidth, buttonHeight, new TranslationTextComponent("button.next"), button -> {
+        next = func_230480_a_(new Button(left + xSize - buttonWidth - padding, guiTop + 149 - buttonHeight, buttonWidth, buttonHeight, new TranslationTextComponent("button.corpse.next"), button -> {
             page++;
             if (page >= getPages()) {
                 page = getPages() - 1;

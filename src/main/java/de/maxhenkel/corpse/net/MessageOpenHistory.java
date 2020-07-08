@@ -38,7 +38,7 @@ public class MessageOpenHistory implements Message {
         if (deaths.size() > 0) {
             Minecraft.getInstance().displayGuiScreen(new DeathHistoryScreen(deaths));
         } else {
-            Minecraft.getInstance().player.sendStatusMessage(new TranslationTextComponent("message.no_death_history"), true);
+            Minecraft.getInstance().player.sendStatusMessage(new TranslationTextComponent("message.corpse.no_death_history"), true);
         }
     }
 

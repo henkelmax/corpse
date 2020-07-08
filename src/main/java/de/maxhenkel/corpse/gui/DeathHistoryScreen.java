@@ -38,7 +38,7 @@ public class DeathHistoryScreen extends ScreenBase {
     private int hSplit;
 
     public DeathHistoryScreen(List<Death> deaths) {
-        super(DEATH_HISTORY_GUI_TEXTURE, new DeathHistoryContainer(), null, new TranslationTextComponent("gui.death_history.title"));
+        super(DEATH_HISTORY_GUI_TEXTURE, new DeathHistoryContainer(), null, new TranslationTextComponent("gui.death_history.corpse.title"));
         this.deaths = deaths;
         this.index = 0;
 
@@ -56,18 +56,18 @@ public class DeathHistoryScreen extends ScreenBase {
         int padding = 7;
         int buttonWidth = 50;
         int buttonHeight = 20;
-        previous = func_230480_a_(new Button(guiLeft + padding, guiTop + ySize - buttonHeight - padding, buttonWidth, buttonHeight, new TranslationTextComponent("button.previous"), button -> {
+        previous = func_230480_a_(new Button(guiLeft + padding, guiTop + ySize - buttonHeight - padding, buttonWidth, buttonHeight, new TranslationTextComponent("button.corpse.previous"), button -> {
             index--;
             if (index < 0) {
                 index = 0;
             }
         }));
 
-        func_230480_a_(new Button(guiLeft + (xSize - buttonWidth) / 2, guiTop + ySize - buttonHeight - padding, buttonWidth, buttonHeight, new TranslationTextComponent("button.show_items"), button -> {
+        func_230480_a_(new Button(guiLeft + (xSize - buttonWidth) / 2, guiTop + ySize - buttonHeight - padding, buttonWidth, buttonHeight, new TranslationTextComponent("button.corpse.show_items"), button -> {
             Main.SIMPLE_CHANNEL.sendToServer(new MessageShowCorpseInventory(getCurrentDeath().getPlayerUUID(), getCurrentDeath().getId()));
         }));
 
-        next = func_230480_a_(new Button(guiLeft + xSize - buttonWidth - padding, guiTop + ySize - buttonHeight - padding, buttonWidth, buttonHeight, new TranslationTextComponent("button.next"), button -> {
+        next = func_230480_a_(new Button(guiLeft + xSize - buttonWidth - padding, guiTop + ySize - buttonHeight - padding, buttonWidth, buttonHeight, new TranslationTextComponent("button.corpse.next"), button -> {
             index++;
             if (index >= deaths.size()) {
                 index = deaths.size() - 1;
@@ -83,7 +83,7 @@ public class DeathHistoryScreen extends ScreenBase {
             ITextComponent teleport = TextComponentUtils.func_240647_a_(new TranslationTextComponent("chat.coordinates", pos.getX(), pos.getY(), pos.getZ())).func_240700_a_((style) -> {
                 return style.func_240723_c_(TextFormatting.GREEN).func_240715_a_(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/execute in " + getCurrentDeath().getDimension() + " run tp @s " + pos.getX() + " " + pos.getY() + " " + pos.getZ())).func_240716_a_(new HoverEvent(HoverEvent.Action.field_230550_a_, new TranslationTextComponent("chat.coordinates.tooltip")));
             });
-            field_230706_i_.player.sendMessage(new TranslationTextComponent("chat.teleport_death_location", teleport), field_230706_i_.player.getUniqueID());
+            field_230706_i_.player.sendMessage(new TranslationTextComponent("chat.corpse.teleport_death_location", teleport), field_230706_i_.player.getUniqueID());
             field_230706_i_.getSoundHandler().play(SimpleSound.master(SoundEvents.UI_BUTTON_CLICK, 1.0F));
             field_230706_i_.displayGuiScreen(null);
         }
@@ -96,7 +96,7 @@ public class DeathHistoryScreen extends ScreenBase {
         Death death = getCurrentDeath();
 
         // Title
-        String title = new TranslationTextComponent("gui.death_history.title").getString();
+        String title = new TranslationTextComponent("gui.corpse.death_history.title").getString();
         int titleWidth = field_230712_o_.getStringWidth(title);
         field_230712_o_.func_238421_b_(matrixStack, TextFormatting.BLACK + title, (xSize - titleWidth) / 2, 7, 0);
 
@@ -106,21 +106,21 @@ public class DeathHistoryScreen extends ScreenBase {
         field_230712_o_.func_238421_b_(matrixStack, TextFormatting.DARK_GRAY + date, (xSize - dateWidth) / 2, 20, 0);
 
         // Name
-        String textName = new TranslationTextComponent("gui.death_history.name").getString() + ":";
+        String textName = new TranslationTextComponent("gui.corpse.death_history.name").getString() + ":";
         drawLeft(matrixStack, TextFormatting.DARK_GRAY + textName, 40);
 
         String name = death.getPlayerName();
         drawRight(matrixStack, TextFormatting.GRAY + name, 40);
 
         // Dimension
-        String textDimension = new TranslationTextComponent("gui.death_history.dimension").getString() + ":";
+        String textDimension = new TranslationTextComponent("gui.corpse.death_history.dimension").getString() + ":";
         drawLeft(matrixStack, TextFormatting.DARK_GRAY + textDimension, 55);
 
         String dimension = death.getDimension().split(":")[1];
         drawRight(matrixStack, TextFormatting.GRAY + dimension, 55);
 
         // Location
-        String textLocation = new TranslationTextComponent("gui.death_history.location").getString() + ":";
+        String textLocation = new TranslationTextComponent("gui.corpse.death_history.location").getString() + ":";
         drawLeft(matrixStack, TextFormatting.DARK_GRAY + textLocation, 70);
 
         drawRight(matrixStack, TextFormatting.GRAY + "" + Math.round(death.getPosX()) + " X", 70);
@@ -138,10 +138,10 @@ public class DeathHistoryScreen extends ScreenBase {
         };
         player.recalculateSize();
 
-        InventoryScreen.drawEntityOnScreen(xSize - (xSize - hSplit) / 2, ySize / 2 + 30, 40, (xSize - (xSize - hSplit) / 2) - mouseX, (ySize / 2) - mouseY, player);
+        InventoryScreen.drawEntityOnScreen((int) (xSize * 0.75D), ySize / 2 + 30, 40, (int) (guiLeft + (xSize * 0.75D)) - mouseX, (ySize / 2) - mouseY, player);
 
         if (mouseX >= guiLeft + 7 && mouseX <= guiLeft + hSplit && mouseY >= guiTop + 70 && mouseY <= guiTop + 100 + field_230712_o_.FONT_HEIGHT) {
-            func_238654_b_(matrixStack, Arrays.asList(new TranslationTextComponent("tooltip.teleport")), mouseX - guiLeft, mouseY - guiTop);
+            func_238654_b_(matrixStack, Arrays.asList(new TranslationTextComponent("tooltip.corpse.teleport")), mouseX - guiLeft, mouseY - guiTop);
         }
     }
 
