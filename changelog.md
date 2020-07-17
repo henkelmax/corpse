@@ -1,2 +1,1 @@
-- Fixed player rendering in death history
-- Updated translation names to avoid collisions
+- Fixed a crash in the latest forge version
