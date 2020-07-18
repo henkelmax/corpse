@@ -3,7 +3,6 @@ package de.maxhenkel.corpse.gui;
 import de.maxhenkel.corpse.Death;
 import de.maxhenkel.corpse.entities.CorpseEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.Container;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraftforge.fml.network.IContainerFactory;
@@ -11,9 +10,9 @@ import net.minecraftforge.fml.network.IContainerFactory;
 import java.util.Optional;
 import java.util.UUID;
 
-public class CorpseContainerFactory implements IContainerFactory {
+public class CorpseContainerFactory implements IContainerFactory<CorpseContainer> {
     @Override
-    public Container create(int windowId, PlayerInventory inv, PacketBuffer buffer) {
+    public CorpseContainer create(int windowId, PlayerInventory inv, PacketBuffer buffer) {
         boolean isHistory = buffer.readBoolean();
         if (isHistory) {
             Death death = Death.fromNBT(buffer.readCompoundTag());

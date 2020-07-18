@@ -3,9 +3,9 @@ package de.maxhenkel.corpse.gui;
 import com.mojang.authlib.GameProfile;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
+import de.maxhenkel.corelib.inventory.ScreenBase;
 import de.maxhenkel.corpse.Death;
 import de.maxhenkel.corpse.Main;
-import de.maxhenkel.corpse.Tools;
 import de.maxhenkel.corpse.net.MessageShowCorpseInventory;
 import net.minecraft.client.audio.SimpleSound;
 import net.minecraft.client.entity.player.RemoteClientPlayerEntity;
@@ -13,20 +13,21 @@ import net.minecraft.client.gui.screen.inventory.InventoryScreen;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.entity.EntitySize;
 import net.minecraft.entity.Pose;
+import net.minecraft.inventory.container.Container;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvents;
+import net.minecraft.util.Util;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextComponentUtils;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.util.text.*;
 import net.minecraft.util.text.event.ClickEvent;
 import net.minecraft.util.text.event.HoverEvent;
 
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
-public class DeathHistoryScreen extends ScreenBase {
+public class DeathHistoryScreen extends ScreenBase<Container> {
 
     private static final ResourceLocation DEATH_HISTORY_GUI_TEXTURE = new ResourceLocation(Main.MODID, "textures/gui/gui_death_history.png");
 
@@ -80,10 +81,8 @@ public class DeathHistoryScreen extends ScreenBase {
     public boolean func_231044_a_(double x, double y, int clickType) {
         if (x >= guiLeft + 7 && x <= guiLeft + hSplit && y >= guiTop + 70 && y <= guiTop + 100 + field_230712_o_.FONT_HEIGHT) {
             BlockPos pos = getCurrentDeath().getBlockPos();
-            ITextComponent teleport = TextComponentUtils.func_240647_a_(new TranslationTextComponent("chat.coordinates", pos.getX(), pos.getY(), pos.getZ())).func_240700_a_((style) -> {
-                return style.func_240723_c_(TextFormatting.GREEN).func_240715_a_(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/execute in " + getCurrentDeath().getDimension() + " run tp @s " + pos.getX() + " " + pos.getY() + " " + pos.getZ())).func_240716_a_(new HoverEvent(HoverEvent.Action.field_230550_a_, new TranslationTextComponent("chat.coordinates.tooltip")));
-            });
-            field_230706_i_.player.sendMessage(new TranslationTextComponent("chat.corpse.teleport_death_location", teleport), field_230706_i_.player.getUniqueID());
+            ITextComponent teleport = TextComponentUtils.func_240647_a_(new TranslationTextComponent("chat.coordinates", pos.getX(), pos.getY(), pos.getZ())).func_240700_a_((style) -> style.func_240723_c_(TextFormatting.GREEN).func_240715_a_(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/execute in " + getCurrentDeath().getDimension() + " run tp @s " + pos.getX() + " " + pos.getY() + " " + pos.getZ())).func_240716_a_(new HoverEvent(HoverEvent.Action.field_230550_a_, new TranslationTextComponent("chat.coordinates.tooltip"))));
+            field_230706_i_.player.sendMessage(new TranslationTextComponent("chat.corpse.teleport_death_location", teleport), Util.field_240973_b_);
             field_230706_i_.getSoundHandler().play(SimpleSound.master(SoundEvents.UI_BUTTON_CLICK, 1.0F));
             field_230706_i_.displayGuiScreen(null);
         }
@@ -101,7 +100,7 @@ public class DeathHistoryScreen extends ScreenBase {
         field_230712_o_.func_238421_b_(matrixStack, TextFormatting.BLACK + title, (xSize - titleWidth) / 2, 7, 0);
 
         // Date
-        String date = Tools.getDate(death.getTimestamp()).getString();
+        String date = getDate(death.getTimestamp()).getString();
         int dateWidth = field_230712_o_.getStringWidth(date);
         field_230712_o_.func_238421_b_(matrixStack, TextFormatting.DARK_GRAY + date, (xSize - dateWidth) / 2, 20, 0);
 
@@ -143,6 +142,11 @@ public class DeathHistoryScreen extends ScreenBase {
         if (mouseX >= guiLeft + 7 && mouseX <= guiLeft + hSplit && mouseY >= guiTop + 70 && mouseY <= guiTop + 100 + field_230712_o_.FONT_HEIGHT) {
             func_238654_b_(matrixStack, Arrays.asList(new TranslationTextComponent("tooltip.corpse.teleport")), mouseX - guiLeft, mouseY - guiTop);
         }
+    }
+
+    public static ITextComponent getDate(long timestamp) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat(new TranslationTextComponent("gui.death_history.date_format").getUnformattedComponentText());
+        return new StringTextComponent(dateFormat.format(new Date(timestamp)));
     }
 
     @Override

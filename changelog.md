@@ -1,1 +1,1 @@
-- Fixed a crash in the latest forge version
+- Fixed corpse GUI background not drawn

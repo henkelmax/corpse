@@ -1,8 +1,10 @@
 package de.maxhenkel.corpse.net;
 
+import de.maxhenkel.corelib.net.Message;
 import de.maxhenkel.corpse.gui.CorpseContainer;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.network.PacketBuffer;
+import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.network.NetworkEvent;
 
 public class MessageSwitchInventoryPage implements Message {
@@ -19,17 +21,17 @@ public class MessageSwitchInventoryPage implements Message {
 
 
     @Override
+    public Dist getExecutingSide() {
+        return Dist.DEDICATED_SERVER;
+    }
+
+    @Override
     public void executeServerSide(NetworkEvent.Context context) {
         Container container = context.getSender().openContainer;
         if (container instanceof CorpseContainer) {
             CorpseContainer containerCorpse = (CorpseContainer) container;
             containerCorpse.setSlots(page * 54);
         }
-    }
-
-    @Override
-    public void executeClientSide(NetworkEvent.Context context) {
-
     }
 
     @Override

@@ -1,6 +1,7 @@
 package de.maxhenkel.corpse.gui;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
+import de.maxhenkel.corelib.inventory.ScreenBase;
 import de.maxhenkel.corpse.Main;
 import de.maxhenkel.corpse.entities.CorpseEntity;
 import de.maxhenkel.corpse.net.MessageSwitchInventoryPage;

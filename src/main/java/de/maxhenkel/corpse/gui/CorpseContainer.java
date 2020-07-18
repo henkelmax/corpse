@@ -1,5 +1,6 @@
 package de.maxhenkel.corpse.gui;
 
+import de.maxhenkel.corelib.inventory.ContainerBase;
 import de.maxhenkel.corpse.Main;
 import de.maxhenkel.corpse.entities.CorpseEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -31,7 +32,7 @@ public class CorpseContainer extends ContainerBase {
             }
         }
 
-        addInvSlots();
+        addPlayerInventorySlots();
         detectAndSendChanges();
     }
 
@@ -48,11 +49,11 @@ public class CorpseContainer extends ContainerBase {
     }
 
     @Override
-    public boolean canInteractWith(PlayerEntity playerIn) {
+    public boolean canInteractWith(PlayerEntity player) {
         if (history) {
             return true;
         }
-        return corpse.isUsableByPlayer(playerIn) && corpse.getDistance(playerIn) < 8F && corpse.isAlive();
+        return corpse.isUsableByPlayer(player) && corpse.getDistance(player) < 8F && corpse.isAlive();
     }
 
     @Override

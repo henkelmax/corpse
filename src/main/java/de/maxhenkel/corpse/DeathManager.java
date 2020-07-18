@@ -1,5 +1,6 @@
 package de.maxhenkel.corpse;
 
+import de.maxhenkel.corelib.CommonUtils;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.world.server.ServerWorld;
@@ -73,7 +74,7 @@ public class DeathManager {
                     }
                     return null;
                 })
-                .filter(d -> d != null)
+                .filter(Objects::nonNull)
                 .sorted(Comparator.comparingLong(Death::getTimestamp).reversed())
                 .collect(Collectors.toList());
     }
@@ -91,6 +92,6 @@ public class DeathManager {
     }
 
     public static File getDeathFolder(ServerWorld world) {
-        return world.getServer().func_240776_a_(DEATHS).toFile();
+        return CommonUtils.getWorldFolder(world, DEATHS);
     }
 }

@@ -1,9 +1,8 @@
 package de.maxhenkel.corpse.entities;
 
-import de.maxhenkel.corpse.Config;
 import de.maxhenkel.corpse.Death;
 import de.maxhenkel.corpse.Main;
-import de.maxhenkel.corpse.gui.ScreenManager;
+import de.maxhenkel.corpse.gui.CorpseContainerProvider;
 import net.minecraft.entity.*;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -23,6 +22,7 @@ import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.fml.network.NetworkHooks;
 
 import javax.annotation.Nullable;
 import java.util.Optional;
@@ -84,12 +84,12 @@ public class CorpseEntity extends CorpseInventoryBaseEntity {
                 } else {
                     yMotion = motion.y + (motion.y < 0.03D ? 5E-4D : 0D);
                 }
-            } else if (Config.SERVER.fallIntoVoid.get() || getPosY() > 0D) {
+            } else if (Main.SERVER_CONFIG.fallIntoVoid.get() || getPosY() > 0D) {
                 yMotion = Math.max(-2D, motion.y - 0.0625D);
             }
             setMotion(getMotion().x * 0.75D, yMotion, getMotion().z * 0.75D);
 
-            if (!Config.SERVER.fallIntoVoid.get() && getPosY() < 0D) {
+            if (!Main.SERVER_CONFIG.fallIntoVoid.get() && getPosY() < 0D) {
                 setPositionAndUpdate(getPosX(), 0F, getPosZ());
             }
 
@@ -99,21 +99,21 @@ public class CorpseEntity extends CorpseInventoryBaseEntity {
         if (world.isRemote) {
             return;
         }
-        if (Config.SERVER.corpseForceDespawnTime.get() > 0 && getCorpseAge() > Config.SERVER.corpseForceDespawnTime.get()) {
+        if (Main.SERVER_CONFIG.corpseForceDespawnTime.get() > 0 && getCorpseAge() > Main.SERVER_CONFIG.corpseForceDespawnTime.get()) {
             remove();
             return;
         }
 
         if (isEmpty() && emptyAge < 0) {
             emptyAge = getCorpseAge();
-        } else if (isEmpty() && getCorpseAge() - emptyAge >= Config.SERVER.corpseDespawnTime.get()) {
+        } else if (isEmpty() && getCorpseAge() - emptyAge >= Main.SERVER_CONFIG.corpseDespawnTime.get()) {
             remove();
         }
     }
 
     @Override
     public boolean attackEntityFrom(DamageSource source, float amount) {
-        if (Config.SERVER.lavaDamage.get() && source.isFireDamage() && amount >= 2F) {
+        if (Main.SERVER_CONFIG.lavaDamage.get() && source.isFireDamage() && amount >= 2F) {
             remove();
         }
         return super.attackEntityFrom(source, amount);
@@ -123,22 +123,30 @@ public class CorpseEntity extends CorpseInventoryBaseEntity {
     public ActionResultType processInitialInteract(PlayerEntity player, Hand hand) {
         if (!world.isRemote && player instanceof ServerPlayerEntity) {
             ServerPlayerEntity playerMP = (ServerPlayerEntity) player;
-            if (Config.SERVER.onlyOwnerAccess.get()) {
+            if (Main.SERVER_CONFIG.onlyOwnerAccess.get()) {
                 boolean isOp = playerMP.hasPermissionLevel(playerMP.server.getOpPermissionLevel());
                 if (isOp || playerMP.getUniqueID().equals(getCorpseUUID())) {
-                    ScreenManager.openCorpseGUI((ServerPlayerEntity) player, this);
-                } else if (Config.SERVER.skeletonAccess.get() && isSkeleton()) {
-                    ScreenManager.openCorpseGUI((ServerPlayerEntity) player, this);
+                    openCorpseGUI((ServerPlayerEntity) player, this);
+                } else if (Main.SERVER_CONFIG.skeletonAccess.get() && isSkeleton()) {
+                    openCorpseGUI((ServerPlayerEntity) player, this);
                 }
             } else {
-                ScreenManager.openCorpseGUI((ServerPlayerEntity) player, this);
+                openCorpseGUI((ServerPlayerEntity) player, this);
             }
         }
         return ActionResultType.SUCCESS;
     }
 
+    public static void openCorpseGUI(ServerPlayerEntity player, CorpseEntity corpse) {
+        NetworkHooks.openGui(player, new CorpseContainerProvider(corpse, true, false), packetBuffer -> {
+            packetBuffer.writeBoolean(false);
+            packetBuffer.writeLong(corpse.getUniqueID().getMostSignificantBits());
+            packetBuffer.writeLong(corpse.getUniqueID().getLeastSignificantBits());
+        });
+    }
+
     public boolean isSkeleton() {
-        return getCorpseAge() >= Config.SERVER.corpseSkeletonTime.get();
+        return getCorpseAge() >= Main.SERVER_CONFIG.corpseSkeletonTime.get();
     }
 
     public void recalculateBoundingBox() {

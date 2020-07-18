@@ -1,5 +1,6 @@
 package de.maxhenkel.corpse.net;
 
+import de.maxhenkel.corelib.net.Message;
 import de.maxhenkel.corpse.Death;
 import de.maxhenkel.corpse.gui.DeathHistoryScreen;
 import net.minecraft.client.Minecraft;
@@ -26,10 +27,9 @@ public class MessageOpenHistory implements Message {
         this.deaths = deaths;
     }
 
-
     @Override
-    public void executeServerSide(NetworkEvent.Context context) {
-
+    public Dist getExecutingSide() {
+        return Dist.CLIENT;
     }
 
     @OnlyIn(Dist.CLIENT)

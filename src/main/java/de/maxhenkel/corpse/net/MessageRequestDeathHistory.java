@@ -1,10 +1,12 @@
 package de.maxhenkel.corpse.net;
 
+import de.maxhenkel.corelib.net.Message;
 import de.maxhenkel.corpse.Death;
 import de.maxhenkel.corpse.DeathManager;
 import de.maxhenkel.corpse.Main;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.network.PacketBuffer;
+import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.network.NetworkDirection;
 import net.minecraftforge.fml.network.NetworkEvent;
 
@@ -18,13 +20,13 @@ public class MessageRequestDeathHistory implements Message {
     }
 
     @Override
-    public void executeServerSide(NetworkEvent.Context context) {
-        sendDeathHistory(context.getSender());
+    public Dist getExecutingSide() {
+        return Dist.DEDICATED_SERVER;
     }
 
     @Override
-    public void executeClientSide(NetworkEvent.Context context) {
-
+    public void executeServerSide(NetworkEvent.Context context) {
+        sendDeathHistory(context.getSender());
     }
 
     @Override
