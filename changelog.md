@@ -1,1 +1,1 @@
-- Fixed corpse GUI background not drawn
+- Fixed GUIs not showing tooltips

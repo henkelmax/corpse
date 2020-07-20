@@ -8,7 +8,7 @@ buildscript {
     dependencies {
         classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '3.+', changing: true
         classpath group: 'de.maxhenkel.forge-update', name: 'forge-update', version: '1.0.2'
-        classpath 'com.github.jengelman.gradle.plugins:shadow:4.0.4'
+        classpath group: 'com.github.jengelman.gradle.plugins', name: 'shadow', version: '4.0.4'
     }
 }
 
@@ -85,6 +85,7 @@ dependencies {
 
     shadow fg.deobf("de.maxhenkel.corelib:corelib:${mod_minecraft_version}-${corelib_version}:api")
     runtimeOnly fg.deobf("de.maxhenkel.corelib:corelib:${mod_minecraft_version}-${corelib_version}")
+    runtimeOnly fg.deobf("de.maxhenkel.corelib:corelib:${mod_minecraft_version}-${corelib_version}:javadoc")
 }
 
 jar {
@@ -199,13 +200,10 @@ artifacts {
     archives deobfJar
     archives sourcesJar
     archives javadocJar
+    archives shadowJar
 }
 
 jar.finalizedBy('reobfJar')
-
-artifacts {
-    archives shadowJar
-}
 
 shadowJar {
     project.configurations.shadow.setTransitive(true);
