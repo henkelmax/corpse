@@ -1,1 +1,1 @@
-- Fixed JEI items showing up in the death history
+- Fixed version number
