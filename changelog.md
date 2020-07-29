@@ -1,1 +1,1 @@
-- Fixed GUIs not showing tooltips
+- Fixed crash with the latest forge version
