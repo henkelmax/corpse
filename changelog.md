@@ -1,1 +1,2 @@
-- Fixed crash with the latest forge version
+- Re-added HWYLA integration
+- Fixed date not shown in death history

@@ -1,14 +1,16 @@
 package de.maxhenkel.corpse.integration.waila;
-/*
+
 import de.maxhenkel.corpse.Death;
 import de.maxhenkel.corpse.DeathManager;
-import de.maxhenkel.corpse.Tools;
 import de.maxhenkel.corpse.entities.CorpseEntity;
+import de.maxhenkel.corpse.gui.DeathHistoryScreen;
 import mcp.mobius.waila.Waila;
 import mcp.mobius.waila.api.*;
 import mcp.mobius.waila.utils.ModIdentification;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.*;
@@ -26,10 +28,12 @@ public class HUDHandlerCorpse implements IEntityComponentProvider, IServerDataPr
     static final HUDHandlerCorpse INSTANCE = new HUDHandlerCorpse();
 
     @Override
-    public void appendHead(List<ITextComponent> tooltip, IEntityAccessor accessor, IPluginConfig config) {
-        ((ITaggableList<ResourceLocation, ITextComponent>) tooltip).setTag(OBJECT_NAME_TAG, new StringTextComponent(String.format(Waila.CONFIG.get().getFormatting().getEntityName(), accessor.getEntity().getDisplayName().getFormattedText())));
-        if (config.get(CONFIG_SHOW_REGISTRY))
-            ((ITaggableList<ResourceLocation, ITextComponent>) tooltip).setTag(REGISTRY_NAME_TAG, new StringTextComponent(accessor.getEntity().getType().getRegistryName().toString()).setStyle(new Style().setColor(TextFormatting.GRAY)));
+    public void appendHead(List<ITextComponent> t, IEntityAccessor accessor, IPluginConfig config) {
+        ITaggableList<ResourceLocation, ITextComponent> tooltip = (ITaggableList<ResourceLocation, ITextComponent>) t;
+        tooltip.setTag(OBJECT_NAME_TAG, new StringTextComponent(String.format(Waila.CONFIG.get().getFormatting().getEntityName(), accessor.getEntity().getDisplayName().getString())));
+        if (config.get(CONFIG_SHOW_REGISTRY)) {
+            tooltip.setTag(REGISTRY_NAME_TAG, new StringTextComponent(accessor.getEntity().getType().getRegistryName().toString()).func_240699_a_(TextFormatting.GRAY));
+        }
     }
 
     @Override
@@ -42,11 +46,11 @@ public class HUDHandlerCorpse implements IEntityComponentProvider, IServerDataPr
 
         if (data.contains("death")) {
             Death death = Death.fromNBT(data.getCompound("death"));
-            tooltip.add(new TranslationTextComponent("tooltip.death_date", Tools.getDate(death.getTimestamp())));
+            tooltip.add(new TranslationTextComponent("tooltip.corpse.death_date", DeathHistoryScreen.getDate(death.getTimestamp())));
         }
 
         if (data.contains("item_count")) {
-            tooltip.add(new TranslationTextComponent("tooltip.item_count", data.getInt("item_count")));
+            tooltip.add(new TranslationTextComponent("tooltip.corpse.item_count", data.getInt("item_count")));
         }
     }
 
@@ -66,6 +70,19 @@ public class HUDHandlerCorpse implements IEntityComponentProvider, IServerDataPr
         Death death = DeathManager.getDeath(serverPlayerEntity, uuid);
         compoundNBT.put("death", death.toNBT(false));
 
-        compoundNBT.putInt("item_count", Tools.getStackCount(corpse));
+        compoundNBT.putInt("item_count", getStackCount(corpse));
     }
-}*/
+
+    public static int getStackCount(IInventory inventory) {
+        int count = 0;
+
+        for (int i = 0; i < inventory.getSizeInventory(); i++) {
+            ItemStack stackInSlot = inventory.getStackInSlot(i);
+            if (!stackInSlot.isEmpty()) {
+                count++;
+            }
+        }
+        return count;
+    }
+
+}

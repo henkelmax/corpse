@@ -145,7 +145,7 @@ public class DeathHistoryScreen extends ScreenBase<Container> {
     }
 
     public static ITextComponent getDate(long timestamp) {
-        SimpleDateFormat dateFormat = new SimpleDateFormat(new TranslationTextComponent("gui.death_history.date_format").getUnformattedComponentText());
+        SimpleDateFormat dateFormat = new SimpleDateFormat(new TranslationTextComponent("gui.corpse.death_history.date_format").getString());
         return new StringTextComponent(dateFormat.format(new Date(timestamp)));
     }
 
