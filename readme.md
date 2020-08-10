@@ -1,4 +1,14 @@
-# Corpse Mod
+# Corpse ![](http://cf.way2muchnoise.eu/full_316582_downloads.svg)
+![](http://cf.way2muchnoise.eu/versions/316582.svg)
+
+## Links
+- [CurseForge](https://www.curseforge.com/minecraft/mc-mods/corpse)
+- [ModRepo](https://modrepo.de/minecraft/corpse/overview)
+- [GitHub](https://github.com/henkelmax/corpse)
+- [FAQ](https://modrepo.de/minecraft/corpse/faq)
+- [Credits](https://modrepo.de/minecraft/corpse/credits)
+
+---
 
 This mod brings a corpse into the game.
 It will spawn upon your death containing all items that you had in your inventory.
@@ -62,36 +72,11 @@ It includes the coordinates and the dimension.
 ![](https://i.imgur.com/e7xZeen.png)
 
 
-## Optional Features
+## Optional Features (Config Options)
 
-Only the owner of the corpse can access the inventory (Config option)
-
-## Config
-
-### Server
-
-``` toml
-#The time passed after a corpse despawns (only if empty)
-corpse_despawn_time = 600
-#If only the owner of the corpse can access the inventory
-only_owner_access = false
-#The time passed after a corpse turns into a skeleton
-corpse_skeleton_time = 72000
-#If the corpse should spawn on its face
-spawn_corpse_on_face = true
-#The time passed after a corpse despawns even if its not empty (-1 = never)
-corpse_force_despawn_time = -1
-```
-
-
-## Credits
-
-Russian translation [ghost_screa_m](https://minecraft.curseforge.com/members/ghost_screa_m)
-
-Portuguese translation [srbedrock](https://minecraft.curseforge.com/members/srbedrock)
-
-Polish translation [DarkKnightComes](https://www.curseforge.com/members/darkknightcomes)
-
----
-
-[Gallery](https://imgur.com/a/H1ltydQ)
+- If only the owner of the corpse can access the inventory
+- If everybody can access the corpse in the skeleton stage
+- The time passed after a corpse despawns if it is empty
+- The time passed after a corpse despawns even if it is full
+- The time passed after a corpse turns into a skeleton
+- If the corpse should spawn on its face
