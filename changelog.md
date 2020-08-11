@@ -1,2 +1,1 @@
-- Re-added HWYLA integration
-- Fixed date not shown in death history
+- Fixed items not spawning when removing the corpse

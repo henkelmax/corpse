@@ -6,6 +6,7 @@ import de.maxhenkel.corpse.gui.CorpseContainerProvider;
 import net.minecraft.entity.*;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.inventory.InventoryHelper;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
@@ -277,6 +278,14 @@ public class CorpseEntity extends CorpseInventoryBaseEntity {
         dataManager.register(NAME, "");
         dataManager.register(ROTATION, 0F);
         dataManager.register(AGE, 0);
+    }
+
+    @Override
+    public void remove() {
+        for (int i = 0; i < getSizeInventory(); ++i) {
+            InventoryHelper.spawnItemStack(world, getPosX(), getPosY(), getPosZ(), removeStackFromSlot(i));
+        }
+        super.remove();
     }
 
     public void writeAdditional(CompoundNBT compound) {
