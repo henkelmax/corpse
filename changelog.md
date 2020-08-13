@@ -1,1 +1,1 @@
-- Fixed items not spawning when removing the corpse
+- Updated to 1.16.2

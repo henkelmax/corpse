@@ -3,7 +3,10 @@ package de.maxhenkel.corpse.entities;
 import de.maxhenkel.corpse.Death;
 import de.maxhenkel.corpse.Main;
 import de.maxhenkel.corpse.gui.CorpseContainerProvider;
-import net.minecraft.entity.*;
+import net.minecraft.entity.EntitySize;
+import net.minecraft.entity.EntityType;
+import net.minecraft.entity.MoverType;
+import net.minecraft.entity.Pose;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.InventoryHelper;
@@ -25,7 +28,6 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.network.NetworkHooks;
 
-import javax.annotation.Nullable;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -191,18 +193,6 @@ public class CorpseEntity extends CorpseInventoryBaseEntity {
     public void setPosition(double x, double y, double z) {
         super.setPosition(x, y, z);
         recalculateBoundingBox();
-    }
-
-    @Nullable
-    @Override
-    public AxisAlignedBB getCollisionBoundingBox() {
-        return null;
-    }
-
-    @Nullable
-    @Override
-    public AxisAlignedBB getCollisionBox(Entity entityIn) {
-        return null;
     }
 
     @OnlyIn(Dist.CLIENT)
