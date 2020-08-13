@@ -80,7 +80,7 @@ dependencies {
     //compileOnly fg.deobf("mezz.jei:jei-${mod_minecraft_version}:${jei_version}:api")
     //runtimeOnly fg.deobf("mezz.jei:jei-${mod_minecraft_version}:${jei_version}")
 
-    //compile fg.deobf("mcp.mobius.waila:Hwyla:${hwyla_version}")
+    compile fg.deobf("mcp.mobius.waila:Hwyla:${hwyla_version}")
 
     shadow fg.deobf("de.maxhenkel.corelib:corelib:${mod_minecraft_version}-${corelib_version}:api")
     runtimeOnly fg.deobf("de.maxhenkel.corelib:corelib:${mod_minecraft_version}-${corelib_version}")
@@ -232,7 +232,7 @@ reobf {
 sourceSets {
     main {
         java {
-            exclude 'de/maxhenkel/corpse/integration/**'
+            exclude 'de/maxhenkel/corpse/integration/jei/**'
         }
     }
 }
