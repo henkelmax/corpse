@@ -4,23 +4,27 @@ import de.maxhenkel.corelib.inventory.ContainerBase;
 import de.maxhenkel.corpse.Main;
 import de.maxhenkel.corpse.entities.CorpseEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.IInventory;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.item.ItemStack;
+import net.minecraftforge.items.wrapper.PlayerMainInvWrapper;
 
 public class CorpseContainer extends ContainerBase {
 
     private CorpseEntity corpse;
+    private PlayerMainInvWrapper playerInventory;
     private boolean editable, history;
 
-    public CorpseContainer(int id, IInventory playerInventory, CorpseEntity corpse, boolean editable, boolean history) {
+    public CorpseContainer(int id, PlayerInventory playerInventory, CorpseEntity corpse, boolean editable, boolean history) {
         super(Main.CONTAINER_TYPE_CORPSE, id, playerInventory, corpse);
         this.corpse = corpse;
+        this.playerInventory = new PlayerMainInvWrapper(playerInventory);
         this.editable = editable;
         this.history = history;
 
         setSlots(0);
     }
 
-    public CorpseContainer(int id, IInventory playerInventory, CorpseEntity corpse) {
+    public CorpseContainer(int id, PlayerInventory playerInventory, CorpseEntity corpse) {
         this(id, playerInventory, corpse, false, true);
     }
 
@@ -46,6 +50,22 @@ public class CorpseContainer extends ContainerBase {
 
     public boolean isHistory() {
         return history;
+    }
+
+    public void transferItems() {
+        if (!isEditable()) {
+            return;
+        }
+        for (int i = 0; i < corpse.getSizeInventory(); i++) {
+            ItemStack stack = corpse.getStackInSlot(i);
+            for (int j = 0; j < playerInventory.getSlots(); j++) {
+                stack = playerInventory.insertItem(j, stack, false);
+                corpse.setInventorySlotContents(i, stack);
+                if (stack.isEmpty()) {
+                    break;
+                }
+            }
+        }
     }
 
     @Override

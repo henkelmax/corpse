@@ -12,9 +12,14 @@ import net.minecraft.network.IPacket;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
+import net.minecraft.util.Direction;
 import net.minecraft.util.NonNullList;
 import net.minecraft.world.World;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fml.network.NetworkHooks;
+import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.wrapper.InvWrapper;
 
 public abstract class CorpseInventoryBaseEntity extends Entity implements IInventory {
 
@@ -94,6 +99,23 @@ public abstract class CorpseInventoryBaseEntity extends Entity implements IInven
 
         compound.put("Inventory", nbttaglist);
         compound.putInt("InventorySize", getSizeInventory());
+    }
+
+    @Override
+    public <T> LazyOptional<T> getCapability(Capability<T> cap, Direction side) {
+        if (!removed && cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
+            return LazyOptional.of(this::getItemHandler).cast();
+        }
+        return super.getCapability(cap, side);
+    }
+
+    private InvWrapper handler;
+
+    public InvWrapper getItemHandler() {
+        if (handler == null || handler.getInv() != getInventory()) {
+            handler = new InvWrapper(getInventory());
+        }
+        return handler;
     }
 
     @Override

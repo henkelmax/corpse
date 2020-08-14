@@ -10,10 +10,7 @@ import de.maxhenkel.corpse.events.KeyEvents;
 import de.maxhenkel.corpse.gui.CorpseContainer;
 import de.maxhenkel.corpse.gui.CorpseContainerFactory;
 import de.maxhenkel.corpse.gui.CorpseScreen;
-import de.maxhenkel.corpse.net.MessageOpenHistory;
-import de.maxhenkel.corpse.net.MessageRequestDeathHistory;
-import de.maxhenkel.corpse.net.MessageShowCorpseInventory;
-import de.maxhenkel.corpse.net.MessageSwitchInventoryPage;
+import de.maxhenkel.corpse.net.*;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.EntityType;
@@ -74,6 +71,7 @@ public class Main {
         CommonRegistry.registerMessage(SIMPLE_CHANNEL, 1, MessageOpenHistory.class);
         CommonRegistry.registerMessage(SIMPLE_CHANNEL, 2, MessageShowCorpseInventory.class);
         CommonRegistry.registerMessage(SIMPLE_CHANNEL, 3, MessageRequestDeathHistory.class);
+        CommonRegistry.registerMessage(SIMPLE_CHANNEL, 4, MessageTransferItems.class);
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -106,4 +104,5 @@ public class Main {
         CONTAINER_TYPE_CORPSE.setRegistryName(new ResourceLocation(Main.MODID, "corpse"));
         event.getRegistry().register(CONTAINER_TYPE_CORPSE);
     }
+
 }

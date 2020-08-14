@@ -4,6 +4,7 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import de.maxhenkel.corelib.inventory.ScreenBase;
 import de.maxhenkel.corpse.Main;
 import de.maxhenkel.corpse.entities.CorpseEntity;
+import de.maxhenkel.corpse.net.MessageTransferItems;
 import de.maxhenkel.corpse.net.MessageSwitchInventoryPage;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.entity.player.PlayerInventory;
@@ -11,9 +12,13 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 
+import java.util.Collections;
+
 public class CorpseScreen extends ScreenBase<CorpseContainer> {
 
-    private static final ResourceLocation CORPSE_GUI_TEXTURE = new ResourceLocation(Main.MODID, "textures/gui/gui_corpse.png");
+    public static final ResourceLocation CORPSE_GUI_TEXTURE = new ResourceLocation(Main.MODID, "textures/gui/gui_corpse.png");
+
+    private static final int PADDING = 7;
 
     private PlayerInventory playerInventory;
     private CorpseEntity corpse;
@@ -39,22 +44,25 @@ public class CorpseScreen extends ScreenBase<CorpseContainer> {
 
         field_230710_m_.clear();
         int left = (field_230708_k_ - xSize) / 2;
-        int padding = 7;
         int buttonWidth = 50;
         int buttonHeight = 20;
-        previous = func_230480_a_(new Button(left + padding, guiTop + 149 - buttonHeight, buttonWidth, buttonHeight, new TranslationTextComponent("button.corpse.previous"), button -> {
+        previous = func_230480_a_(new Button(left + PADDING, guiTop + 149 - buttonHeight, buttonWidth, buttonHeight, new TranslationTextComponent("button.corpse.previous"), button -> {
             page--;
             if (page < 0) {
                 page = 0;
             }
             Main.SIMPLE_CHANNEL.sendToServer(new MessageSwitchInventoryPage(page));
         }));
-        next = func_230480_a_(new Button(left + xSize - buttonWidth - padding, guiTop + 149 - buttonHeight, buttonWidth, buttonHeight, new TranslationTextComponent("button.corpse.next"), button -> {
+        next = func_230480_a_(new Button(left + xSize - buttonWidth - PADDING, guiTop + 149 - buttonHeight, buttonWidth, buttonHeight, new TranslationTextComponent("button.corpse.next"), button -> {
             page++;
             if (page >= getPages()) {
                 page = getPages() - 1;
             }
             Main.SIMPLE_CHANNEL.sendToServer(new MessageSwitchInventoryPage(page));
+        }));
+
+        func_230480_a_(new TransferItemsButton(left + xSize - TransferItemsButton.WIDTH - 9, guiTop + 5, button -> {
+            Main.SIMPLE_CHANNEL.sendToServer(new MessageTransferItems());
         }));
     }
 
@@ -90,4 +98,12 @@ public class CorpseScreen extends ScreenBase<CorpseContainer> {
         field_230712_o_.func_238421_b_(matrixStack, pageName, guiLeft + xSize / 2 - pageWidth / 2, guiTop + ySize - 113, FONT_COLOR);
     }
 
+    @Override
+    protected void func_230451_b_(MatrixStack matrixStack, int mouseX, int mouseY) {
+        super.func_230451_b_(matrixStack, mouseX, mouseY);
+
+        if (mouseX >= guiLeft + xSize - TransferItemsButton.WIDTH - 9 && mouseX < guiLeft + xSize - 9 && mouseY >= guiTop + 5 && mouseY < guiTop + 5 + TransferItemsButton.HEIGHT) {
+            func_238654_b_(matrixStack, Collections.singletonList(new TranslationTextComponent("tooltip.corpse.transfer_items").func_241878_f()), mouseX - guiLeft, mouseY - guiTop);
+        }
+    }
 }

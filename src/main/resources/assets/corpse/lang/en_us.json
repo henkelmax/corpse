@@ -15,5 +15,6 @@
   "chat.corpse.teleport_death_location": "Teleport to death location %s",
   "tooltip.corpse.teleport": "Teleport",
   "tooltip.corpse.death_date": "Died on %s",
-  "tooltip.corpse.item_count": "Containing %s stack(s)"
+  "tooltip.corpse.item_count": "Containing %s stack(s)",
+  "tooltip.corpse.transfer_items": "Transfer items"
 }
