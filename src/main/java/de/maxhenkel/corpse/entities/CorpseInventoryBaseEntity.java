@@ -1,10 +1,13 @@
 package de.maxhenkel.corpse.entities;
 
+import de.maxhenkel.corpse.DataSerializerItemList;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Inventory;
+import net.minecraft.inventory.InventoryHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
@@ -23,12 +26,21 @@ import net.minecraftforge.items.wrapper.InvWrapper;
 
 public abstract class CorpseInventoryBaseEntity extends Entity implements IInventory {
 
-    private static final DataParameter<Integer> INVENTORY_SIZE = EntityDataManager.createKey(CorpseEntity.class, DataSerializers.VARINT);
+    private static final DataParameter<Integer> INVENTORY_SIZE = EntityDataManager.createKey(CorpseInventoryBaseEntity.class, DataSerializers.VARINT);
+    private static final DataParameter<NonNullList<ItemStack>> EQUIPMENT = EntityDataManager.createKey(CorpseInventoryBaseEntity.class, DataSerializerItemList.ITEM_LIST);
 
     protected IInventory inventory;
 
     public CorpseInventoryBaseEntity(EntityType<?> entityTypeIn, World worldIn) {
         super(entityTypeIn, worldIn);
+    }
+
+    public void setEquipment(NonNullList<ItemStack> equipment) {
+        dataManager.set(EQUIPMENT, equipment);
+    }
+
+    public NonNullList<ItemStack> getEquipment() {
+        return dataManager.get(EQUIPMENT);
     }
 
     private IInventory getInventory() {
@@ -64,41 +76,56 @@ public abstract class CorpseInventoryBaseEntity extends Entity implements IInven
     @Override
     protected void registerData() {
         dataManager.register(INVENTORY_SIZE, 54);
+        dataManager.register(EQUIPMENT, NonNullList.withSize(EquipmentSlotType.values().length, ItemStack.EMPTY));
     }
 
     @Override
     protected void readAdditional(CompoundNBT compound) {
         int size = compound.getInt("InventorySize");
 
-        ListNBT nbttaglist = compound.getList("Inventory", 10);
-
+        ListNBT inv = compound.getList("Inventory", 10);
         inventory = new Inventory(size);
-
-        for (int i = 0; i < nbttaglist.size(); i++) {
-            CompoundNBT nbttagcompound = nbttaglist.getCompound(i);
-            int j = nbttagcompound.getInt("Slot");
+        for (int i = 0; i < inv.size(); i++) {
+            CompoundNBT slot = inv.getCompound(i);
+            int j = slot.getInt("Slot");
 
             if (j >= 0 && j < inventory.getSizeInventory()) {
-                inventory.setInventorySlotContents(j, ItemStack.read(nbttagcompound));
+                inventory.setInventorySlotContents(j, ItemStack.read(slot));
             }
         }
+
+        ListNBT equip = compound.getList("Equipment", 10);
+        NonNullList<ItemStack> equipment = NonNullList.withSize(EquipmentSlotType.values().length, ItemStack.EMPTY);
+        for (int i = 0; i < equip.size(); i++) {
+            CompoundNBT stack = equip.getCompound(i);
+            equipment.set(i, ItemStack.read(stack));
+        }
+        setEquipment(equipment);
     }
 
     @Override
     protected void writeAdditional(CompoundNBT compound) {
-        ListNBT nbttaglist = new ListNBT();
+        ListNBT inv = new ListNBT();
 
         for (int i = 0; i < getSizeInventory(); i++) {
             if (!getStackInSlot(i).isEmpty()) {
-                CompoundNBT nbttagcompound = new CompoundNBT();
-                nbttagcompound.putInt("Slot", i);
-                getStackInSlot(i).write(nbttagcompound);
-                nbttaglist.add(nbttagcompound);
+                CompoundNBT slot = new CompoundNBT();
+                slot.putInt("Slot", i);
+                getStackInSlot(i).write(slot);
+                inv.add(slot);
             }
         }
 
-        compound.put("Inventory", nbttaglist);
+        compound.put("Inventory", inv);
         compound.putInt("InventorySize", getSizeInventory());
+
+        ListNBT equip = new ListNBT();
+        for (ItemStack stack : getEquipment()) {
+            CompoundNBT slot = new CompoundNBT();
+            stack.write(slot);
+            equip.add(slot);
+        }
+        compound.put("Equipment", equip);
     }
 
     @Override
@@ -116,6 +143,14 @@ public abstract class CorpseInventoryBaseEntity extends Entity implements IInven
             handler = new InvWrapper(getInventory());
         }
         return handler;
+    }
+
+    @Override
+    public void remove() {
+        for (int i = 0; i < getSizeInventory(); ++i) {
+            InventoryHelper.spawnItemStack(world, getPosX(), getPosY(), getPosZ(), removeStackFromSlot(i));
+        }
+        super.remove();
     }
 
     @Override
@@ -187,4 +222,5 @@ public abstract class CorpseInventoryBaseEntity extends Entity implements IInven
     public IPacket<?> createSpawnPacket() {
         return NetworkHooks.getEntitySpawningPacket(this);
     }
+
 }

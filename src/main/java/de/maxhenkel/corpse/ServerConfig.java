@@ -11,6 +11,7 @@ public class ServerConfig extends ConfigBase {
     public final ForgeConfigSpec.IntValue corpseForceDespawnTime;
     public final ForgeConfigSpec.IntValue corpseSkeletonTime;
     public final ForgeConfigSpec.BooleanValue spawnCorpseOnFace;
+    public final ForgeConfigSpec.BooleanValue renderEquipment;
     public final ForgeConfigSpec.BooleanValue fallIntoVoid;
     public final ForgeConfigSpec.BooleanValue lavaDamage;
 
@@ -34,6 +35,9 @@ public class ServerConfig extends ConfigBase {
         spawnCorpseOnFace = builder
                 .comment("If the corpse should lie on its face")
                 .define("corpse.lie_on_face", false);
+        renderEquipment = builder
+                .comment("If the corpse should wear the players equipment")
+                .define("corpse.show_equipment", true);
         fallIntoVoid = builder
                 .comment("If the corpse should fall into the void")
                 .define("corpse.fall_into_void", false);

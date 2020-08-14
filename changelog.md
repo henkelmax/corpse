@@ -1,1 +1,1 @@
-- Added item transferring
+- Added equipment rendering

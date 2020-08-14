@@ -1,6 +1,7 @@
 package de.maxhenkel.corpse;
 
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
@@ -15,6 +16,7 @@ public class Death {
     private UUID playerUUID;
     private String playerName;
     private NonNullList<ItemStack> items;
+    private NonNullList<ItemStack> equipment;
     private long timestamp;
     private int experience;
     private double posX;
@@ -40,6 +42,10 @@ public class Death {
 
     public NonNullList<ItemStack> getItems() {
         return items;
+    }
+
+    public NonNullList<ItemStack> getEquipment() {
+        return equipment;
     }
 
     public long getTimestamp() {
@@ -75,12 +81,16 @@ public class Death {
         return "Death{name=" + playerName + "timestamp=" + timestamp + "}";
     }
 
-    public static Death fromPlayer(PlayerEntity player, NonNullList<ItemStack> items) {
+    public static Death fromPlayer(PlayerEntity player) {
         Death death = new Death();
         death.id = UUID.randomUUID();
         death.playerUUID = player.getUniqueID();
         death.playerName = player.getName().getUnformattedComponentText();
-        death.items = items;
+        death.items = NonNullList.create();
+        death.equipment = NonNullList.withSize(EquipmentSlotType.values().length, ItemStack.EMPTY);
+        for (int i = 0; i < death.equipment.size(); i++) {
+            death.equipment.set(i, player.getItemStackFromSlot(EquipmentSlotType.values()[i]));
+        }
         death.timestamp = System.currentTimeMillis();
         death.experience = player.experienceLevel;
         death.posX = player.getPosX();
@@ -89,6 +99,10 @@ public class Death {
         death.dimension = player.world.func_234923_W_().func_240901_a_().toString();
 
         return death;
+    }
+
+    public void addDrops(NonNullList<ItemStack> items) {
+        this.items = items;
     }
 
     public static Death fromNBT(CompoundNBT compound) {
@@ -102,6 +116,14 @@ public class Death {
             ListNBT itemList = compound.getList("Items", 10);
             for (int i = 0; i < itemList.size(); i++) {
                 death.items.add(ItemStack.read(itemList.getCompound(i)));
+            }
+        }
+
+        death.equipment = NonNullList.create();
+        if (compound.contains("Equipment")) {
+            ListNBT itemList = compound.getList("Items", 10);
+            for (int i = 0; i < itemList.size(); i++) {
+                death.equipment.add(ItemStack.read(itemList.getCompound(i)));
             }
         }
 
@@ -133,6 +155,12 @@ public class Death {
                 itemList.add(stack.write(new CompoundNBT()));
             }
             compound.put("Items", itemList);
+
+            ListNBT equipmentList = new ListNBT();
+            for (ItemStack stack : equipment) {
+                equipmentList.add(stack.write(new CompoundNBT()));
+            }
+            compound.put("Equipment", equipmentList);
         }
 
         compound.putLong("Timestamp", timestamp);

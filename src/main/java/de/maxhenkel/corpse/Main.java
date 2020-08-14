@@ -30,6 +30,7 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.network.simple.SimpleChannel;
+import net.minecraftforge.registries.DataSerializerEntry;
 import org.lwjgl.glfw.GLFW;
 
 @Mod(Main.MODID)
@@ -50,6 +51,7 @@ public class Main {
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::commonSetup);
         FMLJavaModLoadingContext.get().getModEventBus().addGenericListener(EntityType.class, this::registerEntities);
         FMLJavaModLoadingContext.get().getModEventBus().addGenericListener(ContainerType.class, this::registerContainers);
+        FMLJavaModLoadingContext.get().getModEventBus().addGenericListener(DataSerializerEntry.class, this::registerSerializers);
 
         SERVER_CONFIG = CommonRegistry.registerConfig(ModConfig.Type.SERVER, ServerConfig.class);
 
@@ -72,6 +74,13 @@ public class Main {
         CommonRegistry.registerMessage(SIMPLE_CHANNEL, 2, MessageShowCorpseInventory.class);
         CommonRegistry.registerMessage(SIMPLE_CHANNEL, 3, MessageRequestDeathHistory.class);
         CommonRegistry.registerMessage(SIMPLE_CHANNEL, 4, MessageTransferItems.class);
+    }
+
+    @SubscribeEvent
+    public void registerSerializers(RegistryEvent.Register<DataSerializerEntry> event) {
+        DataSerializerEntry dataSerializerEntryItemList = new DataSerializerEntry(DataSerializerItemList.ITEM_LIST);
+        dataSerializerEntryItemList.setRegistryName(new ResourceLocation(MODID, "item_list"));
+        event.getRegistry().register(dataSerializerEntryItemList);
     }
 
     @OnlyIn(Dist.CLIENT)

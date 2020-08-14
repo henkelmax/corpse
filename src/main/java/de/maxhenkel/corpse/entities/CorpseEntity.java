@@ -9,7 +9,6 @@ import net.minecraft.entity.MoverType;
 import net.minecraft.entity.Pose;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.inventory.InventoryHelper;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
@@ -62,6 +61,7 @@ public class CorpseEntity extends CorpseInventoryBaseEntity {
         corpse.setDeathUUID(death.getId());
         corpse.setCorpseName(death.getPlayerName());
         corpse.setItems(death.getItems());
+        corpse.setEquipment(death.getEquipment());
         corpse.setPosition(death.getPosX(), Math.max(death.getPosY(), 0D), death.getPosZ());
         corpse.setCorpseRotation(player.rotationYaw);
         return corpse;
@@ -207,12 +207,7 @@ public class CorpseEntity extends CorpseInventoryBaseEntity {
     }
 
     public UUID getCorpseUUID() {
-        Optional<UUID> uuid = dataManager.get(ID);
-        if (uuid.isPresent()) {
-            return uuid.get();
-        } else {
-            return NULL_UUID;
-        }
+        return dataManager.get(ID).orElse(NULL_UUID);
     }
 
     public void setCorpseUUID(UUID uuid) {
@@ -270,25 +265,19 @@ public class CorpseEntity extends CorpseInventoryBaseEntity {
         dataManager.register(AGE, 0);
     }
 
-    @Override
-    public void remove() {
-        for (int i = 0; i < getSizeInventory(); ++i) {
-            InventoryHelper.spawnItemStack(world, getPosX(), getPosY(), getPosZ(), removeStackFromSlot(i));
-        }
-        super.remove();
-    }
-
     public void writeAdditional(CompoundNBT compound) {
         super.writeAdditional(compound);
 
         UUID uuid = getCorpseUUID();
         if (uuid != null) {
+            //TODO use putUniqueId
             compound.putLong("IDMost", uuid.getMostSignificantBits());
             compound.putLong("IDLeast", uuid.getLeastSignificantBits());
         }
 
         UUID deathID = getDeathUUID();
         if (deathID != null) {
+            //TODO use putUniqueId
             compound.putLong("DeathIDMost", deathID.getMostSignificantBits());
             compound.putLong("DeathIDLeast", deathID.getLeastSignificantBits());
         }

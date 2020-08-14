@@ -8,30 +8,35 @@ import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
+import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 public class DeathEvents {
 
+    private Map<ServerPlayerEntity, Death> deathMap = new HashMap<>();
+
     @SubscribeEvent(priority = EventPriority.LOWEST)
-    public void playerDeath(LivingDropsEvent event) {
-        if (event.isCanceled()) {
-            return;
-        }
-
+    public void playerDeath(LivingDeathEvent event) {
         Entity entity = event.getEntity();
-
-        if (entity.world.isRemote) {
-            return;
-        }
-
         if (!(entity instanceof ServerPlayerEntity)) {
             return;
         }
+        ServerPlayerEntity player = (ServerPlayerEntity) event.getEntity();
+        deathMap.put(player, Death.fromPlayer(player));
+    }
 
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    public void playerDeath(LivingDropsEvent event) {
+        Entity entity = event.getEntity();
+        if (!(entity instanceof ServerPlayerEntity)) {
+            return;
+        }
         try {
             Collection<ItemEntity> drops = event.getDrops();
 
@@ -47,7 +52,14 @@ public class DeathEvents {
 
             drops.clear();
 
-            Death death = Death.fromPlayer(player, stacks);
+            Death death = deathMap.remove(player);
+
+            if (death == null) {
+                death = Death.fromPlayer(player);
+            }
+
+            death.addDrops(stacks);
+
             DeathManager.addDeath(player, death);
 
             player.world.addEntity(CorpseEntity.createFromDeath(player, death));
