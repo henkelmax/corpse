@@ -23,7 +23,7 @@ import net.minecraft.util.text.event.ClickEvent;
 import net.minecraft.util.text.event.HoverEvent;
 
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -140,7 +140,7 @@ public class DeathHistoryScreen extends ScreenBase<Container> {
         InventoryScreen.drawEntityOnScreen((int) (xSize * 0.75D), ySize / 2 + 30, 40, (int) (guiLeft + (xSize * 0.75D)) - mouseX, (ySize / 2) - mouseY, player);
 
         if (mouseX >= guiLeft + 7 && mouseX <= guiLeft + hSplit && mouseY >= guiTop + 70 && mouseY <= guiTop + 100 + field_230712_o_.FONT_HEIGHT) {
-            func_238654_b_(matrixStack, Arrays.asList(new TranslationTextComponent("tooltip.corpse.teleport")), mouseX - guiLeft, mouseY - guiTop);
+            func_238654_b_(matrixStack, Collections.singletonList(new TranslationTextComponent("tooltip.corpse.teleport")), mouseX - guiLeft, mouseY - guiTop);
         }
     }
 

@@ -1,1 +1,1 @@
-- Fixed items not spawning when removing the corpse
+- Added item transferring
