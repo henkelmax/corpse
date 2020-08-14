@@ -119,11 +119,11 @@ public class Death {
             }
         }
 
-        death.equipment = NonNullList.create();
+        death.equipment = NonNullList.withSize(EquipmentSlotType.values().length, ItemStack.EMPTY);
         if (compound.contains("Equipment")) {
-            ListNBT itemList = compound.getList("Items", 10);
+            ListNBT itemList = compound.getList("Equipment", 10);
             for (int i = 0; i < itemList.size(); i++) {
-                death.equipment.add(ItemStack.read(itemList.getCompound(i)));
+                death.equipment.set(i, ItemStack.read(itemList.getCompound(i)));
             }
         }
 

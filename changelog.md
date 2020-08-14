@@ -1,1 +1,1 @@
-- Added equipment rendering
+- Fixed equipment serialization bug
