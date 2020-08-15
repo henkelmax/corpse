@@ -1,1 +1,1 @@
-- Fixed equipment serialization bug
+- Added equipment to player rendering in death history

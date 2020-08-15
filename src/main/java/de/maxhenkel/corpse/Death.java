@@ -155,13 +155,13 @@ public class Death {
                 itemList.add(stack.write(new CompoundNBT()));
             }
             compound.put("Items", itemList);
-
-            ListNBT equipmentList = new ListNBT();
-            for (ItemStack stack : equipment) {
-                equipmentList.add(stack.write(new CompoundNBT()));
-            }
-            compound.put("Equipment", equipmentList);
         }
+
+        ListNBT equipmentList = new ListNBT();
+        for (ItemStack stack : equipment) {
+            equipmentList.add(stack.write(new CompoundNBT()));
+        }
+        compound.put("Equipment", equipmentList);
 
         compound.putLong("Timestamp", timestamp);
         compound.putInt("Experience", experience);
@@ -172,4 +172,5 @@ public class Death {
 
         return compound;
     }
+
 }

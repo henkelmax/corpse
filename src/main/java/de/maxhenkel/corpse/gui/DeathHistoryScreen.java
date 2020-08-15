@@ -3,16 +3,15 @@ package de.maxhenkel.corpse.gui;
 import com.mojang.authlib.GameProfile;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
+import de.maxhenkel.corelib.CachedMap;
 import de.maxhenkel.corelib.inventory.ScreenBase;
 import de.maxhenkel.corpse.Death;
 import de.maxhenkel.corpse.Main;
+import de.maxhenkel.corpse.entities.DummyPlayer;
 import de.maxhenkel.corpse.net.MessageShowCorpseInventory;
 import net.minecraft.client.audio.SimpleSound;
-import net.minecraft.client.entity.player.RemoteClientPlayerEntity;
 import net.minecraft.client.gui.screen.inventory.InventoryScreen;
 import net.minecraft.client.gui.widget.button.Button;
-import net.minecraft.entity.EntitySize;
-import net.minecraft.entity.Pose;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvents;
@@ -31,6 +30,8 @@ public class DeathHistoryScreen extends ScreenBase<Container> {
 
     private static final ResourceLocation DEATH_HISTORY_GUI_TEXTURE = new ResourceLocation(Main.MODID, "textures/gui/gui_death_history.png");
 
+    private final CachedMap<Death, DummyPlayer> players;
+
     private Button previous;
     private Button next;
 
@@ -40,6 +41,7 @@ public class DeathHistoryScreen extends ScreenBase<Container> {
 
     public DeathHistoryScreen(List<Death> deaths) {
         super(DEATH_HISTORY_GUI_TEXTURE, new DeathHistoryContainer(), null, new TranslationTextComponent("gui.death_history.corpse.title"));
+        this.players = new CachedMap<>(10_000L);
         this.deaths = deaths;
         this.index = 0;
 
@@ -129,15 +131,9 @@ public class DeathHistoryScreen extends ScreenBase<Container> {
         // Player
         RenderSystem.color4f(1F, 1F, 1F, 1F);
 
-        RemoteClientPlayerEntity player = new RemoteClientPlayerEntity(field_230706_i_.world, new GameProfile(death.getPlayerUUID(), death.getPlayerName())) {
-            @Override
-            public EntitySize getSize(Pose pose) {
-                return new EntitySize(super.getSize(pose).width, Float.MAX_VALUE, true);
-            }
-        };
-        player.recalculateSize();
+        DummyPlayer dummyPlayer = players.get(death, () -> new DummyPlayer(field_230706_i_.world, new GameProfile(death.getPlayerUUID(), death.getPlayerName()), death.getEquipment()));
 
-        InventoryScreen.drawEntityOnScreen((int) (xSize * 0.75D), ySize / 2 + 30, 40, (int) (guiLeft + (xSize * 0.75D)) - mouseX, (ySize / 2) - mouseY, player);
+        InventoryScreen.drawEntityOnScreen((int) (xSize * 0.75D), ySize / 2 + 30, 40, (int) (guiLeft + (xSize * 0.75D)) - mouseX, (ySize / 2) - mouseY, dummyPlayer);
 
         if (mouseX >= guiLeft + 7 && mouseX <= guiLeft + hSplit && mouseY >= guiTop + 70 && mouseY <= guiTop + 100 + field_230712_o_.FONT_HEIGHT) {
             func_238654_b_(matrixStack, Collections.singletonList(new TranslationTextComponent("tooltip.corpse.teleport").func_241878_f()), mouseX - guiLeft, mouseY - guiTop);
@@ -179,4 +175,5 @@ public class DeathHistoryScreen extends ScreenBase<Container> {
     public Death getCurrentDeath() {
         return deaths.get(index);
     }
+
 }
