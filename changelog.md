@@ -1,1 +1,1 @@
-- Added equipment to player rendering in death history
+- Fixed crash with HWYLA
