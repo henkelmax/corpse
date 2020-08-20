@@ -1,1 +1,1 @@
-- Added item transferring
+- Fixed crash with HWYLA
