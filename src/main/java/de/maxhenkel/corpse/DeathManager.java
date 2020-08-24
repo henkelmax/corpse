@@ -2,6 +2,7 @@ package de.maxhenkel.corpse;
 
 import de.maxhenkel.corelib.CommonUtils;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraft.world.storage.FolderName;
@@ -28,7 +29,11 @@ public class DeathManager {
     @Nullable
     public static Death getDeath(ServerPlayerEntity player, UUID id) {
         try {
-            return Death.fromNBT(CompressedStreamTools.read(getDeathFile(player, id)));
+            CompoundNBT data = CompressedStreamTools.read(getDeathFile(player, id));
+            if (data == null) {
+                return null;
+            }
+            return Death.fromNBT(data);
         } catch (Exception e) {
             e.printStackTrace();
             return null;

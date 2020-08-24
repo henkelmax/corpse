@@ -1,1 +1,1 @@
-- Fixed crash with HWYLA
+- Fixed potential crash with HWYLA
