@@ -1,1 +1,1 @@
-- Fixed history gui closing bug
+- Fixed crashes when using HWYLA

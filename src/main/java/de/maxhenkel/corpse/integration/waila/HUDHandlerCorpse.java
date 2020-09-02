@@ -64,7 +64,9 @@ public class HUDHandlerCorpse implements IEntityComponentProvider, IServerDataPr
         }
 
         Death death = DeathManager.getDeath(serverPlayerEntity, uuid);
-        compoundNBT.put("death", death.toNBT(false));
+        if (death != null) {
+            compoundNBT.put("death", death.toNBT(false));
+        }
 
         compoundNBT.putInt("item_count", Tools.getStackCount(corpse));
     }
