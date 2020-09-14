@@ -1,1 +1,1 @@
-- Fixed death screen text rendering
+- Updated Brazilian Portuguese language
