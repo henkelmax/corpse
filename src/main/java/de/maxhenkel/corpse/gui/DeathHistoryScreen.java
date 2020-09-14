@@ -1,5 +1,6 @@
 package de.maxhenkel.corpse.gui;
 
+import com.google.common.collect.Lists;
 import com.mojang.authlib.GameProfile;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -83,9 +84,14 @@ public class DeathHistoryScreen extends ScreenBase<Container> {
     public boolean func_231044_a_(double x, double y, int clickType) {
         if (x >= guiLeft + 7 && x <= guiLeft + hSplit && y >= guiTop + 70 && y <= guiTop + 100 + field_230712_o_.FONT_HEIGHT) {
             BlockPos pos = getCurrentDeath().getBlockPos();
-            ITextComponent teleport = TextComponentUtils.func_240647_a_(new TranslationTextComponent("chat.coordinates", pos.getX(), pos.getY(), pos.getZ())).func_240700_a_((style) -> style.func_240723_c_(TextFormatting.GREEN).func_240715_a_(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/execute in " + getCurrentDeath().getDimension() + " run tp @s " + pos.getX() + " " + pos.getY() + " " + pos.getZ())).func_240716_a_(new HoverEvent(HoverEvent.Action.field_230550_a_, new TranslationTextComponent("chat.coordinates.tooltip"))));
+            ITextComponent teleport = TextComponentUtils.func_240647_a_(new TranslationTextComponent("chat.coordinates", pos.getX(), pos.getY(), pos.getZ()))
+                    .func_240700_a_((style) -> style
+                            .func_240723_c_(TextFormatting.GREEN)
+                            .func_240715_a_(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/execute in " + getCurrentDeath().getDimension() + " run tp @s " + pos.getX() + " " + pos.getY() + " " + pos.getZ()))
+                            .func_240716_a_(new HoverEvent(HoverEvent.Action.field_230550_a_, new TranslationTextComponent("chat.coordinates.tooltip")))
+                    );
             field_230706_i_.player.sendMessage(new TranslationTextComponent("chat.corpse.teleport_death_location", teleport), Util.field_240973_b_);
-            field_230706_i_.getSoundHandler().play(SimpleSound.master(SoundEvents.UI_BUTTON_CLICK, 1.0F));
+            field_230706_i_.getSoundHandler().play(SimpleSound.master(SoundEvents.UI_BUTTON_CLICK, 1F));
             field_230706_i_.displayGuiScreen(null);
         }
         return super.func_231044_a_(x, y, clickType);
@@ -97,36 +103,55 @@ public class DeathHistoryScreen extends ScreenBase<Container> {
         Death death = getCurrentDeath();
 
         // Title
-        String title = new TranslationTextComponent("gui.corpse.death_history.title").getString();
-        int titleWidth = field_230712_o_.getStringWidth(title);
-        field_230712_o_.func_238421_b_(matrixStack, TextFormatting.BLACK + title, (xSize - titleWidth) / 2, 7, 0);
+        IFormattableTextComponent title = new TranslationTextComponent("gui.corpse.death_history.title").func_240699_a_(TextFormatting.BLACK);
+        int titleWidth = field_230712_o_.getStringWidth(title.getString());
+        field_230712_o_.func_238422_b_(matrixStack, title.func_241878_f(), (xSize - titleWidth) / 2, 7, 0);
 
         // Date
-        String date = getDate(death.getTimestamp()).getString();
-        int dateWidth = field_230712_o_.getStringWidth(date);
-        field_230712_o_.func_238421_b_(matrixStack, TextFormatting.DARK_GRAY + date, (xSize - dateWidth) / 2, 20, 0);
+        IFormattableTextComponent date = new StringTextComponent(getDate(death.getTimestamp()).getString()).func_240699_a_(TextFormatting.DARK_GRAY);
+        int dateWidth = field_230712_o_.getStringWidth(date.getString());
+        field_230712_o_.func_238422_b_(matrixStack, date.func_241878_f(), (xSize - dateWidth) / 2, 20, 0);
 
         // Name
-        String textName = new TranslationTextComponent("gui.corpse.death_history.name").getString() + ":";
-        drawLeft(matrixStack, TextFormatting.DARK_GRAY + textName, 40);
+        drawLeft(matrixStack,
+                new TranslationTextComponent("gui.corpse.death_history.name")
+                        .func_230529_a_(new StringTextComponent(":"))
+                        .func_240699_a_(TextFormatting.DARK_GRAY),
+                40);
 
-        String name = death.getPlayerName();
-        drawRight(matrixStack, TextFormatting.GRAY + name, 40);
+        drawRight(matrixStack, new StringTextComponent(death.getPlayerName()).func_240699_a_(TextFormatting.GRAY), 40);
 
         // Dimension
-        String textDimension = new TranslationTextComponent("gui.corpse.death_history.dimension").getString() + ":";
-        drawLeft(matrixStack, TextFormatting.DARK_GRAY + textDimension, 55);
+        IFormattableTextComponent dimension = new TranslationTextComponent("gui.corpse.death_history.dimension")
+                .func_230529_a_(new StringTextComponent(":"))
+                .func_240699_a_(TextFormatting.DARK_GRAY);
 
-        String dimension = death.getDimension().split(":")[1];
-        drawRight(matrixStack, TextFormatting.GRAY + dimension, 55);
+        drawLeft(matrixStack, dimension, 55);
+
+        String dimensionName = death.getDimension().split(":")[1];
+        boolean shortened = false;
+
+        int dimWidth = field_230712_o_.getStringWidth(dimension.getString());
+
+        while (dimWidth + field_230712_o_.getStringWidth(dimensionName + (shortened ? "..." : "")) >= hSplit - 7) {
+            dimensionName = dimensionName.substring(0, dimensionName.length() - 1);
+            shortened = true;
+        }
+
+        drawRight(matrixStack,
+                new StringTextComponent(dimensionName + (shortened ? "..." : "")).func_240699_a_(TextFormatting.GRAY), 55);
 
         // Location
-        String textLocation = new TranslationTextComponent("gui.corpse.death_history.location").getString() + ":";
-        drawLeft(matrixStack, TextFormatting.DARK_GRAY + textLocation, 70);
+        drawLeft(matrixStack,
+                new TranslationTextComponent("gui.corpse.death_history.location")
+                        .func_230529_a_(new StringTextComponent(":"))
+                        .func_240699_a_(TextFormatting.DARK_GRAY)
+                , 70);
 
-        drawRight(matrixStack, TextFormatting.GRAY + "" + Math.round(death.getPosX()) + " X", 70);
-        drawRight(matrixStack, TextFormatting.GRAY + "" + Math.round(death.getPosY()) + " Y", 85);
-        drawRight(matrixStack, TextFormatting.GRAY + "" + Math.round(death.getPosZ()) + " Z", 100);
+
+        drawRight(matrixStack, new StringTextComponent(Math.round(death.getPosX()) + " X").func_240699_a_(TextFormatting.GRAY), 70);
+        drawRight(matrixStack, new StringTextComponent(Math.round(death.getPosY()) + " Y").func_240699_a_(TextFormatting.GRAY), 85);
+        drawRight(matrixStack, new StringTextComponent(Math.round(death.getPosZ()) + " Z").func_240699_a_(TextFormatting.GRAY), 100);
 
         // Player
         RenderSystem.color4f(1F, 1F, 1F, 1F);
@@ -137,6 +162,9 @@ public class DeathHistoryScreen extends ScreenBase<Container> {
 
         if (mouseX >= guiLeft + 7 && mouseX <= guiLeft + hSplit && mouseY >= guiTop + 70 && mouseY <= guiTop + 100 + field_230712_o_.FONT_HEIGHT) {
             func_238654_b_(matrixStack, Collections.singletonList(new TranslationTextComponent("tooltip.corpse.teleport").func_241878_f()), mouseX - guiLeft, mouseY - guiTop);
+        } else if (mouseX >= guiLeft + 7 && mouseX <= guiLeft + hSplit && mouseY >= guiTop + 55 && mouseY <= guiTop + 55 + field_230712_o_.FONT_HEIGHT) {
+            func_238654_b_(matrixStack, Lists.newArrayList(new TranslationTextComponent("gui.corpse.death_history.dimension").func_241878_f(), new StringTextComponent(death.getDimension()).func_240699_a_(TextFormatting.GRAY).func_241878_f()), mouseX - guiLeft, mouseY - guiTop);
+
         }
     }
 
@@ -161,15 +189,13 @@ public class DeathHistoryScreen extends ScreenBase<Container> {
         }
     }
 
-    public void drawLeft(MatrixStack matrixStack, String string, int height) {
-        int offset = 7;
-        int offsetLeft = offset;
-        field_230712_o_.func_238421_b_(matrixStack, string, offsetLeft, height, 0);
+    public void drawLeft(MatrixStack matrixStack, IFormattableTextComponent text, int height) {
+        field_230712_o_.func_238422_b_(matrixStack, text.func_241878_f(), 7, height, 0);
     }
 
-    public void drawRight(MatrixStack matrixStack, String string, int height) {
-        int strWidth = field_230712_o_.getStringWidth(string);
-        field_230712_o_.func_238421_b_(matrixStack, string, hSplit - strWidth, height, 0);
+    public void drawRight(MatrixStack matrixStack, IFormattableTextComponent text, int height) {
+        int strWidth = field_230712_o_.getStringWidth(text.getString());
+        field_230712_o_.func_238422_b_(matrixStack, text.func_241878_f(), hSplit - strWidth, height, 0);
     }
 
     public Death getCurrentDeath() {
