@@ -13,5 +13,8 @@
   "key.corpse.death_history": "Abrir histórico de morte",
   "message.corpse.no_death_history": "Sem histórico de morte",
   "chat.corpse.teleport_death_location": "Teleportar para local da morte %s",
-  "tooltip.corpse.teleport": "Teleportar"
+  "tooltip.corpse.teleport": "Teleportar",
+  "tooltip.corpse.death_date": "Morreu em %s",
+  "tooltip.corpse.item_count": "Contendo %s pilha(s)",
+  "tooltip.corpse.transfer_items": "Transferir itens"
 }
