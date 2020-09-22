@@ -76,7 +76,7 @@ It includes the coordinates and the dimension.
 
 - If only the owner of the corpse can access the inventory
 - If everybody can access the corpse in the skeleton stage
-- The time passed after a corpse despawns if it is empty
-- The time passed after a corpse despawns even if it is full
-- The time passed after a corpse turns into a skeleton
+- The time passed (in ticks) after a corpse despawns if it is empty
+- The time passed (in ticks) after a corpse despawns even if it is full
+- The time passed (in ticks) after a corpse turns into a skeleton
 - If the corpse should spawn on its face
