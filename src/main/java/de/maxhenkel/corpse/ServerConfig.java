@@ -24,13 +24,13 @@ public class ServerConfig extends ConfigBase {
                 .comment("If everybody can access the corpse in the skeleton stage (Only if only_owner_access is set to true)")
                 .define("corpse.access.skeleton", false);
         corpseDespawnTime = builder
-                .comment("The time passed after a corpse despawns (only if empty)")
+                .comment("The time passed (in ticks) after a corpse despawns (only if empty)")
                 .defineInRange("corpse.despawn.time", 20 * 30, 20, Integer.MAX_VALUE);
         corpseForceDespawnTime = builder
-                .comment("The time passed after a corpse despawns even if its not empty (-1 = never)")
+                .comment("The time passed (in ticks) after a corpse despawns even if its not empty (-1 = never)")
                 .defineInRange("corpse.despawn.force_time", -1, -1, Integer.MAX_VALUE);
         corpseSkeletonTime = builder
-                .comment("The time passed after a corpse turns into a skeleton")
+                .comment("The time passed (in ticks) after a corpse turns into a skeleton")
                 .defineInRange("corpse.skeleton_time", 20 * 60 * 60, 0, Integer.MAX_VALUE);
         spawnCorpseOnFace = builder
                 .comment("If the corpse should lie on its face")
