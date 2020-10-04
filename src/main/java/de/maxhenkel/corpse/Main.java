@@ -2,6 +2,7 @@ package de.maxhenkel.corpse;
 
 import de.maxhenkel.corelib.ClientRegistry;
 import de.maxhenkel.corelib.CommonRegistry;
+import de.maxhenkel.corelib.dataserializers.DataSerializerItemList;
 import de.maxhenkel.corpse.commands.HistoryCommand;
 import de.maxhenkel.corpse.entities.CorpseEntity;
 import de.maxhenkel.corpse.entities.CorpseRenderer;
@@ -78,9 +79,7 @@ public class Main {
 
     @SubscribeEvent
     public void registerSerializers(RegistryEvent.Register<DataSerializerEntry> event) {
-        DataSerializerEntry dataSerializerEntryItemList = new DataSerializerEntry(DataSerializerItemList.ITEM_LIST);
-        dataSerializerEntryItemList.setRegistryName(new ResourceLocation(MODID, "item_list"));
-        event.getRegistry().register(dataSerializerEntryItemList);
+        DataSerializerItemList.register(event, new ResourceLocation(MODID, "item_list"));
     }
 
     @OnlyIn(Dist.CLIENT)

@@ -1,1 +1,1 @@
-- Updated config comments
+- Updated dependencies

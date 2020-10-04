@@ -1,6 +1,6 @@
 package de.maxhenkel.corpse.entities;
 
-import de.maxhenkel.corpse.DataSerializerItemList;
+import de.maxhenkel.corelib.dataserializers.DataSerializerItemList;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.player.PlayerEntity;
