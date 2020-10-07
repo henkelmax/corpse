@@ -1,1 +1,1 @@
-- Updated dependencies
+- Fixed player skin models not considered

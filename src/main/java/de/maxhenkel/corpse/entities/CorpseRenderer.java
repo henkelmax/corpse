@@ -55,7 +55,7 @@ public class CorpseRenderer extends EntityRenderer<CorpseEntity> {
             DummySkeleton skeleton = skeletons.get(entity, () -> new DummySkeleton(entity.world, entity.getEquipment()));
             skeletonRenderer.render(skeleton, entityYaw, 1F, matrixStack, buffer, packedLightIn);
         } else {
-            AbstractClientPlayerEntity abstractClientPlayerEntity = players.get(entity, () -> new DummyPlayer((ClientWorld) entity.world, new GameProfile(entity.getCorpseUUID(), entity.getCorpseName()), entity.getEquipment()));
+            AbstractClientPlayerEntity abstractClientPlayerEntity = players.get(entity, () -> new DummyPlayer((ClientWorld) entity.world, new GameProfile(entity.getCorpseUUID(), entity.getCorpseName()), entity.getEquipment(), entity.getCorpseModel()));
             if (PlayerSkins.isSlim(entity.getCorpseUUID())) {
                 playerRendererSmallArms.render(abstractClientPlayerEntity, 0F, 1F, matrixStack, buffer, packedLightIn);
             } else {

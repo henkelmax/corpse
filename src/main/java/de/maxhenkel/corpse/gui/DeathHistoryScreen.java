@@ -156,7 +156,7 @@ public class DeathHistoryScreen extends ScreenBase<Container> {
         // Player
         RenderSystem.color4f(1F, 1F, 1F, 1F);
 
-        DummyPlayer dummyPlayer = players.get(death, () -> new DummyPlayer(field_230706_i_.world, new GameProfile(death.getPlayerUUID(), death.getPlayerName()), death.getEquipment()));
+        DummyPlayer dummyPlayer = players.get(death, () -> new DummyPlayer(field_230706_i_.world, new GameProfile(death.getPlayerUUID(), death.getPlayerName()), death.getEquipment(), death.getModel()));
 
         InventoryScreen.drawEntityOnScreen((int) (xSize * 0.75D), ySize / 2 + 30, 40, (int) (guiLeft + (xSize * 0.75D)) - mouseX, (ySize / 2) - mouseY, dummyPlayer);
 

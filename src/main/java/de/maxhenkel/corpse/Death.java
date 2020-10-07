@@ -1,5 +1,6 @@
 package de.maxhenkel.corpse;
 
+import de.maxhenkel.corelib.player.PlayerUtils;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
@@ -23,6 +24,7 @@ public class Death {
     private double posY;
     private double posZ;
     private String dimension;
+    private byte model;
 
     private Death() {
 
@@ -76,6 +78,10 @@ public class Death {
         return dimension;
     }
 
+    public byte getModel() {
+        return model;
+    }
+
     @Override
     public String toString() {
         return "Death{name=" + playerName + "timestamp=" + timestamp + "}";
@@ -97,7 +103,7 @@ public class Death {
         death.posY = player.getPosY();
         death.posZ = player.getPosZ();
         death.dimension = player.world.func_234923_W_().func_240901_a_().toString();
-
+        death.model = PlayerUtils.getModel(player);
         return death;
     }
 
@@ -133,6 +139,7 @@ public class Death {
         death.posY = compound.getDouble("PosY");
         death.posZ = compound.getDouble("PosZ");
         death.dimension = compound.getString("Dimension");
+        death.model = compound.getByte("Model");
 
         return death;
     }
@@ -169,6 +176,7 @@ public class Death {
         compound.putDouble("PosY", posY);
         compound.putDouble("PosZ", posZ);
         compound.putString("Dimension", dimension);
+        compound.putByte("Model", model);
 
         return compound;
     }

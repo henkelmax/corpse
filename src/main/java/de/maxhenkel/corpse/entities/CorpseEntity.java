@@ -37,6 +37,7 @@ public class CorpseEntity extends CorpseInventoryBaseEntity {
     private static final DataParameter<String> NAME = EntityDataManager.createKey(CorpseEntity.class, DataSerializers.STRING);
     private static final DataParameter<Float> ROTATION = EntityDataManager.createKey(CorpseEntity.class, DataSerializers.FLOAT);
     private static final DataParameter<Integer> AGE = EntityDataManager.createKey(CorpseEntity.class, DataSerializers.VARINT);
+    private static final DataParameter<Byte> MODEL = EntityDataManager.createKey(CorpseEntity.class, DataSerializers.BYTE);
 
     private static final AxisAlignedBB NULL_AABB = new AxisAlignedBB(0D, 0D, 0D, 0D, 0D, 0D);
     private static final UUID NULL_UUID = new UUID(0L, 0L);
@@ -64,6 +65,7 @@ public class CorpseEntity extends CorpseInventoryBaseEntity {
         corpse.setEquipment(death.getEquipment());
         corpse.setPosition(death.getPosX(), Math.max(death.getPosY(), 0D), death.getPosZ());
         corpse.setCorpseRotation(player.rotationYaw);
+        corpse.setCorpseModel(death.getModel());
         return corpse;
     }
 
@@ -255,6 +257,14 @@ public class CorpseEntity extends CorpseInventoryBaseEntity {
         dataManager.set(AGE, age);
     }
 
+    public byte getCorpseModel() {
+        return dataManager.get(MODEL);
+    }
+
+    public void setCorpseModel(byte model) {
+        dataManager.set(MODEL, model);
+    }
+
     @Override
     protected void registerData() {
         super.registerData();
@@ -263,6 +273,7 @@ public class CorpseEntity extends CorpseInventoryBaseEntity {
         dataManager.register(NAME, "");
         dataManager.register(ROTATION, 0F);
         dataManager.register(AGE, 0);
+        dataManager.register(MODEL, (byte) 0);
     }
 
     public void writeAdditional(CompoundNBT compound) {
