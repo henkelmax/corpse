@@ -16,7 +16,7 @@ public class JEIPlugin implements IModPlugin {
 
     @Override
     public void registerGuiHandlers(IGuiHandlerRegistration registration) {
-        registration.addGuiContainerHandler(DeathHistoryScreen.class, new DeathHistoryContainerHandler());
+        registration.addGuiScreenHandler(DeathHistoryScreen.class, NoJEIGuiProperties::new);
     }
 
 }

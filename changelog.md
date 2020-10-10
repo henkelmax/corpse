@@ -1,1 +1,1 @@
-- Fixed player skin models not considered
+- Fixed JEI visible in death history
