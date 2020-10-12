@@ -17,7 +17,7 @@ public class TransferItemsButton extends Button {
 
     public void func_230431_b_(MatrixStack matrixStack, int x, int y, float f) {
         RenderSystem.color4f(1F, 1F, 1F, 1F);
-        Minecraft.getInstance().getTextureManager().bindTexture(CorpseScreen.CORPSE_GUI_TEXTURE);
+        Minecraft.getInstance().getTextureManager().bindTexture(CorpseAdditionalScreen.CORPSE_GUI_TEXTURE);
         if (field_230692_n_) {
             func_238474_b_(matrixStack, field_230690_l_, field_230691_m_, 176, 10, WIDTH, HEIGHT);
         } else {

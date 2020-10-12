@@ -1,15 +1,15 @@
 package de.maxhenkel.corpse.net;
 
 import de.maxhenkel.corelib.net.Message;
-import de.maxhenkel.corpse.gui.ITransferrable;
-import net.minecraft.inventory.container.Container;
+import de.maxhenkel.corpse.gui.CorpseInventoryContainer;
+import de.maxhenkel.corpse.gui.Guis;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.network.NetworkEvent;
 
-public class MessageTransferItems implements Message {
+public class MessageOpenAdditionalItems implements Message {
 
-    public MessageTransferItems() {
+    public MessageOpenAdditionalItems() {
 
     }
 
@@ -20,15 +20,14 @@ public class MessageTransferItems implements Message {
 
     @Override
     public void executeServerSide(NetworkEvent.Context context) {
-        Container openContainer = context.getSender().openContainer;
-        if (openContainer instanceof ITransferrable) {
-            ITransferrable transferrable = (ITransferrable) openContainer;
-            transferrable.transferItems();
+        if (!(context.getSender().openContainer instanceof CorpseInventoryContainer)) {
+            return;
         }
+        Guis.openAdditionalItems(context.getSender(), (CorpseInventoryContainer) context.getSender().openContainer);
     }
 
     @Override
-    public MessageTransferItems fromBytes(PacketBuffer buf) {
+    public MessageOpenAdditionalItems fromBytes(PacketBuffer buf) {
         return this;
     }
 
@@ -36,5 +35,4 @@ public class MessageTransferItems implements Message {
     public void toBytes(PacketBuffer buf) {
 
     }
-
 }

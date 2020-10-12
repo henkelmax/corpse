@@ -14,7 +14,7 @@ import net.minecraft.util.text.TranslationTextComponent;
 
 import java.util.Collections;
 
-public class CorpseScreen extends ScreenBase<CorpseContainer> {
+public class CorpseAdditionalScreen extends ScreenBase<CorpseAdditionalContainer> {
 
     public static final ResourceLocation CORPSE_GUI_TEXTURE = new ResourceLocation(Main.MODID, "textures/gui/gui_corpse.png");
 
@@ -28,7 +28,7 @@ public class CorpseScreen extends ScreenBase<CorpseContainer> {
 
     private int page;
 
-    public CorpseScreen(CorpseEntity corpse, PlayerInventory playerInventory, CorpseContainer container, ITextComponent title) {
+    public CorpseAdditionalScreen(CorpseEntity corpse, PlayerInventory playerInventory, CorpseAdditionalContainer container, ITextComponent title) {
         super(CORPSE_GUI_TEXTURE, container, playerInventory, title);
         this.playerInventory = playerInventory;
         this.corpse = corpse;
@@ -83,7 +83,8 @@ public class CorpseScreen extends ScreenBase<CorpseContainer> {
     }
 
     private int getPages() {
-        return corpse.getSizeInventory() / 54;
+        int size = corpse.getDeath().getAdditionalItems().size();
+        return Math.max(1, (size / 54) + ((size % 54 == 0) ? 0 : 1));
     }
 
     @Override
@@ -103,7 +104,7 @@ public class CorpseScreen extends ScreenBase<CorpseContainer> {
         super.func_230451_b_(matrixStack, mouseX, mouseY);
 
         if (mouseX >= guiLeft + xSize - TransferItemsButton.WIDTH - 9 && mouseX < guiLeft + xSize - 9 && mouseY >= guiTop + 5 && mouseY < guiTop + 5 + TransferItemsButton.HEIGHT) {
-            func_238654_b_(matrixStack, Collections.singletonList(new TranslationTextComponent("tooltip.corpse.transfer_items").func_241878_f()), mouseX - guiLeft, mouseY - guiTop);
+            func_238654_b_(matrixStack, Collections.singletonList(new TranslationTextComponent("button.corpse.transfer_items").func_241878_f()), mouseX - guiLeft, mouseY - guiTop);
         }
     }
 }

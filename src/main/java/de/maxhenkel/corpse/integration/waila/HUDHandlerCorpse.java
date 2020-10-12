@@ -1,7 +1,6 @@
 package de.maxhenkel.corpse.integration.waila;
 
-import de.maxhenkel.corpse.Death;
-import de.maxhenkel.corpse.DeathManager;
+import de.maxhenkel.corelib.death.Death;
 import de.maxhenkel.corpse.entities.CorpseEntity;
 import de.maxhenkel.corpse.gui.DeathHistoryScreen;
 import mcp.mobius.waila.Waila;
@@ -9,15 +8,15 @@ import mcp.mobius.waila.api.*;
 import mcp.mobius.waila.utils.ModIdentification;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.*;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 
 import java.util.List;
-import java.util.UUID;
 
 public class HUDHandlerCorpse implements IEntityComponentProvider, IServerDataProvider<Entity> {
 
@@ -44,13 +43,16 @@ public class HUDHandlerCorpse implements IEntityComponentProvider, IServerDataPr
 
         CompoundNBT data = accessor.getServerData();
 
-        if (data.contains("death")) {
-            Death death = Death.fromNBT(data.getCompound("death"));
-            tooltip.add(new TranslationTextComponent("tooltip.corpse.death_date", DeathHistoryScreen.getDate(death.getTimestamp())));
+        if (data.contains("Death")) {
+            Death death = Death.fromNBT(data.getCompound("Death"));
+            long timestamp = death.getTimestamp();
+            if (timestamp > 0L) {
+                tooltip.add(new TranslationTextComponent("tooltip.corpse.death_date", DeathHistoryScreen.getDate(timestamp)));
+            }
         }
 
-        if (data.contains("item_count")) {
-            tooltip.add(new TranslationTextComponent("tooltip.corpse.item_count", data.getInt("item_count")));
+        if (data.contains("ItemCount")) {
+            tooltip.add(new TranslationTextComponent("tooltip.corpse.item_count", data.getInt("ItemCount")));
         }
     }
 
@@ -62,29 +64,9 @@ public class HUDHandlerCorpse implements IEntityComponentProvider, IServerDataPr
     @Override
     public void appendServerData(CompoundNBT compoundNBT, ServerPlayerEntity serverPlayerEntity, World world, Entity entity) {
         CorpseEntity corpse = (CorpseEntity) entity;
-        UUID uuid = corpse.getDeathUUID();
-        if (uuid == null) {
-            return;
-        }
-
-        Death death = DeathManager.getDeath(serverPlayerEntity, uuid);
-        if (death != null) {
-            compoundNBT.put("death", death.toNBT(false));
-        }
-
-        compoundNBT.putInt("item_count", getStackCount(corpse));
-    }
-
-    public static int getStackCount(IInventory inventory) {
-        int count = 0;
-
-        for (int i = 0; i < inventory.getSizeInventory(); i++) {
-            ItemStack stackInSlot = inventory.getStackInSlot(i);
-            if (!stackInSlot.isEmpty()) {
-                count++;
-            }
-        }
-        return count;
+        Death death = corpse.getDeath();
+        compoundNBT.put("Death", death.toNBT(false));
+        compoundNBT.putInt("ItemCount", (int) death.getAllItems().stream().filter(itemStack -> !itemStack.isEmpty()).count());
     }
 
 }

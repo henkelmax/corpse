@@ -16,5 +16,5 @@
   "tooltip.corpse.teleport": "Teleportar",
   "tooltip.corpse.death_date": "Morreu em %s",
   "tooltip.corpse.item_count": "Contendo %s pilha(s)",
-  "tooltip.corpse.transfer_items": "Transferir itens"
+  "button.corpse.transfer_items": "Transferir itens"
 }

@@ -1,23 +1,29 @@
 package de.maxhenkel.corpse.entities;
 
-import de.maxhenkel.corpse.Death;
+import de.maxhenkel.corelib.dataserializers.DataSerializerItemList;
+import de.maxhenkel.corelib.death.Death;
+import de.maxhenkel.corelib.item.ItemUtils;
 import de.maxhenkel.corpse.Main;
-import de.maxhenkel.corpse.gui.CorpseContainerProvider;
+import de.maxhenkel.corpse.gui.Guis;
 import net.minecraft.entity.EntitySize;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.MoverType;
 import net.minecraft.entity.Pose;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.inventory.EquipmentSlotType;
+import net.minecraft.inventory.InventoryHelper;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.network.IPacket;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.ITextComponent;
@@ -30,26 +36,24 @@ import net.minecraftforge.fml.network.NetworkHooks;
 import java.util.Optional;
 import java.util.UUID;
 
-public class CorpseEntity extends CorpseInventoryBaseEntity {
+public class CorpseEntity extends CorpseBoundingBoxBase {
 
     private static final DataParameter<Optional<UUID>> ID = EntityDataManager.createKey(CorpseEntity.class, DataSerializers.OPTIONAL_UNIQUE_ID);
-    private static final DataParameter<Optional<UUID>> DEATH_ID = EntityDataManager.createKey(CorpseEntity.class, DataSerializers.OPTIONAL_UNIQUE_ID);
     private static final DataParameter<String> NAME = EntityDataManager.createKey(CorpseEntity.class, DataSerializers.STRING);
-    private static final DataParameter<Float> ROTATION = EntityDataManager.createKey(CorpseEntity.class, DataSerializers.FLOAT);
-    private static final DataParameter<Integer> AGE = EntityDataManager.createKey(CorpseEntity.class, DataSerializers.VARINT);
+    private static final DataParameter<Boolean> SKELETON = EntityDataManager.createKey(CorpseEntity.class, DataSerializers.BOOLEAN);
     private static final DataParameter<Byte> MODEL = EntityDataManager.createKey(CorpseEntity.class, DataSerializers.BYTE);
+    private static final DataParameter<NonNullList<ItemStack>> EQUIPMENT = EntityDataManager.createKey(CorpseEntity.class, DataSerializerItemList.ITEM_LIST);
 
-    private static final AxisAlignedBB NULL_AABB = new AxisAlignedBB(0D, 0D, 0D, 0D, 0D, 0D);
-    private static final UUID NULL_UUID = new UUID(0L, 0L);
-
-    private AxisAlignedBB boundingBox;
+    private int age;
     private int emptyAge;
+
+    protected Death death;
 
     public CorpseEntity(EntityType type, World world) {
         super(type, world);
-        boundingBox = NULL_AABB;
         preventEntitySpawning = true;
         emptyAge = -1;
+        death = new Death.Builder(new UUID(0L, 0L), new UUID(0L, 0L)).build();
     }
 
     public CorpseEntity(World world) {
@@ -58,13 +62,12 @@ public class CorpseEntity extends CorpseInventoryBaseEntity {
 
     public static CorpseEntity createFromDeath(PlayerEntity player, Death death) {
         CorpseEntity corpse = new CorpseEntity(player.world);
+        corpse.death = death;
         corpse.setCorpseUUID(death.getPlayerUUID());
-        corpse.setDeathUUID(death.getId());
         corpse.setCorpseName(death.getPlayerName());
-        corpse.setItems(death.getItems());
         corpse.setEquipment(death.getEquipment());
         corpse.setPosition(death.getPosX(), Math.max(death.getPosY(), 0D), death.getPosZ());
-        corpse.setCorpseRotation(player.rotationYaw);
+        corpse.rotationYaw = player.rotationYaw;
         corpse.setCorpseModel(death.getModel());
         return corpse;
     }
@@ -77,8 +80,8 @@ public class CorpseEntity extends CorpseInventoryBaseEntity {
     @Override
     public void tick() {
         super.tick();
-        recalculateBoundingBox();
-        setCorpseAge(getCorpseAge() + 1);
+        age++;
+        setIsSkeleton(age >= Main.SERVER_CONFIG.corpseSkeletonTime.get());
 
         if (!hasNoGravity()) {
             double yMotion = 0D;
@@ -104,16 +107,30 @@ public class CorpseEntity extends CorpseInventoryBaseEntity {
         if (world.isRemote) {
             return;
         }
-        if (Main.SERVER_CONFIG.corpseForceDespawnTime.get() > 0 && getCorpseAge() > Main.SERVER_CONFIG.corpseForceDespawnTime.get()) {
+        if (Main.SERVER_CONFIG.corpseForceDespawnTime.get() > 0 && age > Main.SERVER_CONFIG.corpseForceDespawnTime.get()) {
             remove();
             return;
         }
-
-        if (isEmpty() && emptyAge < 0) {
-            emptyAge = getCorpseAge();
-        } else if (isEmpty() && getCorpseAge() - emptyAge >= Main.SERVER_CONFIG.corpseDespawnTime.get()) {
+        boolean empty = isEmpty();
+        if (empty && emptyAge < 0) {
+            emptyAge = age;
+        } else if (empty && age - emptyAge >= Main.SERVER_CONFIG.corpseDespawnTime.get()) {
             remove();
         }
+    }
+
+    public boolean isMainInventoryEmpty() {
+        return death.getMainInventory().stream().allMatch(ItemStack::isEmpty)
+                && death.getArmorInventory().stream().allMatch(ItemStack::isEmpty)
+                && death.getOffHandInventory().stream().allMatch(ItemStack::isEmpty);
+    }
+
+    public boolean isAdditionalInventoryEmpty() {
+        return death.getAdditionalItems().stream().allMatch(ItemStack::isEmpty);
+    }
+
+    public boolean isEmpty() {
+        return isMainInventoryEmpty() && isAdditionalInventoryEmpty();
     }
 
     @Override
@@ -131,39 +148,15 @@ public class CorpseEntity extends CorpseInventoryBaseEntity {
             if (Main.SERVER_CONFIG.onlyOwnerAccess.get()) {
                 boolean isOp = playerMP.hasPermissionLevel(playerMP.server.getOpPermissionLevel());
                 if (isOp || playerMP.getUniqueID().equals(getCorpseUUID())) {
-                    openCorpseGUI((ServerPlayerEntity) player, this);
+                    Guis.openCorpseGUI((ServerPlayerEntity) player, this);
                 } else if (Main.SERVER_CONFIG.skeletonAccess.get() && isSkeleton()) {
-                    openCorpseGUI((ServerPlayerEntity) player, this);
+                    Guis.openCorpseGUI((ServerPlayerEntity) player, this);
                 }
             } else {
-                openCorpseGUI((ServerPlayerEntity) player, this);
+                Guis.openCorpseGUI((ServerPlayerEntity) player, this);
             }
         }
         return ActionResultType.SUCCESS;
-    }
-
-    public static void openCorpseGUI(ServerPlayerEntity player, CorpseEntity corpse) {
-        NetworkHooks.openGui(player, new CorpseContainerProvider(corpse, true, false), packetBuffer -> {
-            packetBuffer.writeBoolean(false);
-            packetBuffer.writeLong(corpse.getUniqueID().getMostSignificantBits());
-            packetBuffer.writeLong(corpse.getUniqueID().getLeastSignificantBits());
-        });
-    }
-
-    public boolean isSkeleton() {
-        return getCorpseAge() >= Main.SERVER_CONFIG.corpseSkeletonTime.get();
-    }
-
-    public void recalculateBoundingBox() {
-        Direction facing = dataManager == null ? Direction.NORTH : Direction.fromAngle(getCorpseRotation());
-        boundingBox = new AxisAlignedBB(
-                getPosX() - (facing.getXOffset() != 0 ? 1D : 0.5D),
-                getPosY(),
-                getPosZ() - (facing.getZOffset() != 0 ? 1D : 0.5D),
-                getPosX() + (facing.getXOffset() != 0 ? 1D : 0.5D),
-                getPosY() + 0.5D,
-                getPosZ() + (facing.getZOffset() != 0 ? 1D : 0.5D)
-        );
     }
 
     @Override
@@ -181,21 +174,6 @@ public class CorpseEntity extends CorpseInventoryBaseEntity {
         return false;
     }
 
-    @Override
-    public AxisAlignedBB getBoundingBox() {
-        return boundingBox;
-    }
-
-    @Override
-    public void setBoundingBox(AxisAlignedBB boundingBox) {
-        this.boundingBox = boundingBox;
-    }
-
-    @Override
-    public void setPosition(double x, double y, double z) {
-        super.setPosition(x, y, z);
-        recalculateBoundingBox();
-    }
 
     @OnlyIn(Dist.CLIENT)
     @Override
@@ -208,28 +186,25 @@ public class CorpseEntity extends CorpseInventoryBaseEntity {
         return !removed;
     }
 
-    public UUID getCorpseUUID() {
-        return dataManager.get(ID).orElse(NULL_UUID);
+    public Optional<UUID> getCorpseUUID() {
+        return dataManager.get(ID);
     }
 
     public void setCorpseUUID(UUID uuid) {
         if (uuid == null) {
-            dataManager.set(ID, Optional.of(NULL_UUID));
+            dataManager.set(ID, Optional.empty());
         } else {
             dataManager.set(ID, Optional.of(uuid));
         }
     }
 
-    public UUID getDeathUUID() {
-        return dataManager.get(DEATH_ID).orElse(null);
+    public Death getDeath() {
+        return death;
     }
 
-    public void setDeathUUID(UUID uuid) {
-        if (uuid == null) {
-            dataManager.set(DEATH_ID, Optional.empty());
-        } else {
-            dataManager.set(DEATH_ID, Optional.of(uuid));
-        }
+    @OnlyIn(Dist.CLIENT)
+    public void setDeath(Death death) {
+        this.death = death;
     }
 
     public String getCorpseName() {
@@ -240,21 +215,12 @@ public class CorpseEntity extends CorpseInventoryBaseEntity {
         dataManager.set(NAME, name);
     }
 
-    public float getCorpseRotation() {
-        return dataManager.get(ROTATION);
+    public boolean isSkeleton() {
+        return dataManager.get(SKELETON);
     }
 
-    public void setCorpseRotation(float rotation) {
-        dataManager.set(ROTATION, rotation);
-        recalculateBoundingBox();
-    }
-
-    public int getCorpseAge() {
-        return dataManager.get(AGE);
-    }
-
-    public void setCorpseAge(int age) {
-        dataManager.set(AGE, age);
+    public void setIsSkeleton(boolean skeleton) {
+        dataManager.set(SKELETON, skeleton);
     }
 
     public byte getCorpseModel() {
@@ -265,60 +231,72 @@ public class CorpseEntity extends CorpseInventoryBaseEntity {
         dataManager.set(MODEL, model);
     }
 
-    @Override
-    protected void registerData() {
-        super.registerData();
-        dataManager.register(ID, Optional.of(NULL_UUID));
-        dataManager.register(DEATH_ID, Optional.empty());
-        dataManager.register(NAME, "");
-        dataManager.register(ROTATION, 0F);
-        dataManager.register(AGE, 0);
-        dataManager.register(MODEL, (byte) 0);
+    public void setEquipment(NonNullList<ItemStack> equipment) {
+        dataManager.set(EQUIPMENT, equipment);
     }
 
-    public void writeAdditional(CompoundNBT compound) {
-        super.writeAdditional(compound);
+    public NonNullList<ItemStack> getEquipment() {
+        return dataManager.get(EQUIPMENT);
+    }
 
-        UUID uuid = getCorpseUUID();
-        if (uuid != null) {
-            //TODO use putUniqueId
-            compound.putLong("IDMost", uuid.getMostSignificantBits());
-            compound.putLong("IDLeast", uuid.getLeastSignificantBits());
+    @Override
+    protected void registerData() {
+        dataManager.register(ID, Optional.empty());
+        dataManager.register(NAME, "");
+        dataManager.register(SKELETON, false);
+        dataManager.register(MODEL, (byte) 0);
+        dataManager.register(EQUIPMENT, NonNullList.withSize(EquipmentSlotType.values().length, ItemStack.EMPTY));
+    }
+
+    @Override
+    public void remove() {
+        for (ItemStack item : death.getAllItems()) {
+            InventoryHelper.spawnItemStack(world, getPosX(), getPosY(), getPosZ(), item);
         }
+        super.remove();
+    }
 
-        UUID deathID = getDeathUUID();
-        if (deathID != null) {
-            //TODO use putUniqueId
-            compound.putLong("DeathIDMost", deathID.getMostSignificantBits());
-            compound.putLong("DeathIDLeast", deathID.getLeastSignificantBits());
+    @Override
+    protected void readAdditional(CompoundNBT compound) {
+        if (compound.contains("Death")) {
+            death = Death.fromNBT(compound.getCompound("Death"));
+        } else { // Compatibility
+            UUID playerUUID = new UUID(compound.getLong("IDMost"), compound.getLong("IDLeast"));
+            UUID deathID = new UUID(compound.getLong("DeathIDMost"), compound.getLong("DeathIDLeast"));
+
+            Death.Builder builder = new Death.Builder(playerUUID, deathID);
+
+            int size = compound.getInt("InventorySize");
+            NonNullList<ItemStack> additionalItems = NonNullList.withSize(size, ItemStack.EMPTY);
+            ItemUtils.readInventory(compound, "Inventory", additionalItems);
+            builder.additionalItems(additionalItems);
+            NonNullList<ItemStack> equipment = NonNullList.withSize(EquipmentSlotType.values().length, ItemStack.EMPTY);
+            ItemUtils.readItemList(compound, "Equipment", equipment);
+            builder.equipment(equipment);
+            builder.playerName(compound.getString("Name"));
+            death = builder.build();
         }
+        setEquipment(death.getEquipment());
+        setCorpseUUID(death.getPlayerUUID());
+        setCorpseName(death.getPlayerName());
+        age = compound.getInt("Age");
+        if (compound.contains("EmptyAge")) {
+            emptyAge = compound.getInt("EmptyAge");
+        }
+    }
 
-        compound.putString("Name", getCorpseName());
-        compound.putFloat("Rotation", getCorpseRotation());
-        compound.putInt("Age", getCorpseAge());
-
+    @Override
+    protected void writeAdditional(CompoundNBT compound) {
+        compound.put("Death", death.toNBT());
+        compound.putInt("Age", age);
         if (emptyAge >= 0) {
             compound.putInt("EmptyAge", emptyAge);
         }
     }
 
-    public void readAdditional(CompoundNBT compound) {
-        super.readAdditional(compound);
-
-        if (compound.contains("IDMost") && compound.contains("IDLeast")) {
-            setCorpseUUID(new UUID(compound.getLong("IDMost"), compound.getLong("IDLeast")));
-        }
-
-        if (compound.contains("DeathIDMost") && compound.contains("DeathIDLeast")) {
-            setDeathUUID(new UUID(compound.getLong("DeathIDMost"), compound.getLong("DeathIDLeast")));
-        }
-
-        setCorpseName(compound.getString("Name"));
-        setCorpseRotation(compound.getFloat("Rotation"));
-        setCorpseAge(compound.getInt("Age"));
-
-        if (compound.contains("EmptyAge")) {
-            emptyAge = compound.getInt("EmptyAge");
-        }
+    @Override
+    public IPacket<?> createSpawnPacket() {
+        return NetworkHooks.getEntitySpawningPacket(this);
     }
+
 }

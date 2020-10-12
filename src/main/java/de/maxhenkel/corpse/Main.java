@@ -8,13 +8,12 @@ import de.maxhenkel.corpse.entities.CorpseEntity;
 import de.maxhenkel.corpse.entities.CorpseRenderer;
 import de.maxhenkel.corpse.events.DeathEvents;
 import de.maxhenkel.corpse.events.KeyEvents;
-import de.maxhenkel.corpse.gui.CorpseContainer;
-import de.maxhenkel.corpse.gui.CorpseContainerFactory;
-import de.maxhenkel.corpse.gui.CorpseScreen;
+import de.maxhenkel.corpse.gui.*;
 import de.maxhenkel.corpse.net.*;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.EntityType;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
@@ -45,7 +44,8 @@ public class Main {
 
     public static SimpleChannel SIMPLE_CHANNEL;
     public static EntityType<CorpseEntity> CORPSE_ENTITY_TYPE;
-    public static ContainerType<CorpseContainer> CONTAINER_TYPE_CORPSE;
+    public static ContainerType<CorpseAdditionalContainer> CONTAINER_TYPE_CORPSE_ADDITIONAL_ITEMS;
+    public static ContainerType<CorpseInventoryContainer> CONTAINER_TYPE_CORPSE_INVENTORY;
     public static ServerConfig SERVER_CONFIG;
 
     public Main() {
@@ -75,6 +75,7 @@ public class Main {
         CommonRegistry.registerMessage(SIMPLE_CHANNEL, 2, MessageShowCorpseInventory.class);
         CommonRegistry.registerMessage(SIMPLE_CHANNEL, 3, MessageRequestDeathHistory.class);
         CommonRegistry.registerMessage(SIMPLE_CHANNEL, 4, MessageTransferItems.class);
+        CommonRegistry.registerMessage(SIMPLE_CHANNEL, 5, MessageOpenAdditionalItems.class);
     }
 
     @SubscribeEvent
@@ -85,7 +86,8 @@ public class Main {
     @OnlyIn(Dist.CLIENT)
     @SubscribeEvent
     public void clientSetup(FMLClientSetupEvent event) {
-        ClientRegistry.<CorpseContainer, CorpseScreen>registerScreen(Main.CONTAINER_TYPE_CORPSE, (container, inv, title) -> new CorpseScreen(container.getCorpse(), inv, container, title));
+        ClientRegistry.<CorpseAdditionalContainer, CorpseAdditionalScreen>registerScreen(Main.CONTAINER_TYPE_CORPSE_ADDITIONAL_ITEMS, (container, inv, title) -> new CorpseAdditionalScreen(container.getCorpse(), inv, container, title));
+        ClientRegistry.<CorpseInventoryContainer, CorpseInventoryScreen>registerScreen(Main.CONTAINER_TYPE_CORPSE_INVENTORY, (container, inv, title) -> new CorpseInventoryScreen(container.getCorpse(), inv, container, title));
 
         KEY_DEATH_HISTORY = ClientRegistry.registerKeyBinding("key.corpse.death_history", "key.categories.misc", GLFW.GLFW_KEY_U);
         MinecraftForge.EVENT_BUS.register(new KeyEvents());
@@ -108,9 +110,23 @@ public class Main {
 
     @SubscribeEvent
     public void registerContainers(RegistryEvent.Register<ContainerType<?>> event) {
-        CONTAINER_TYPE_CORPSE = new ContainerType<>(new CorpseContainerFactory());
-        CONTAINER_TYPE_CORPSE.setRegistryName(new ResourceLocation(Main.MODID, "corpse"));
-        event.getRegistry().register(CONTAINER_TYPE_CORPSE);
+        CONTAINER_TYPE_CORPSE_ADDITIONAL_ITEMS = new ContainerType<>(new CorpseContainerFactory<CorpseAdditionalContainer>() {
+            @Override
+            public CorpseAdditionalContainer create(int id, PlayerInventory playerInventory, CorpseEntity corpse, boolean editable, boolean history) {
+                return new CorpseAdditionalContainer(id, playerInventory, corpse, editable, history);
+            }
+        });
+        CONTAINER_TYPE_CORPSE_ADDITIONAL_ITEMS.setRegistryName(new ResourceLocation(Main.MODID, "corpse_additonal_items"));
+        event.getRegistry().register(CONTAINER_TYPE_CORPSE_ADDITIONAL_ITEMS);
+
+        CONTAINER_TYPE_CORPSE_INVENTORY = new ContainerType<>(new CorpseContainerFactory<CorpseInventoryContainer>() {
+            @Override
+            public CorpseInventoryContainer create(int id, PlayerInventory playerInventory, CorpseEntity corpse, boolean editable, boolean history) {
+                return new CorpseInventoryContainer(id, playerInventory, corpse, editable, history);
+            }
+        });
+        CONTAINER_TYPE_CORPSE_INVENTORY.setRegistryName(new ResourceLocation(Main.MODID, "corpse_inventory"));
+        event.getRegistry().register(CONTAINER_TYPE_CORPSE_INVENTORY);
     }
 
 }

@@ -1,7 +1,7 @@
 package de.maxhenkel.corpse.net;
 
+import de.maxhenkel.corelib.death.Death;
 import de.maxhenkel.corelib.net.Message;
-import de.maxhenkel.corpse.Death;
 import de.maxhenkel.corpse.gui.DeathHistoryScreen;
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundNBT;

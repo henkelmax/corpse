@@ -1,1 +1,2 @@
-- Fixed JEI visible in death history
+- Added item transfer feature
+- Improved corpse inventory

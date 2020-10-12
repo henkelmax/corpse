@@ -1,6 +1,6 @@
 package de.maxhenkel.corpse.gui;
 
-import de.maxhenkel.corpse.Death;
+import de.maxhenkel.corelib.death.Death;
 import de.maxhenkel.corpse.entities.CorpseEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.network.PacketBuffer;
@@ -10,29 +10,28 @@ import net.minecraftforge.fml.network.IContainerFactory;
 import java.util.Optional;
 import java.util.UUID;
 
-public class CorpseContainerFactory implements IContainerFactory<CorpseContainer> {
+public abstract class CorpseContainerFactory<T extends CorpseContainerBase> implements IContainerFactory<T> {
     @Override
-    public CorpseContainer create(int windowId, PlayerInventory inv, PacketBuffer buffer) {
+    public T create(int windowId, PlayerInventory inv, PacketBuffer buffer) {
         boolean isHistory = buffer.readBoolean();
+        Death death = Death.fromNBT(buffer.readCompoundTag());
         if (isHistory) {
-            Death death = Death.fromNBT(buffer.readCompoundTag());
-            return new CorpseContainer(windowId, inv, CorpseEntity.createFromDeath(inv.player, death), inv.player.abilities.isCreativeMode, isHistory);
+            return create(windowId, inv, CorpseEntity.createFromDeath(inv.player, death), inv.player.abilities.isCreativeMode, isHistory);
         } else {
-            UUID uuid = new UUID(buffer.readLong(), buffer.readLong());
+            UUID uuid = buffer.readUniqueId();
 
             AxisAlignedBB aabb = inv.player.getBoundingBox();
-            if (aabb == null) {
-                return null;
-            }
             aabb = aabb.grow(10D);
             Optional<CorpseEntity> entity = inv.player.world.getEntitiesWithinAABB(CorpseEntity.class, aabb)
                     .stream()
                     .filter(corpse -> corpse.getUniqueID().equals(uuid) && corpse.getDistance(inv.player) <= 5)
                     .findFirst();
-            if (!entity.isPresent()) {
-                return null;
-            }
-            return new CorpseContainer(windowId, inv.player.inventory, entity.get(), true, isHistory);
+            return entity.map(corpseEntity -> {
+                corpseEntity.setDeath(death);
+                return create(windowId, inv.player.inventory, corpseEntity, true, isHistory);
+            }).orElse(null);
         }
     }
+
+    public abstract T create(int id, PlayerInventory playerInventory, CorpseEntity corpse, boolean editable, boolean history);
 }

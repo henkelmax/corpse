@@ -9,12 +9,12 @@ import net.minecraft.util.text.ITextComponent;
 
 import javax.annotation.Nullable;
 
-public class CorpseContainerProvider implements INamedContainerProvider {
+public class CorpseAdditionalItemsContainerProvider implements INamedContainerProvider {
 
     private CorpseEntity corpse;
     private boolean editable, history;
 
-    public CorpseContainerProvider(CorpseEntity corpse, boolean editable, boolean history) {
+    public CorpseAdditionalItemsContainerProvider(CorpseEntity corpse, boolean editable, boolean history) {
         this.corpse = corpse;
         this.editable = editable;
         this.history = history;
@@ -28,6 +28,6 @@ public class CorpseContainerProvider implements INamedContainerProvider {
     @Nullable
     @Override
     public Container createMenu(int id, PlayerInventory playerInventory, PlayerEntity playerEntity) {
-        return new CorpseInventoryContainer(id, playerInventory, corpse, editable, history);
+        return new CorpseAdditionalContainer(id, playerInventory, corpse, editable, history);
     }
 }

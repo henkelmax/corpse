@@ -14,6 +14,8 @@ import net.minecraft.client.world.ClientWorld;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.vector.Vector3f;
 
+import java.util.UUID;
+
 public class CorpseRenderer extends EntityRenderer<CorpseEntity> {
 
     private final CachedMap<CorpseEntity, DummyPlayer> players;
@@ -41,7 +43,7 @@ public class CorpseRenderer extends EntityRenderer<CorpseEntity> {
         super.render(entity, entityYaw, partialTicks, matrixStack, buffer, packedLightIn);
         matrixStack.push();
 
-        matrixStack.rotate(Vector3f.YP.rotationDegrees(-entity.getCorpseRotation()));
+        matrixStack.rotate(Vector3f.YP.rotationDegrees(-entity.rotationYaw));
 
         if (Main.SERVER_CONFIG.spawnCorpseOnFace.get()) {
             matrixStack.rotate(Vector3f.XP.rotationDegrees(90F));
@@ -55,8 +57,8 @@ public class CorpseRenderer extends EntityRenderer<CorpseEntity> {
             DummySkeleton skeleton = skeletons.get(entity, () -> new DummySkeleton(entity.world, entity.getEquipment()));
             skeletonRenderer.render(skeleton, entityYaw, 1F, matrixStack, buffer, packedLightIn);
         } else {
-            AbstractClientPlayerEntity abstractClientPlayerEntity = players.get(entity, () -> new DummyPlayer((ClientWorld) entity.world, new GameProfile(entity.getCorpseUUID(), entity.getCorpseName()), entity.getEquipment(), entity.getCorpseModel()));
-            if (PlayerSkins.isSlim(entity.getCorpseUUID())) {
+            AbstractClientPlayerEntity abstractClientPlayerEntity = players.get(entity, () -> new DummyPlayer((ClientWorld) entity.world, new GameProfile(entity.getCorpseUUID().orElse(new UUID(0L, 0L)), entity.getCorpseName()), entity.getEquipment(), entity.getCorpseModel()));
+            if (PlayerSkins.isSlim(entity.getCorpseUUID().orElse(new UUID(0L, 0L)))) {
                 playerRendererSmallArms.render(abstractClientPlayerEntity, 0F, 1F, matrixStack, buffer, packedLightIn);
             } else {
                 playerRenderer.render(abstractClientPlayerEntity, 0F, 1F, matrixStack, buffer, packedLightIn);
