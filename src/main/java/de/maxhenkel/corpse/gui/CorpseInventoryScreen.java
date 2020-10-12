@@ -47,12 +47,16 @@ public class CorpseInventoryScreen extends ScreenBase<CorpseInventoryContainer> 
 
         CorpseEntity corpse = container.getCorpse();
         if (!corpse.isMainInventoryEmpty() && !corpse.isAdditionalInventoryEmpty()) {
-            addLeftButton(TRANSFER_ITEMS, PRESS_TRANSFER_ITEMS);
-            addRightButton(ADDITIONAL_ITEMS, PRESS_ADDITIONAL_ITEMS);
+            takeItems = addLeftButton(TRANSFER_ITEMS, PRESS_TRANSFER_ITEMS);
+            additionalItems = addRightButton(ADDITIONAL_ITEMS, PRESS_ADDITIONAL_ITEMS);
         } else if (!corpse.isMainInventoryEmpty()) {
-            addCenterButton(TRANSFER_ITEMS, PRESS_TRANSFER_ITEMS);
+            takeItems = addCenterButton(TRANSFER_ITEMS, PRESS_TRANSFER_ITEMS);
         } else if (!corpse.isAdditionalInventoryEmpty()) {
-            addCenterButton(ADDITIONAL_ITEMS, PRESS_ADDITIONAL_ITEMS);
+            additionalItems = addCenterButton(ADDITIONAL_ITEMS, PRESS_ADDITIONAL_ITEMS);
+        }
+
+        if (!container.isEditable()) {
+            takeItems.field_230693_o_ = false;
         }
     }
 
