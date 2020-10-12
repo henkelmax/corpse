@@ -27,16 +27,18 @@ When you take out all items, the corpse will disappear.
 The corpse can't fall into the void or burn in lava.
 It also floats in liquids like lava or water.
 
-![](https://i.imgur.com/WfIoIXE.png)
+![](https://i.imgur.com/PbLRPZG.png)
 
-![](https://i.imgur.com/p574CdX.png)
-
-![](https://i.imgur.com/ioFPSdL.png)
+![](https://i.imgur.com/6x9lhS5.png)
 
 After 1 hour, the corpse will turn into a skeleton, indicating that it existed for a longer time.
 This won't change the functionality of the corpse.
 
-![](https://i.imgur.com/pzChrfC.png)
+![](https://i.imgur.com/tDPoSPD.png)
+
+You get all your items back into their original slots when transferring the items.
+
+![](https://i.imgur.com/QaYgkb9.png)
 
 
 ## Death History
