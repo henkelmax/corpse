@@ -1,2 +1,1 @@
-- Added item transfer feature
-- Improved corpse inventory
+- Added particles when corpses disappear

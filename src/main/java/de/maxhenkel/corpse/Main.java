@@ -76,6 +76,7 @@ public class Main {
         CommonRegistry.registerMessage(SIMPLE_CHANNEL, 3, MessageRequestDeathHistory.class);
         CommonRegistry.registerMessage(SIMPLE_CHANNEL, 4, MessageTransferItems.class);
         CommonRegistry.registerMessage(SIMPLE_CHANNEL, 5, MessageOpenAdditionalItems.class);
+        CommonRegistry.registerMessage(SIMPLE_CHANNEL, 6, MessageSpawnDeathParticles.class);
     }
 
     @SubscribeEvent

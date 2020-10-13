@@ -3,8 +3,10 @@ package de.maxhenkel.corpse.entities;
 import de.maxhenkel.corelib.dataserializers.DataSerializerItemList;
 import de.maxhenkel.corelib.death.Death;
 import de.maxhenkel.corelib.item.ItemUtils;
+import de.maxhenkel.corelib.net.NetUtils;
 import de.maxhenkel.corpse.Main;
 import de.maxhenkel.corpse.gui.Guis;
+import de.maxhenkel.corpse.net.MessageSpawnDeathParticles;
 import net.minecraft.entity.EntitySize;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.MoverType;
@@ -19,6 +21,7 @@ import net.minecraft.network.IPacket;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
+import net.minecraft.particles.ParticleTypes;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.DamageSource;
@@ -29,6 +32,7 @@ import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.network.NetworkHooks;
@@ -254,6 +258,22 @@ public class CorpseEntity extends CorpseBoundingBoxBase {
             InventoryHelper.spawnItemStack(world, getPosX(), getPosY(), getPosZ(), item);
         }
         super.remove();
+
+        if (world instanceof ServerWorld) {
+            ServerWorld serverWorld = (ServerWorld) world;
+            serverWorld.getPlayers(player -> player.getDistanceSq(getPosX(), getPosY(), getPosZ()) <= 64D * 64D).forEach(playerEntity -> NetUtils.sendTo(Main.SIMPLE_CHANNEL, playerEntity, new MessageSpawnDeathParticles(getUniqueID())));
+        }
+    }
+
+    public void spawnDeathParticles() {
+        double x = getPosX();
+        double y = getPosY();
+        double z = getPosZ();
+        Vector3d lookVec = getLookVec().normalize();
+        for (int i = 0; i <= 10; i++) {
+            double d = ((((double) i) / 10D) - 0.5D) * 2D;
+            world.addParticle(ParticleTypes.LARGE_SMOKE, x + lookVec.x * d + (world.rand.nextDouble() - 0.5D), y + 0.25D, z + lookVec.z * d + (world.rand.nextDouble() - 0.5D), 0D, 0D, 0D);
+        }
     }
 
     @Override
