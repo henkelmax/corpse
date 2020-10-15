@@ -1,1 +1,1 @@
-- Added particles when corpses disappear
+- Improved translations
