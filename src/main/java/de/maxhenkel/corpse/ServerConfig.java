@@ -14,6 +14,7 @@ public class ServerConfig extends ConfigBase {
     public final ForgeConfigSpec.BooleanValue renderEquipment;
     public final ForgeConfigSpec.BooleanValue fallIntoVoid;
     public final ForgeConfigSpec.BooleanValue lavaDamage;
+    public final ForgeConfigSpec.IntValue maxDeathAge;
 
     public ServerConfig(ForgeConfigSpec.Builder builder) {
         super(builder);
@@ -44,6 +45,13 @@ public class ServerConfig extends ConfigBase {
         lavaDamage = builder
                 .comment("If the corpse should get removed when in lava")
                 .define("corpse.lava_damage", false);
+        maxDeathAge = builder
+                .comment(
+                        "The time (in real life days) deaths get stored",
+                        "-1 for infinite storage",
+                        "0 for not storing deaths at all"
+                )
+                .defineInRange("death_storage_duration", -1, -1, Integer.MAX_VALUE);
     }
 
 }

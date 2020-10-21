@@ -1,1 +1,1 @@
-- Fixed exception when opening the death history of large inventories
+- Added a config option to remove older stored deaths
