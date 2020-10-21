@@ -50,27 +50,27 @@ public class CorpseInventoryScreen extends ScreenBase<CorpseInventoryContainer> 
     protected void updateButtons() {
         field_230710_m_.clear();
 
-        takeItems = addLeftButton(TRANSFER_ITEMS, PRESS_TRANSFER_ITEMS);
-        additionalItems = addRightButton(ADDITIONAL_ITEMS, PRESS_ADDITIONAL_ITEMS);
-        takeItems.field_230693_o_ = container.isEditable();
-
-        /*CorpseEntity corpse = container.getCorpse();
+        CorpseEntity corpse = container.getCorpse();
         if (!corpse.isMainInventoryEmpty() && !corpse.isAdditionalInventoryEmpty()) {
             takeItems = addLeftButton(TRANSFER_ITEMS, PRESS_TRANSFER_ITEMS);
             additionalItems = addRightButton(ADDITIONAL_ITEMS, PRESS_ADDITIONAL_ITEMS);
         } else if (!corpse.isMainInventoryEmpty()) {
             takeItems = addCenterButton(TRANSFER_ITEMS, PRESS_TRANSFER_ITEMS);
+            additionalItems = null;
         } else if (!corpse.isAdditionalInventoryEmpty()) {
+            takeItems = null;
             additionalItems = addCenterButton(ADDITIONAL_ITEMS, PRESS_ADDITIONAL_ITEMS);
-        }*/
+        }
+        if (takeItems != null) {
+            takeItems.field_230693_o_ = container.isEditable();
+        }
     }
 
-    /*@Override
+    @Override
     public void func_231023_e_() {
         super.func_231023_e_();
-        takeItems.field_230693_o_ = container.isEditable() && !corpse.isMainInventoryEmpty();
-        additionalItems.field_230693_o_ = !corpse.isAdditionalInventoryEmpty();
-    }*/
+        updateButtons();
+    }
 
     private Button addLeftButton(ITextComponent text, Button.IPressable pressable) {
         return func_230480_a_(new Button(guiLeft + PADDING, guiTop + 120, 80, BUTTON_HEIGHT, text, pressable));

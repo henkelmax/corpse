@@ -3,6 +3,8 @@ package de.maxhenkel.corpse.gui;
 import de.maxhenkel.corelib.death.Death;
 import de.maxhenkel.corpse.entities.CorpseEntity;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraftforge.fml.network.IContainerFactory;
@@ -14,8 +16,13 @@ public abstract class CorpseContainerFactory<T extends CorpseContainerBase> impl
     @Override
     public T create(int windowId, PlayerInventory inv, PacketBuffer buffer) {
         boolean isHistory = buffer.readBoolean();
-        Death death = Death.fromNBT(buffer.readCompoundTag());
+        boolean additionalItemsEmpty = buffer.readBoolean();
         if (isHistory) {
+            Death death = Death.fromNBT(buffer.readCompoundTag());
+            if (!additionalItemsEmpty) {
+                // That the client knows if the additional items slot isn't empty
+                death.getAdditionalItems().add(new ItemStack(Items.STONE));
+            }
             return create(windowId, inv, CorpseEntity.createFromDeath(inv.player, death), inv.player.abilities.isCreativeMode, isHistory);
         } else {
             UUID uuid = buffer.readUniqueId();
@@ -27,7 +34,10 @@ public abstract class CorpseContainerFactory<T extends CorpseContainerBase> impl
                     .filter(corpse -> corpse.getUniqueID().equals(uuid) && corpse.getDistance(inv.player) <= 5)
                     .findFirst();
             return entity.map(corpseEntity -> {
-                corpseEntity.setDeath(death);
+                if (!additionalItemsEmpty) {
+                    // That the client knows if the additional items slot isn't empty
+                    corpseEntity.getDeath().getAdditionalItems().add(new ItemStack(Items.STONE));
+                }
                 return create(windowId, inv.player.inventory, corpseEntity, true, isHistory);
             }).orElse(null);
         }
