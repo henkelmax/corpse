@@ -1,2 +1,1 @@
-- Fixed death items shown the wrong player
-- Added deathhistory command for offline players
+- Fixed exception when opening the death history of large inventories

@@ -17,7 +17,7 @@ public class Guis {
     public static void openAdditionalItems(ServerPlayerEntity player, CorpseEntity corpse, boolean editable, boolean history) {
         NetworkHooks.openGui(player, new CorpseAdditionalItemsContainerProvider(corpse, editable, history), packetBuffer -> {
             packetBuffer.writeBoolean(history);
-            packetBuffer.writeCompoundTag(corpse.getDeath().toNBT());
+            packetBuffer.writeCompoundTag(corpse.getDeath().toNBT(false));
             if (!history) {
                 packetBuffer.writeUniqueId(corpse.getUniqueID());
             }
@@ -30,7 +30,7 @@ public class Guis {
         } else {
             NetworkHooks.openGui(player, new CorpseContainerProvider(corpse, editable, history), packetBuffer -> {
                 packetBuffer.writeBoolean(history);
-                packetBuffer.writeCompoundTag(corpse.getDeath().toNBT());
+                packetBuffer.writeCompoundTag(corpse.getDeath().toNBT(false));
                 if (!history) {
                     packetBuffer.writeUniqueId(corpse.getUniqueID());
                 }
