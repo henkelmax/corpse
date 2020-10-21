@@ -1,1 +1,1 @@
-- Added a config option to remove older stored deaths
+- Fixed missing corpse GUI buttons
