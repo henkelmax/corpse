@@ -31,6 +31,8 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.network.simple.SimpleChannel;
 import net.minecraftforge.registries.DataSerializerEntry;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.lwjgl.glfw.GLFW;
 
 @Mod(Main.MODID)
@@ -38,6 +40,8 @@ import org.lwjgl.glfw.GLFW;
 public class Main {
 
     public static final String MODID = "corpse";
+
+    public static final Logger LOGGER = LogManager.getLogger(Main.MODID);
 
     @OnlyIn(Dist.CLIENT)
     public static KeyBinding KEY_DEATH_HISTORY;

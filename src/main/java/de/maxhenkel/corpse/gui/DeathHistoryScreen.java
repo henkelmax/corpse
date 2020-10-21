@@ -168,8 +168,19 @@ public class DeathHistoryScreen extends ScreenBase<Container> {
         }
     }
 
+    private static boolean errorShown;
+
     public static ITextComponent getDate(long timestamp) {
-        SimpleDateFormat dateFormat = new SimpleDateFormat(new TranslationTextComponent("gui.corpse.death_history.date_format").getString());
+        SimpleDateFormat dateFormat;
+        try {
+            dateFormat = new SimpleDateFormat(new TranslationTextComponent("gui.corpse.death_history.date_format").getString());
+        } catch (Exception e) {
+            if (!errorShown) {
+                Main.LOGGER.error("Failed to create date format. This indicates a broken translation: 'gui.corpse.death_history.date_format' translated to {}", new TranslationTextComponent("gui.corpse.death_history.date_format").getString());
+                errorShown = true;
+            }
+            dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+        }
         return new StringTextComponent(dateFormat.format(new Date(timestamp)));
     }
 

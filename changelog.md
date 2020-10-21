@@ -1,1 +1,1 @@
-- Improved translations
+- Fixed potential crash when using custom translations
