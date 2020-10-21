@@ -39,12 +39,16 @@ public class MessageRequestDeathHistory implements Message {
 
     }
 
-    public static void sendDeathHistory(ServerPlayerEntity player) {
-        sendDeathHistory(player, player.getUniqueID());
+    public static boolean sendDeathHistory(ServerPlayerEntity player) {
+        return sendDeathHistory(player, player.getUniqueID());
     }
 
-    public static void sendDeathHistory(ServerPlayerEntity playerToSend, UUID playerUUID) {
+    public static boolean sendDeathHistory(ServerPlayerEntity playerToSend, UUID playerUUID) {
         List<Death> deaths = DeathManager.getDeaths(playerToSend.getServerWorld(), playerUUID);
+        if (deaths == null) {
+            return false;
+        }
         Main.SIMPLE_CHANNEL.sendTo(new MessageOpenHistory(deaths), playerToSend.connection.netManager, NetworkDirection.PLAY_TO_CLIENT);
+        return true;
     }
 }

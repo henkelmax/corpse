@@ -55,13 +55,13 @@ public class Guis {
      * @param player       the player the death is from
      * @param uuid         the death id
      */
-    public static void openCorpseGUI(ServerPlayerEntity playerToShow, ServerPlayerEntity player, UUID uuid) {
-        Death death = DeathManager.getDeath(player, uuid);
+    public static void openCorpseGUI(ServerPlayerEntity playerToShow, UUID player, UUID uuid) {
+        Death death = DeathManager.getDeath(playerToShow.getServerWorld(), player, uuid);
         if (death == null) {
             return;
         }
         CorpseEntity corpse = CorpseEntity.createFromDeath(playerToShow, death);
-        openCorpseGUI(player, corpse, playerToShow.abilities.isCreativeMode, true);
+        openCorpseGUI(playerToShow, corpse, playerToShow.abilities.isCreativeMode, true);
     }
 
 }

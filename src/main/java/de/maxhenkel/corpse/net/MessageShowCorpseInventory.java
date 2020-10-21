@@ -2,8 +2,6 @@ package de.maxhenkel.corpse.net;
 
 import de.maxhenkel.corelib.net.Message;
 import de.maxhenkel.corpse.gui.Guis;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.network.NetworkEvent;
@@ -31,11 +29,7 @@ public class MessageShowCorpseInventory implements Message {
 
     @Override
     public void executeServerSide(NetworkEvent.Context context) {
-        PlayerEntity player = context.getSender().world.getPlayerByUuid(playerUUID);
-
-        if (player instanceof ServerPlayerEntity) {
-            Guis.openCorpseGUI(context.getSender(), (ServerPlayerEntity) player, deathID);
-        }
+        Guis.openCorpseGUI(context.getSender(), playerUUID, deathID);
     }
 
     @Override

@@ -1,1 +1,2 @@
-- Fixed potential crash when using custom translations
+- Fixed death items shown the wrong player
+- Added deathhistory command for offline players
