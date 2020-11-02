@@ -41,14 +41,19 @@ public class CorpseInventoryScreen extends ScreenBase<CorpseInventoryContainer> 
     }
 
     @Override
-    protected void func_231160_c_() {
-        super.func_231160_c_();
+    public void tick() {
+        super.tick();
+        updateButtons();
+    }
 
+    @Override
+    public void init() {
+        super.init();
         updateButtons();
     }
 
     protected void updateButtons() {
-        field_230710_m_.clear();
+        buttons.clear();
 
         CorpseEntity corpse = container.getCorpse();
         if (!corpse.isMainInventoryEmpty() && !corpse.isAdditionalInventoryEmpty()) {
@@ -62,34 +67,28 @@ public class CorpseInventoryScreen extends ScreenBase<CorpseInventoryContainer> 
             additionalItems = addCenterButton(ADDITIONAL_ITEMS, PRESS_ADDITIONAL_ITEMS);
         }
         if (takeItems != null) {
-            takeItems.field_230693_o_ = container.isEditable();
+            takeItems.active = container.isEditable();
         }
     }
 
-    @Override
-    public void func_231023_e_() {
-        super.func_231023_e_();
-        updateButtons();
-    }
-
     private Button addLeftButton(ITextComponent text, Button.IPressable pressable) {
-        return func_230480_a_(new Button(guiLeft + PADDING, guiTop + 120, 80, BUTTON_HEIGHT, text, pressable));
+        return addButton(new Button(guiLeft + PADDING, guiTop + 120, 80, BUTTON_HEIGHT, text, pressable));
     }
 
     private Button addRightButton(ITextComponent text, Button.IPressable pressable) {
-        return func_230480_a_(new Button(guiLeft + xSize - 80 - PADDING, guiTop + 120, 80, BUTTON_HEIGHT, text, pressable));
+        return addButton(new Button(guiLeft + xSize - 80 - PADDING, guiTop + 120, 80, BUTTON_HEIGHT, text, pressable));
     }
 
     private Button addCenterButton(ITextComponent text, Button.IPressable pressable) {
-        return func_230480_a_(new Button(guiLeft + xSize / 2 - 50, guiTop + 120, 100, BUTTON_HEIGHT, text, pressable));
+        return addButton(new Button(guiLeft + xSize / 2 - 50, guiTop + 120, 100, BUTTON_HEIGHT, text, pressable));
     }
 
     @Override
-    public void func_230430_a_(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
-        super.func_230430_a_(matrixStack, mouseX, mouseY, partialTicks);
+    public void drawGuiContainerForegroundLayer(MatrixStack matrixStack, int mouseX, int mouseY) {
+        super.drawGuiContainerForegroundLayer(matrixStack, mouseX, mouseY);
 
-        field_230712_o_.func_238421_b_(matrixStack, corpse.getDisplayName().getString(), guiLeft + 7, guiTop + 7, FONT_COLOR);
-        field_230712_o_.func_238421_b_(matrixStack, playerInventory.getDisplayName().getString(), guiLeft + 7, guiTop + ySize - 96 + 2, FONT_COLOR);
+        font.func_243248_b(matrixStack, corpse.getDisplayName(), 7, 7, FONT_COLOR);
+        font.func_243248_b(matrixStack, playerInventory.getDisplayName(), 7, ySize - 96 + 2, FONT_COLOR);
     }
 
 }

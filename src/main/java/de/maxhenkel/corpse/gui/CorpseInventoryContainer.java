@@ -37,7 +37,7 @@ public class CorpseInventoryContainer extends CorpseContainerBase implements ITr
             addSlot(new LockedSlot(armorInventory, slotIndex, 8 + i * 18, 18, true, !editable) {
                 @OnlyIn(Dist.CLIENT)
                 @Override
-                public Pair<ResourceLocation, ResourceLocation> func_225517_c_() {
+                public Pair<ResourceLocation, ResourceLocation> getBackground() {
                     return Pair.of(PlayerContainer.LOCATION_BLOCKS_TEXTURE, ARMOR_SLOT_TEXTURES[slotIndex]);
                 }
             });
@@ -46,7 +46,7 @@ public class CorpseInventoryContainer extends CorpseContainerBase implements ITr
         addSlot(new LockedSlot(offHandInventory, 0, 98, 18, true, !editable) {
             @OnlyIn(Dist.CLIENT)
             @Override
-            public Pair<ResourceLocation, ResourceLocation> func_225517_c_() {
+            public Pair<ResourceLocation, ResourceLocation> getBackground() {
                 return Pair.of(PlayerContainer.LOCATION_BLOCKS_TEXTURE, PlayerContainer.EMPTY_ARMOR_SLOT_SHIELD);
             }
         });

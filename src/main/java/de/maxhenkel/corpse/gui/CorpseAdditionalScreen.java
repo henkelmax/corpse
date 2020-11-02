@@ -39,21 +39,21 @@ public class CorpseAdditionalScreen extends ScreenBase<CorpseAdditionalContainer
     }
 
     @Override
-    protected void func_231160_c_() {
-        super.func_231160_c_();
+    protected void init() {
+        super.init();
 
-        field_230710_m_.clear();
-        int left = (field_230708_k_ - xSize) / 2;
+        buttons.clear();
+        int left = (width - xSize) / 2;
         int buttonWidth = 50;
         int buttonHeight = 20;
-        previous = func_230480_a_(new Button(left + PADDING, guiTop + 149 - buttonHeight, buttonWidth, buttonHeight, new TranslationTextComponent("button.corpse.previous"), button -> {
+        previous = addButton(new Button(left + PADDING, guiTop + 149 - buttonHeight, buttonWidth, buttonHeight, new TranslationTextComponent("button.corpse.previous"), button -> {
             page--;
             if (page < 0) {
                 page = 0;
             }
             Main.SIMPLE_CHANNEL.sendToServer(new MessageSwitchInventoryPage(page));
         }));
-        next = func_230480_a_(new Button(left + xSize - buttonWidth - PADDING, guiTop + 149 - buttonHeight, buttonWidth, buttonHeight, new TranslationTextComponent("button.corpse.next"), button -> {
+        next = addButton(new Button(left + xSize - buttonWidth - PADDING, guiTop + 149 - buttonHeight, buttonWidth, buttonHeight, new TranslationTextComponent("button.corpse.next"), button -> {
             page++;
             if (page >= getPages()) {
                 page = getPages() - 1;
@@ -61,25 +61,17 @@ public class CorpseAdditionalScreen extends ScreenBase<CorpseAdditionalContainer
             Main.SIMPLE_CHANNEL.sendToServer(new MessageSwitchInventoryPage(page));
         }));
 
-        func_230480_a_(new TransferItemsButton(left + xSize - TransferItemsButton.WIDTH - 9, guiTop + 5, button -> {
+        addButton(new TransferItemsButton(left + xSize - TransferItemsButton.WIDTH - 9, guiTop + 5, button -> {
             Main.SIMPLE_CHANNEL.sendToServer(new MessageTransferItems());
         }));
     }
 
     @Override
-    public void func_231023_e_() {
-        super.func_231023_e_();
-        if (page <= 0) {
-            previous.field_230693_o_ = false;
-        } else {
-            previous.field_230693_o_ = true;
-        }
+    public void tick() {
+        super.tick();
+        previous.active = page > 0;
 
-        if (page >= getPages() - 1) {
-            next.field_230693_o_ = false;
-        } else {
-            next.field_230693_o_ = true;
-        }
+        next.active = page < getPages() - 1;
     }
 
     private int getPages() {
@@ -88,23 +80,23 @@ public class CorpseAdditionalScreen extends ScreenBase<CorpseAdditionalContainer
     }
 
     @Override
-    public void func_230430_a_(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
-        super.func_230430_a_(matrixStack, mouseX, mouseY, partialTicks);
+    public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
+        super.render(matrixStack, mouseX, mouseY, partialTicks);
 
-        field_230712_o_.func_238421_b_(matrixStack, corpse.getDisplayName().getString(), guiLeft + 7, guiTop + 7, FONT_COLOR);
-        field_230712_o_.func_238421_b_(matrixStack, playerInventory.getDisplayName().getString(), guiLeft + 7, guiTop + ySize - 96 + 2, FONT_COLOR);
+        font.func_243248_b(matrixStack, corpse.getDisplayName(), guiLeft + 7, guiTop + 7, FONT_COLOR);
+        font.func_243248_b(matrixStack, playerInventory.getDisplayName(), guiLeft + 7, guiTop + ySize - 96 + 2, FONT_COLOR);
 
-        String pageName = new TranslationTextComponent("gui.corpse.page", page + 1, getPages()).getString();
-        int pageWidth = field_230712_o_.getStringWidth(pageName);
-        field_230712_o_.func_238421_b_(matrixStack, pageName, guiLeft + xSize / 2 - pageWidth / 2, guiTop + ySize - 113, FONT_COLOR);
+        TranslationTextComponent pageName = new TranslationTextComponent("gui.corpse.page", page + 1, getPages());
+        int pageWidth = font.getStringWidth(pageName.getString());
+        font.func_243248_b(matrixStack, pageName, guiLeft + xSize / 2 - pageWidth / 2, guiTop + ySize - 113, FONT_COLOR);
     }
 
     @Override
-    protected void func_230451_b_(MatrixStack matrixStack, int mouseX, int mouseY) {
-        super.func_230451_b_(matrixStack, mouseX, mouseY);
+    protected void drawGuiContainerForegroundLayer(MatrixStack matrixStack, int mouseX, int mouseY) {
+        super.drawGuiContainerForegroundLayer(matrixStack, mouseX, mouseY);
 
         if (mouseX >= guiLeft + xSize - TransferItemsButton.WIDTH - 9 && mouseX < guiLeft + xSize - 9 && mouseY >= guiTop + 5 && mouseY < guiTop + 5 + TransferItemsButton.HEIGHT) {
-            func_238654_b_(matrixStack, Collections.singletonList(new TranslationTextComponent("button.corpse.transfer_items").func_241878_f()), mouseX - guiLeft, mouseY - guiTop);
+            renderTooltip(matrixStack, Collections.singletonList(new TranslationTextComponent("button.corpse.transfer_items").func_241878_f()), mouseX - guiLeft, mouseY - guiTop);
         }
     }
 }
