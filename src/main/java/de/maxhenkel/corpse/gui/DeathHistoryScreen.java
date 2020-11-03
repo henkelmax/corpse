@@ -109,7 +109,7 @@ public class DeathHistoryScreen extends ScreenBase<Container> {
 
         // Date
         IFormattableTextComponent date = new StringTextComponent(getDate(death.getTimestamp()).getString()).mergeStyle(TextFormatting.DARK_GRAY);
-        int dateWidth = font.getStringWidth(date.getString());
+        int dateWidth = font.getStringPropertyWidth(date);
         font.func_238422_b_(matrixStack, date.func_241878_f(), (xSize - dateWidth) / 2, 20, 0);
 
         // Name
@@ -131,7 +131,7 @@ public class DeathHistoryScreen extends ScreenBase<Container> {
         String dimensionName = death.getDimension().split(":")[1];
         boolean shortened = false;
 
-        int dimWidth = font.getStringWidth(dimension.getString());
+        int dimWidth = font.getStringPropertyWidth(dimension);
 
         while (dimWidth + font.getStringWidth(dimensionName + (shortened ? "..." : "")) >= hSplit - 7) {
             dimensionName = dimensionName.substring(0, dimensionName.length() - 1);
@@ -197,7 +197,7 @@ public class DeathHistoryScreen extends ScreenBase<Container> {
     }
 
     public void drawRight(MatrixStack matrixStack, IFormattableTextComponent text, int height) {
-        int strWidth = font.getStringWidth(text.getString());
+        int strWidth = font.getStringPropertyWidth(text);
         font.func_238422_b_(matrixStack, text.func_241878_f(), hSplit - strWidth, height, 0);
     }
 

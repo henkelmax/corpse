@@ -87,7 +87,7 @@ public class CorpseAdditionalScreen extends ScreenBase<CorpseAdditionalContainer
         font.func_243248_b(matrixStack, playerInventory.getDisplayName(), guiLeft + 7, guiTop + ySize - 96 + 2, FONT_COLOR);
 
         TranslationTextComponent pageName = new TranslationTextComponent("gui.corpse.page", page + 1, getPages());
-        int pageWidth = font.getStringWidth(pageName.getString());
+        int pageWidth = font.getStringPropertyWidth(pageName);
         font.func_243248_b(matrixStack, pageName, guiLeft + xSize / 2 - pageWidth / 2, guiTop + ySize - 113, FONT_COLOR);
     }
 
