@@ -1,1 +1,1 @@
-- Updated russian translation
+- Updated polish translation
