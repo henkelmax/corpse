@@ -1,1 +1,1 @@
-- Fixed crashes when using HWYLA
+- Updated polish translation
