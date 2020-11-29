@@ -34,7 +34,7 @@ public class ScreenManager {
         CorpseEntity corpse = CorpseEntity.createFromDeath(playerToShow, death);
         NetworkHooks.openGui(playerToShow, new CorpseContainerProvider(corpse, playerToShow.abilities.isCreativeMode, true), packetBuffer -> {
             packetBuffer.writeBoolean(true);
-            packetBuffer.writeCompoundTag(death.toNBT());
+            packetBuffer.writeCompoundTag(death.toNBT(false));
         });
     }
 

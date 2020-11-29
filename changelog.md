@@ -1,1 +1,1 @@
-- Updated polish translation
+- Fixed exception when opening the death history of large inventories
