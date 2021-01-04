@@ -1,1 +1,1 @@
-- Updated polish translation
+- Fixed item transfer button hover texture
