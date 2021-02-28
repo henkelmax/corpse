@@ -23,10 +23,7 @@ import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.tags.FluidTags;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.Hand;
-import net.minecraft.util.NonNullList;
+import net.minecraft.util.*;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.ITextComponent;
@@ -151,7 +148,7 @@ public class CorpseEntity extends CorpseBoundingBoxBase {
             ServerPlayerEntity playerMP = (ServerPlayerEntity) player;
             if (Main.SERVER_CONFIG.onlyOwnerAccess.get()) {
                 boolean isOp = playerMP.hasPermissionLevel(playerMP.server.getOpPermissionLevel());
-                if (isOp || playerMP.getUniqueID().equals(getCorpseUUID())) {
+                if (isOp || !getCorpseUUID().isPresent() || playerMP.getUniqueID().equals(getCorpseUUID().get())) {
                     Guis.openCorpseGUI((ServerPlayerEntity) player, this);
                 } else if (Main.SERVER_CONFIG.skeletonAccess.get() && isSkeleton()) {
                     Guis.openCorpseGUI((ServerPlayerEntity) player, this);

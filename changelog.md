@@ -1,1 +1,1 @@
-- Updated to 1.16.5
+- Fixed only owner config option not working
