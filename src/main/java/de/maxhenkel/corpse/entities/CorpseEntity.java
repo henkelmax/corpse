@@ -151,7 +151,7 @@ public class CorpseEntity extends CorpseBoundingBoxBase {
             ServerPlayerEntity playerMP = (ServerPlayerEntity) player;
             if (Main.SERVER_CONFIG.onlyOwnerAccess.get()) {
                 boolean isOp = playerMP.hasPermissionLevel(playerMP.server.getOpPermissionLevel());
-                if (isOp || playerMP.getUniqueID().equals(getCorpseUUID())) {
+                if (isOp || !getCorpseUUID().isPresent() || playerMP.getUniqueID().equals(getCorpseUUID().get())) {
                     Guis.openCorpseGUI((ServerPlayerEntity) player, this);
                 } else if (Main.SERVER_CONFIG.skeletonAccess.get() && isSkeleton()) {
                     Guis.openCorpseGUI((ServerPlayerEntity) player, this);

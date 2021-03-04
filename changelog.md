@@ -1,1 +1,1 @@
-- Fixed item transfer button hover texture
+- Fixed only owner config option not working
