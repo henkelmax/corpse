@@ -34,8 +34,8 @@ public class CorpseAdditionalScreen extends ScreenBase<CorpseAdditionalContainer
         this.corpse = corpse;
         this.page = 0;
 
-        xSize = 176;
-        ySize = 248;
+        imageWidth = 176;
+        imageHeight = 248;
     }
 
     @Override
@@ -43,17 +43,17 @@ public class CorpseAdditionalScreen extends ScreenBase<CorpseAdditionalContainer
         super.init();
 
         buttons.clear();
-        int left = (width - xSize) / 2;
+        int left = (width - imageWidth) / 2;
         int buttonWidth = 50;
         int buttonHeight = 20;
-        previous = addButton(new Button(left + PADDING, guiTop + 149 - buttonHeight, buttonWidth, buttonHeight, new TranslationTextComponent("button.corpse.previous"), button -> {
+        previous = addButton(new Button(left + PADDING, topPos + 149 - buttonHeight, buttonWidth, buttonHeight, new TranslationTextComponent("button.corpse.previous"), button -> {
             page--;
             if (page < 0) {
                 page = 0;
             }
             Main.SIMPLE_CHANNEL.sendToServer(new MessageSwitchInventoryPage(page));
         }));
-        next = addButton(new Button(left + xSize - buttonWidth - PADDING, guiTop + 149 - buttonHeight, buttonWidth, buttonHeight, new TranslationTextComponent("button.corpse.next"), button -> {
+        next = addButton(new Button(left + imageWidth - buttonWidth - PADDING, topPos + 149 - buttonHeight, buttonWidth, buttonHeight, new TranslationTextComponent("button.corpse.next"), button -> {
             page++;
             if (page >= getPages()) {
                 page = getPages() - 1;
@@ -61,7 +61,7 @@ public class CorpseAdditionalScreen extends ScreenBase<CorpseAdditionalContainer
             Main.SIMPLE_CHANNEL.sendToServer(new MessageSwitchInventoryPage(page));
         }));
 
-        addButton(new TransferItemsButton(left + xSize - TransferItemsButton.WIDTH - 9, guiTop + 5, button -> {
+        addButton(new TransferItemsButton(left + imageWidth - TransferItemsButton.WIDTH - 9, topPos + 5, button -> {
             Main.SIMPLE_CHANNEL.sendToServer(new MessageTransferItems());
         }));
     }
@@ -83,20 +83,20 @@ public class CorpseAdditionalScreen extends ScreenBase<CorpseAdditionalContainer
     public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
         super.render(matrixStack, mouseX, mouseY, partialTicks);
 
-        font.func_243248_b(matrixStack, corpse.getDisplayName(), guiLeft + 7, guiTop + 7, FONT_COLOR);
-        font.func_243248_b(matrixStack, playerInventory.getDisplayName(), guiLeft + 7, guiTop + ySize - 96 + 2, FONT_COLOR);
+        font.draw(matrixStack, corpse.getDisplayName(), leftPos + 7, topPos + 7, FONT_COLOR);
+        font.draw(matrixStack, playerInventory.getDisplayName(), leftPos + 7, topPos + imageHeight - 96 + 2, FONT_COLOR);
 
         TranslationTextComponent pageName = new TranslationTextComponent("gui.corpse.page", page + 1, getPages());
-        int pageWidth = font.getStringPropertyWidth(pageName);
-        font.func_243248_b(matrixStack, pageName, guiLeft + xSize / 2 - pageWidth / 2, guiTop + ySize - 113, FONT_COLOR);
+        int pageWidth = font.width(pageName);
+        font.draw(matrixStack, pageName, leftPos + imageWidth / 2 - pageWidth / 2, topPos + imageHeight - 113, FONT_COLOR);
     }
 
     @Override
-    protected void drawGuiContainerForegroundLayer(MatrixStack matrixStack, int mouseX, int mouseY) {
-        super.drawGuiContainerForegroundLayer(matrixStack, mouseX, mouseY);
+    protected void renderLabels(MatrixStack matrixStack, int mouseX, int mouseY) {
+        super.renderLabels(matrixStack, mouseX, mouseY);
 
-        if (mouseX >= guiLeft + xSize - TransferItemsButton.WIDTH - 9 && mouseX < guiLeft + xSize - 9 && mouseY >= guiTop + 5 && mouseY < guiTop + 5 + TransferItemsButton.HEIGHT) {
-            renderTooltip(matrixStack, Collections.singletonList(new TranslationTextComponent("button.corpse.transfer_items").func_241878_f()), mouseX - guiLeft, mouseY - guiTop);
+        if (mouseX >= leftPos + imageWidth - TransferItemsButton.WIDTH - 9 && mouseX < leftPos + imageWidth - 9 && mouseY >= topPos + 5 && mouseY < topPos + 5 + TransferItemsButton.HEIGHT) {
+            renderTooltip(matrixStack, Collections.singletonList(new TranslationTextComponent("button.corpse.transfer_items").getVisualOrderText()), mouseX - leftPos, mouseY - topPos);
         }
     }
 }

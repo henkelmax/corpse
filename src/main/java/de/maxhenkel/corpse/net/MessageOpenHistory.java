@@ -36,15 +36,15 @@ public class MessageOpenHistory implements Message {
     @Override
     public void executeClientSide(NetworkEvent.Context context) {
         if (deaths.size() > 0) {
-            Minecraft.getInstance().displayGuiScreen(new DeathHistoryScreen(deaths));
+            Minecraft.getInstance().setScreen(new DeathHistoryScreen(deaths));
         } else {
-            Minecraft.getInstance().player.sendStatusMessage(new TranslationTextComponent("message.corpse.no_death_history"), true);
+            Minecraft.getInstance().player.displayClientMessage(new TranslationTextComponent("message.corpse.no_death_history"), true);
         }
     }
 
     @Override
     public MessageOpenHistory fromBytes(PacketBuffer buf) {
-        CompoundNBT compound = buf.readCompoundTag();
+        CompoundNBT compound = buf.readNbt();
         ListNBT list = compound.getList("Deaths", 10);
 
         deaths = new ArrayList<>();
@@ -66,6 +66,6 @@ public class MessageOpenHistory implements Message {
         }
 
         compound.put("Deaths", list);
-        buf.writeCompoundTag(compound);
+        buf.writeNbt(compound);
     }
 }

@@ -12,7 +12,7 @@ public class KeyEvents {
 
     @SubscribeEvent
     public void onInput(InputEvent.KeyInputEvent event) {
-        if (Main.KEY_DEATH_HISTORY.isPressed()) {
+        if (Main.KEY_DEATH_HISTORY.consumeClick()) {
             Main.SIMPLE_CHANNEL.sendToServer(new MessageRequestDeathHistory());
         }
     }

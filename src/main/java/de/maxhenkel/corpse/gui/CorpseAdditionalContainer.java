@@ -22,11 +22,11 @@ public class CorpseAdditionalContainer extends CorpseContainerBase implements IT
     }
 
     public void setSlots(int start) {
-        inventorySlots.clear();
+        slots.clear();
         for (int j = 0; j < 6; j++) {
             for (int k = 0; k < 9; k++) {
                 int index = start + k + j * 9;
-                if (index < inventory.getSizeInventory()) {
+                if (index < inventory.getContainerSize()) {
                     addSlot(new LockedSlot(inventory, index, 8 + k * 18, 19 + j * 18, true, !editable));
                 } else {
                     addSlot(new LockedSlot(new Inventory(1), 0, 8 + k * 18, 19 + j * 18, true, true));
@@ -35,7 +35,7 @@ public class CorpseAdditionalContainer extends CorpseContainerBase implements IT
         }
 
         addPlayerInventorySlots();
-        detectAndSendChanges();
+        broadcastChanges();
     }
 
     @Override
@@ -43,11 +43,11 @@ public class CorpseAdditionalContainer extends CorpseContainerBase implements IT
         if (!isEditable()) {
             return;
         }
-        for (int i = 0; i < inventory.getSizeInventory(); i++) {
-            ItemStack stack = inventory.getStackInSlot(i);
+        for (int i = 0; i < inventory.getContainerSize(); i++) {
+            ItemStack stack = inventory.getItem(i);
             for (int j = 0; j < playerWrapper.getSlots(); j++) {
                 stack = playerWrapper.insertItem(j, stack, false);
-                inventory.setInventorySlotContents(i, stack);
+                inventory.setItem(i, stack);
                 if (stack.isEmpty()) {
                     break;
                 }

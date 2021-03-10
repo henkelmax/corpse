@@ -34,37 +34,37 @@ public class CorpseRenderer extends EntityRenderer<CorpseEntity> {
     }
 
     @Override
-    public ResourceLocation getEntityTexture(CorpseEntity entity) {
+    public ResourceLocation getTextureLocation(CorpseEntity entity) {
         return null;
     }
 
     @Override
     public void render(CorpseEntity entity, float entityYaw, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer buffer, int packedLightIn) {
         super.render(entity, entityYaw, partialTicks, matrixStack, buffer, packedLightIn);
-        matrixStack.push();
+        matrixStack.pushPose();
 
-        matrixStack.rotate(Vector3f.YP.rotationDegrees(-entity.rotationYaw));
+        matrixStack.mulPose(Vector3f.YP.rotationDegrees(-entity.yRot));
 
         if (Main.SERVER_CONFIG.spawnCorpseOnFace.get()) {
-            matrixStack.rotate(Vector3f.XP.rotationDegrees(90F));
+            matrixStack.mulPose(Vector3f.XP.rotationDegrees(90F));
             matrixStack.translate(0D, -1D, -2.01D / 16D);
         } else {
-            matrixStack.rotate(Vector3f.XP.rotationDegrees(-90F));
+            matrixStack.mulPose(Vector3f.XP.rotationDegrees(-90F));
             matrixStack.translate(0D, -1D, 2.01D / 16D);
         }
 
         if (entity.isSkeleton()) {
-            DummySkeleton skeleton = skeletons.get(entity, () -> new DummySkeleton(entity.world, entity.getEquipment()));
+            DummySkeleton skeleton = skeletons.get(entity, () -> new DummySkeleton(entity.level, entity.getEquipment()));
             skeletonRenderer.render(skeleton, entityYaw, 1F, matrixStack, buffer, packedLightIn);
         } else {
-            AbstractClientPlayerEntity abstractClientPlayerEntity = players.get(entity, () -> new DummyPlayer((ClientWorld) entity.world, new GameProfile(entity.getCorpseUUID().orElse(new UUID(0L, 0L)), entity.getCorpseName()), entity.getEquipment(), entity.getCorpseModel()));
+            AbstractClientPlayerEntity abstractClientPlayerEntity = players.get(entity, () -> new DummyPlayer((ClientWorld) entity.level, new GameProfile(entity.getCorpseUUID().orElse(new UUID(0L, 0L)), entity.getCorpseName()), entity.getEquipment(), entity.getCorpseModel()));
             if (PlayerSkins.isSlim(entity.getCorpseUUID().orElse(new UUID(0L, 0L)))) {
                 playerRendererSmallArms.render(abstractClientPlayerEntity, 0F, 1F, matrixStack, buffer, packedLightIn);
             } else {
                 playerRenderer.render(abstractClientPlayerEntity, 0F, 1F, matrixStack, buffer, packedLightIn);
             }
         }
-        matrixStack.pop();
+        matrixStack.popPose();
     }
 
 }

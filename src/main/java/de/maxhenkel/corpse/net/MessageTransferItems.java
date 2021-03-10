@@ -20,7 +20,7 @@ public class MessageTransferItems implements Message {
 
     @Override
     public void executeServerSide(NetworkEvent.Context context) {
-        Container openContainer = context.getSender().openContainer;
+        Container openContainer = context.getSender().containerMenu;
         if (openContainer instanceof ITransferrable) {
             ITransferrable transferrable = (ITransferrable) openContainer;
             transferrable.transferItems();

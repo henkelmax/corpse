@@ -18,14 +18,14 @@ public abstract class CorpseBoundingBoxBase extends Entity {
     }
 
     public void recalculateBoundingBox() {
-        Direction facing = dataManager == null ? Direction.NORTH : Direction.fromAngle(rotationYaw);
+        Direction facing = entityData == null ? Direction.NORTH : Direction.fromYRot(yRot);
         boundingBox = new AxisAlignedBB(
-                getPosX() - (facing.getXOffset() != 0 ? 1D : 0.5D),
-                getPosY(),
-                getPosZ() - (facing.getZOffset() != 0 ? 1D : 0.5D),
-                getPosX() + (facing.getXOffset() != 0 ? 1D : 0.5D),
-                getPosY() + 0.5D,
-                getPosZ() + (facing.getZOffset() != 0 ? 1D : 0.5D)
+                getX() - (facing.getStepX() != 0 ? 1D : 0.5D),
+                getY(),
+                getZ() - (facing.getStepZ() != 0 ? 1D : 0.5D),
+                getX() + (facing.getStepX() != 0 ? 1D : 0.5D),
+                getY() + 0.5D,
+                getZ() + (facing.getStepZ() != 0 ? 1D : 0.5D)
         );
     }
 
@@ -46,8 +46,8 @@ public abstract class CorpseBoundingBoxBase extends Entity {
     }
 
     @Override
-    public void setPosition(double x, double y, double z) {
-        super.setPosition(x, y, z);
+    public void setPos(double x, double y, double z) {
+        super.setPos(x, y, z);
         recalculateBoundingBox();
     }
 }

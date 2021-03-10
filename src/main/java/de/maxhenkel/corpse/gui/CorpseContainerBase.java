@@ -33,11 +33,11 @@ public class CorpseContainerBase extends ContainerBase {
     }
 
     @Override
-    public boolean canInteractWith(PlayerEntity player) {
+    public boolean stillValid(PlayerEntity player) {
         if (history) {
             return true;
         }
-        return corpse.getDistance(player) < 8F && corpse.isAlive();
+        return corpse.distanceTo(player) < 8F && corpse.isAlive();
     }
 
 }

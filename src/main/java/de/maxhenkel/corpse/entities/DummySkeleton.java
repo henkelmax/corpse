@@ -14,7 +14,7 @@ public class DummySkeleton extends SkeletonEntity {
         super(EntityType.SKELETON, world);
         if(Main.SERVER_CONFIG.renderEquipment.get()){
             for (EquipmentSlotType type : EquipmentSlotType.values()) {
-                setItemStackToSlot(type, equipment.get(type.ordinal()));
+                setItemSlot(type, equipment.get(type.ordinal()));
             }
         }
     }

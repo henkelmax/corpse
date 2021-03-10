@@ -46,10 +46,10 @@ public class DeathHistoryScreen extends ScreenBase<Container> {
         this.deaths = deaths;
         this.index = 0;
 
-        xSize = 248;
-        ySize = 166;
+        imageWidth = 248;
+        imageHeight = 166;
 
-        hSplit = xSize / 2;
+        hSplit = imageWidth / 2;
     }
 
     @Override
@@ -60,18 +60,18 @@ public class DeathHistoryScreen extends ScreenBase<Container> {
         int padding = 7;
         int buttonWidth = 50;
         int buttonHeight = 20;
-        previous = addButton(new Button(guiLeft + padding, guiTop + ySize - buttonHeight - padding, buttonWidth, buttonHeight, new TranslationTextComponent("button.corpse.previous"), button -> {
+        previous = addButton(new Button(leftPos + padding, topPos + imageHeight - buttonHeight - padding, buttonWidth, buttonHeight, new TranslationTextComponent("button.corpse.previous"), button -> {
             index--;
             if (index < 0) {
                 index = 0;
             }
         }));
 
-        addButton(new Button(guiLeft + (xSize - buttonWidth) / 2, guiTop + ySize - buttonHeight - padding, buttonWidth, buttonHeight, new TranslationTextComponent("button.corpse.show_items"), button -> {
+        addButton(new Button(leftPos + (imageWidth - buttonWidth) / 2, topPos + imageHeight - buttonHeight - padding, buttonWidth, buttonHeight, new TranslationTextComponent("button.corpse.show_items"), button -> {
             Main.SIMPLE_CHANNEL.sendToServer(new MessageShowCorpseInventory(getCurrentDeath().getPlayerUUID(), getCurrentDeath().getId()));
         }));
 
-        next = addButton(new Button(guiLeft + xSize - buttonWidth - padding, guiTop + ySize - buttonHeight - padding, buttonWidth, buttonHeight, new TranslationTextComponent("button.corpse.next"), button -> {
+        next = addButton(new Button(leftPos + imageWidth - buttonWidth - padding, topPos + imageHeight - buttonHeight - padding, buttonWidth, buttonHeight, new TranslationTextComponent("button.corpse.next"), button -> {
             index++;
             if (index >= deaths.size()) {
                 index = deaths.size() - 1;
@@ -82,88 +82,88 @@ public class DeathHistoryScreen extends ScreenBase<Container> {
 
     @Override
     public boolean mouseClicked(double x, double y, int clickType) {
-        if (x >= guiLeft + 7 && x <= guiLeft + hSplit && y >= guiTop + 70 && y <= guiTop + 100 + font.FONT_HEIGHT) {
+        if (x >= leftPos + 7 && x <= leftPos + hSplit && y >= topPos + 70 && y <= topPos + 100 + font.lineHeight) {
             BlockPos pos = getCurrentDeath().getBlockPos();
-            ITextComponent teleport = TextComponentUtils.wrapWithSquareBrackets(new TranslationTextComponent("chat.coordinates", pos.getX(), pos.getY(), pos.getZ()))
-                    .modifyStyle((style) -> style
-                            .applyFormatting(TextFormatting.GREEN)
-                            .setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/execute in " + getCurrentDeath().getDimension() + " run tp @s " + pos.getX() + " " + pos.getY() + " " + pos.getZ()))
-                            .setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TranslationTextComponent("chat.coordinates.tooltip")))
+            ITextComponent teleport = TextComponentUtils.wrapInSquareBrackets(new TranslationTextComponent("chat.coordinates", pos.getX(), pos.getY(), pos.getZ()))
+                    .withStyle((style) -> style
+                            .applyFormat(TextFormatting.GREEN)
+                            .withClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/execute in " + getCurrentDeath().getDimension() + " run tp @s " + pos.getX() + " " + pos.getY() + " " + pos.getZ()))
+                            .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TranslationTextComponent("chat.coordinates.tooltip")))
                     );
-            minecraft.player.sendMessage(new TranslationTextComponent("chat.corpse.teleport_death_location", teleport), Util.DUMMY_UUID);
-            minecraft.getSoundHandler().play(SimpleSound.master(SoundEvents.UI_BUTTON_CLICK, 1F));
-            minecraft.displayGuiScreen(null);
+            minecraft.player.sendMessage(new TranslationTextComponent("chat.corpse.teleport_death_location", teleport), Util.NIL_UUID);
+            minecraft.getSoundManager().play(SimpleSound.forUI(SoundEvents.UI_BUTTON_CLICK, 1F));
+            minecraft.setScreen(null);
         }
         return super.mouseClicked(x, y, clickType);
     }
 
     @Override
-    protected void drawGuiContainerForegroundLayer(MatrixStack matrixStack, int mouseX, int mouseY) {
-        super.drawGuiContainerForegroundLayer(matrixStack, mouseX, mouseY);
+    protected void renderLabels(MatrixStack matrixStack, int mouseX, int mouseY) {
+        super.renderLabels(matrixStack, mouseX, mouseY);
         Death death = getCurrentDeath();
 
         // Title
-        IFormattableTextComponent title = new TranslationTextComponent("gui.corpse.death_history.title").mergeStyle(TextFormatting.BLACK);
-        int titleWidth = font.getStringWidth(title.getString());
-        font.func_238422_b_(matrixStack, title.func_241878_f(), (xSize - titleWidth) / 2, 7, 0);
+        IFormattableTextComponent title = new TranslationTextComponent("gui.corpse.death_history.title").withStyle(TextFormatting.BLACK);
+        int titleWidth = font.width(title.getString());
+        font.draw(matrixStack, title.getVisualOrderText(), (imageWidth - titleWidth) / 2, 7, 0);
 
         // Date
-        IFormattableTextComponent date = new StringTextComponent(getDate(death.getTimestamp()).getString()).mergeStyle(TextFormatting.DARK_GRAY);
-        int dateWidth = font.getStringPropertyWidth(date);
-        font.func_238422_b_(matrixStack, date.func_241878_f(), (xSize - dateWidth) / 2, 20, 0);
+        IFormattableTextComponent date = new StringTextComponent(getDate(death.getTimestamp()).getString()).withStyle(TextFormatting.DARK_GRAY);
+        int dateWidth = font.width(date);
+        font.draw(matrixStack, date.getVisualOrderText(), (imageWidth - dateWidth) / 2, 20, 0);
 
         // Name
         drawLeft(matrixStack,
                 new TranslationTextComponent("gui.corpse.death_history.name")
                         .append(new StringTextComponent(":"))
-                        .mergeStyle(TextFormatting.DARK_GRAY),
+                        .withStyle(TextFormatting.DARK_GRAY),
                 40);
 
-        drawRight(matrixStack, new StringTextComponent(death.getPlayerName()).mergeStyle(TextFormatting.GRAY), 40);
+        drawRight(matrixStack, new StringTextComponent(death.getPlayerName()).withStyle(TextFormatting.GRAY), 40);
 
         // Dimension
         IFormattableTextComponent dimension = new TranslationTextComponent("gui.corpse.death_history.dimension")
                 .append(new StringTextComponent(":"))
-                .mergeStyle(TextFormatting.DARK_GRAY);
+                .withStyle(TextFormatting.DARK_GRAY);
 
         drawLeft(matrixStack, dimension, 55);
 
         String dimensionName = death.getDimension().split(":")[1];
         boolean shortened = false;
 
-        int dimWidth = font.getStringPropertyWidth(dimension);
+        int dimWidth = font.width(dimension);
 
-        while (dimWidth + font.getStringWidth(dimensionName + (shortened ? "..." : "")) >= hSplit - 7) {
+        while (dimWidth + font.width(dimensionName + (shortened ? "..." : "")) >= hSplit - 7) {
             dimensionName = dimensionName.substring(0, dimensionName.length() - 1);
             shortened = true;
         }
 
         drawRight(matrixStack,
-                new StringTextComponent(dimensionName + (shortened ? "..." : "")).mergeStyle(TextFormatting.GRAY), 55);
+                new StringTextComponent(dimensionName + (shortened ? "..." : "")).withStyle(TextFormatting.GRAY), 55);
 
         // Location
         drawLeft(matrixStack,
                 new TranslationTextComponent("gui.corpse.death_history.location")
                         .append(new StringTextComponent(":"))
-                        .mergeStyle(TextFormatting.DARK_GRAY)
+                        .withStyle(TextFormatting.DARK_GRAY)
                 , 70);
 
 
-        drawRight(matrixStack, new StringTextComponent(Math.round(death.getPosX()) + " X").mergeStyle(TextFormatting.GRAY), 70);
-        drawRight(matrixStack, new StringTextComponent(Math.round(death.getPosY()) + " Y").mergeStyle(TextFormatting.GRAY), 85);
-        drawRight(matrixStack, new StringTextComponent(Math.round(death.getPosZ()) + " Z").mergeStyle(TextFormatting.GRAY), 100);
+        drawRight(matrixStack, new StringTextComponent(Math.round(death.getPosX()) + " X").withStyle(TextFormatting.GRAY), 70);
+        drawRight(matrixStack, new StringTextComponent(Math.round(death.getPosY()) + " Y").withStyle(TextFormatting.GRAY), 85);
+        drawRight(matrixStack, new StringTextComponent(Math.round(death.getPosZ()) + " Z").withStyle(TextFormatting.GRAY), 100);
 
         // Player
         RenderSystem.color4f(1F, 1F, 1F, 1F);
 
-        DummyPlayer dummyPlayer = players.get(death, () -> new DummyPlayer(minecraft.world, new GameProfile(death.getPlayerUUID(), death.getPlayerName()), death.getEquipment(), death.getModel()));
+        DummyPlayer dummyPlayer = players.get(death, () -> new DummyPlayer(minecraft.level, new GameProfile(death.getPlayerUUID(), death.getPlayerName()), death.getEquipment(), death.getModel()));
 
-        InventoryScreen.drawEntityOnScreen((int) (xSize * 0.75D), ySize / 2 + 30, 40, (int) (guiLeft + (xSize * 0.75D)) - mouseX, (ySize / 2) - mouseY, dummyPlayer);
+        InventoryScreen.renderEntityInInventory((int) (imageWidth * 0.75D), imageHeight / 2 + 30, 40, (int) (leftPos + (imageWidth * 0.75D)) - mouseX, (imageHeight / 2) - mouseY, dummyPlayer);
 
-        if (mouseX >= guiLeft + 7 && mouseX <= guiLeft + hSplit && mouseY >= guiTop + 70 && mouseY <= guiTop + 100 + font.FONT_HEIGHT) {
-            renderTooltip(matrixStack, Collections.singletonList(new TranslationTextComponent("tooltip.corpse.teleport").func_241878_f()), mouseX - guiLeft, mouseY - guiTop);
-        } else if (mouseX >= guiLeft + 7 && mouseX <= guiLeft + hSplit && mouseY >= guiTop + 55 && mouseY <= guiTop + 55 + font.FONT_HEIGHT) {
-            renderTooltip(matrixStack, Lists.newArrayList(new TranslationTextComponent("gui.corpse.death_history.dimension").func_241878_f(), new StringTextComponent(death.getDimension()).mergeStyle(TextFormatting.GRAY).func_241878_f()), mouseX - guiLeft, mouseY - guiTop);
+        if (mouseX >= leftPos + 7 && mouseX <= leftPos + hSplit && mouseY >= topPos + 70 && mouseY <= topPos + 100 + font.lineHeight) {
+            renderTooltip(matrixStack, Collections.singletonList(new TranslationTextComponent("tooltip.corpse.teleport").getVisualOrderText()), mouseX - leftPos, mouseY - topPos);
+        } else if (mouseX >= leftPos + 7 && mouseX <= leftPos + hSplit && mouseY >= topPos + 55 && mouseY <= topPos + 55 + font.lineHeight) {
+            renderTooltip(matrixStack, Lists.newArrayList(new TranslationTextComponent("gui.corpse.death_history.dimension").getVisualOrderText(), new StringTextComponent(death.getDimension()).withStyle(TextFormatting.GRAY).getVisualOrderText()), mouseX - leftPos, mouseY - topPos);
 
         }
     }
@@ -193,12 +193,12 @@ public class DeathHistoryScreen extends ScreenBase<Container> {
     }
 
     public void drawLeft(MatrixStack matrixStack, IFormattableTextComponent text, int height) {
-        font.func_238422_b_(matrixStack, text.func_241878_f(), 7, height, 0);
+        font.draw(matrixStack, text.getVisualOrderText(), 7, height, 0);
     }
 
     public void drawRight(MatrixStack matrixStack, IFormattableTextComponent text, int height) {
-        int strWidth = font.getStringPropertyWidth(text);
-        font.func_238422_b_(matrixStack, text.func_241878_f(), hSplit - strWidth, height, 0);
+        int strWidth = font.width(text);
+        font.draw(matrixStack, text.getVisualOrderText(), hSplit - strWidth, height, 0);
     }
 
     public Death getCurrentDeath() {

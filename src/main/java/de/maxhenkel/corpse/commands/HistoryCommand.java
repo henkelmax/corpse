@@ -14,15 +14,15 @@ import java.util.UUID;
 public class HistoryCommand {
 
     public static void register(CommandDispatcher<CommandSource> dispatcher) {
-        LiteralArgumentBuilder<CommandSource> literalBuilder = Commands.literal("deathhistory").requires((commandSource) -> commandSource.hasPermissionLevel(2));
+        LiteralArgumentBuilder<CommandSource> literalBuilder = Commands.literal("deathhistory").requires((commandSource) -> commandSource.hasPermission(2));
 
         literalBuilder.then(Commands.argument("player", EntityArgument.player()).executes((commandSource) -> {
             ServerPlayerEntity player = EntityArgument.getPlayer(commandSource, "player");
-            boolean success = MessageRequestDeathHistory.sendDeathHistory(commandSource.getSource().asPlayer(), player.getUniqueID());
+            boolean success = MessageRequestDeathHistory.sendDeathHistory(commandSource.getSource().getPlayerOrException(), player.getUUID());
             return success ? 1 : 0;
-        })).then(Commands.argument("player_uuid", UUIDArgument.func_239194_a_()).executes((commandSource) -> {
-            UUID player = UUIDArgument.func_239195_a_(commandSource, "player_uuid");
-            boolean success = MessageRequestDeathHistory.sendDeathHistory(commandSource.getSource().asPlayer(), player);
+        })).then(Commands.argument("player_uuid", UUIDArgument.uuid()).executes((commandSource) -> {
+            UUID player = UUIDArgument.getUuid(commandSource, "player_uuid");
+            boolean success = MessageRequestDeathHistory.sendDeathHistory(commandSource.getSource().getPlayerOrException(), player);
             return success ? 1 : 0;
         }));
 

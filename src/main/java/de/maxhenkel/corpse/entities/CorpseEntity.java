@@ -39,11 +39,11 @@ import java.util.UUID;
 
 public class CorpseEntity extends CorpseBoundingBoxBase {
 
-    private static final DataParameter<Optional<UUID>> ID = EntityDataManager.createKey(CorpseEntity.class, DataSerializers.OPTIONAL_UNIQUE_ID);
-    private static final DataParameter<String> NAME = EntityDataManager.createKey(CorpseEntity.class, DataSerializers.STRING);
-    private static final DataParameter<Boolean> SKELETON = EntityDataManager.createKey(CorpseEntity.class, DataSerializers.BOOLEAN);
-    private static final DataParameter<Byte> MODEL = EntityDataManager.createKey(CorpseEntity.class, DataSerializers.BYTE);
-    private static final DataParameter<NonNullList<ItemStack>> EQUIPMENT = EntityDataManager.createKey(CorpseEntity.class, DataSerializerItemList.ITEM_LIST);
+    private static final DataParameter<Optional<UUID>> ID = EntityDataManager.defineId(CorpseEntity.class, DataSerializers.OPTIONAL_UUID);
+    private static final DataParameter<String> NAME = EntityDataManager.defineId(CorpseEntity.class, DataSerializers.STRING);
+    private static final DataParameter<Boolean> SKELETON = EntityDataManager.defineId(CorpseEntity.class, DataSerializers.BOOLEAN);
+    private static final DataParameter<Byte> MODEL = EntityDataManager.defineId(CorpseEntity.class, DataSerializers.BYTE);
+    private static final DataParameter<NonNullList<ItemStack>> EQUIPMENT = EntityDataManager.defineId(CorpseEntity.class, DataSerializerItemList.ITEM_LIST);
 
     private int age;
     private int emptyAge;
@@ -52,7 +52,7 @@ public class CorpseEntity extends CorpseBoundingBoxBase {
 
     public CorpseEntity(EntityType type, World world) {
         super(type, world);
-        preventEntitySpawning = true;
+        blocksBuilding = true;
         emptyAge = -1;
         death = new Death.Builder(new UUID(0L, 0L), new UUID(0L, 0L)).build();
     }
@@ -62,13 +62,13 @@ public class CorpseEntity extends CorpseBoundingBoxBase {
     }
 
     public static CorpseEntity createFromDeath(PlayerEntity player, Death death) {
-        CorpseEntity corpse = new CorpseEntity(player.world);
+        CorpseEntity corpse = new CorpseEntity(player.level);
         corpse.death = death;
         corpse.setCorpseUUID(death.getPlayerUUID());
         corpse.setCorpseName(death.getPlayerName());
         corpse.setEquipment(death.getEquipment());
-        corpse.setPosition(death.getPosX(), Math.max(death.getPosY(), 0D), death.getPosZ());
-        corpse.rotationYaw = player.rotationYaw;
+        corpse.setPos(death.getPosX(), Math.max(death.getPosY(), 0D), death.getPosZ());
+        corpse.yRot = player.yRot;
         corpse.setCorpseModel(death.getModel());
         return corpse;
     }
@@ -84,28 +84,28 @@ public class CorpseEntity extends CorpseBoundingBoxBase {
         age++;
         setIsSkeleton(age >= Main.SERVER_CONFIG.corpseSkeletonTime.get());
 
-        if (!hasNoGravity()) {
+        if (!isNoGravity()) {
             double yMotion = 0D;
-            Vector3d motion = getMotion();
-            if (areEyesInFluid(FluidTags.WATER) || areEyesInFluid(FluidTags.LAVA)) {
+            Vector3d motion = getDeltaMovement();
+            if (isEyeInFluid(FluidTags.WATER) || isEyeInFluid(FluidTags.LAVA)) {
                 if (motion.y < 0D) {
                     yMotion = motion.y + (motion.y < 0.03D ? 0.01D : 0D);
                 } else {
                     yMotion = motion.y + (motion.y < 0.03D ? 5E-4D : 0D);
                 }
-            } else if (Main.SERVER_CONFIG.fallIntoVoid.get() || getPosY() > 0D) {
+            } else if (Main.SERVER_CONFIG.fallIntoVoid.get() || getY() > 0D) {
                 yMotion = Math.max(-2D, motion.y - 0.0625D);
             }
-            setMotion(getMotion().x * 0.75D, yMotion, getMotion().z * 0.75D);
+            setDeltaMovement(getDeltaMovement().x * 0.75D, yMotion, getDeltaMovement().z * 0.75D);
 
-            if (!Main.SERVER_CONFIG.fallIntoVoid.get() && getPosY() < 0D) {
-                setPositionAndUpdate(getPosX(), 0F, getPosZ());
+            if (!Main.SERVER_CONFIG.fallIntoVoid.get() && getY() < 0D) {
+                teleportTo(getX(), 0F, getZ());
             }
 
-            move(MoverType.SELF, getMotion());
+            move(MoverType.SELF, getDeltaMovement());
         }
 
-        if (world.isRemote) {
+        if (level.isClientSide) {
             return;
         }
         if (Main.SERVER_CONFIG.corpseForceDespawnTime.get() > 0 && age > Main.SERVER_CONFIG.corpseForceDespawnTime.get()) {
@@ -135,20 +135,20 @@ public class CorpseEntity extends CorpseBoundingBoxBase {
     }
 
     @Override
-    public boolean attackEntityFrom(DamageSource source, float amount) {
-        if (Main.SERVER_CONFIG.lavaDamage.get() && source.isFireDamage() && amount >= 2F) {
+    public boolean hurt(DamageSource source, float amount) {
+        if (Main.SERVER_CONFIG.lavaDamage.get() && source.isFire() && amount >= 2F) {
             remove();
         }
-        return super.attackEntityFrom(source, amount);
+        return super.hurt(source, amount);
     }
 
     @Override
-    public ActionResultType processInitialInteract(PlayerEntity player, Hand hand) {
-        if (!world.isRemote && player instanceof ServerPlayerEntity) {
+    public ActionResultType interact(PlayerEntity player, Hand hand) {
+        if (!level.isClientSide && player instanceof ServerPlayerEntity) {
             ServerPlayerEntity playerMP = (ServerPlayerEntity) player;
             if (Main.SERVER_CONFIG.onlyOwnerAccess.get()) {
-                boolean isOp = playerMP.hasPermissionLevel(playerMP.server.getOpPermissionLevel());
-                if (isOp || !getCorpseUUID().isPresent() || playerMP.getUniqueID().equals(getCorpseUUID().get())) {
+                boolean isOp = playerMP.hasPermissions(playerMP.server.getOperatorUserPermissionLevel());
+                if (isOp || !getCorpseUUID().isPresent() || playerMP.getUUID().equals(getCorpseUUID().get())) {
                     Guis.openCorpseGUI((ServerPlayerEntity) player, this);
                 } else if (Main.SERVER_CONFIG.skeletonAccess.get() && isSkeleton()) {
                     Guis.openCorpseGUI((ServerPlayerEntity) player, this);
@@ -171,31 +171,31 @@ public class CorpseEntity extends CorpseBoundingBoxBase {
     }
 
     @Override
-    public boolean canRenderOnFire() {
+    public boolean displayFireAnimation() {
         return false;
     }
 
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public AxisAlignedBB getRenderBoundingBox() {
+    public AxisAlignedBB getBoundingBoxForCulling() {
         return getBoundingBox();
     }
 
     @Override
-    public boolean canBeCollidedWith() {
+    public boolean isPickable() {
         return !removed;
     }
 
     public Optional<UUID> getCorpseUUID() {
-        return dataManager.get(ID);
+        return entityData.get(ID);
     }
 
     public void setCorpseUUID(UUID uuid) {
         if (uuid == null) {
-            dataManager.set(ID, Optional.empty());
+            entityData.set(ID, Optional.empty());
         } else {
-            dataManager.set(ID, Optional.of(uuid));
+            entityData.set(ID, Optional.of(uuid));
         }
     }
 
@@ -209,72 +209,72 @@ public class CorpseEntity extends CorpseBoundingBoxBase {
     }
 
     public String getCorpseName() {
-        return dataManager.get(NAME);
+        return entityData.get(NAME);
     }
 
     public void setCorpseName(String name) {
-        dataManager.set(NAME, name);
+        entityData.set(NAME, name);
     }
 
     public boolean isSkeleton() {
-        return dataManager.get(SKELETON);
+        return entityData.get(SKELETON);
     }
 
     public void setIsSkeleton(boolean skeleton) {
-        dataManager.set(SKELETON, skeleton);
+        entityData.set(SKELETON, skeleton);
     }
 
     public byte getCorpseModel() {
-        return dataManager.get(MODEL);
+        return entityData.get(MODEL);
     }
 
     public void setCorpseModel(byte model) {
-        dataManager.set(MODEL, model);
+        entityData.set(MODEL, model);
     }
 
     public void setEquipment(NonNullList<ItemStack> equipment) {
-        dataManager.set(EQUIPMENT, equipment);
+        entityData.set(EQUIPMENT, equipment);
     }
 
     public NonNullList<ItemStack> getEquipment() {
-        return dataManager.get(EQUIPMENT);
+        return entityData.get(EQUIPMENT);
     }
 
     @Override
-    protected void registerData() {
-        dataManager.register(ID, Optional.empty());
-        dataManager.register(NAME, "");
-        dataManager.register(SKELETON, false);
-        dataManager.register(MODEL, (byte) 0);
-        dataManager.register(EQUIPMENT, NonNullList.withSize(EquipmentSlotType.values().length, ItemStack.EMPTY));
+    protected void defineSynchedData() {
+        entityData.define(ID, Optional.empty());
+        entityData.define(NAME, "");
+        entityData.define(SKELETON, false);
+        entityData.define(MODEL, (byte) 0);
+        entityData.define(EQUIPMENT, NonNullList.withSize(EquipmentSlotType.values().length, ItemStack.EMPTY));
     }
 
     @Override
     public void remove() {
         for (ItemStack item : death.getAllItems()) {
-            InventoryHelper.spawnItemStack(world, getPosX(), getPosY(), getPosZ(), item);
+            InventoryHelper.dropItemStack(level, getX(), getY(), getZ(), item);
         }
         super.remove();
 
-        if (world instanceof ServerWorld) {
-            ServerWorld serverWorld = (ServerWorld) world;
-            serverWorld.getPlayers(player -> player.getDistanceSq(getPosX(), getPosY(), getPosZ()) <= 64D * 64D).forEach(playerEntity -> NetUtils.sendTo(Main.SIMPLE_CHANNEL, playerEntity, new MessageSpawnDeathParticles(getUniqueID())));
+        if (level instanceof ServerWorld) {
+            ServerWorld serverWorld = (ServerWorld) level;
+            serverWorld.getPlayers(player -> player.distanceToSqr(getX(), getY(), getZ()) <= 64D * 64D).forEach(playerEntity -> NetUtils.sendTo(Main.SIMPLE_CHANNEL, playerEntity, new MessageSpawnDeathParticles(getUUID())));
         }
     }
 
     public void spawnDeathParticles() {
-        double x = getPosX();
-        double y = getPosY();
-        double z = getPosZ();
-        Vector3d lookVec = getLookVec().normalize();
+        double x = getX();
+        double y = getY();
+        double z = getZ();
+        Vector3d lookVec = getLookAngle().normalize();
         for (int i = 0; i <= 10; i++) {
             double d = ((((double) i) / 10D) - 0.5D) * 2D;
-            world.addParticle(ParticleTypes.LARGE_SMOKE, x + lookVec.x * d + (world.rand.nextDouble() - 0.5D), y + 0.25D, z + lookVec.z * d + (world.rand.nextDouble() - 0.5D), 0D, 0D, 0D);
+            level.addParticle(ParticleTypes.LARGE_SMOKE, x + lookVec.x * d + (level.random.nextDouble() - 0.5D), y + 0.25D, z + lookVec.z * d + (level.random.nextDouble() - 0.5D), 0D, 0D, 0D);
         }
     }
 
     @Override
-    protected void readAdditional(CompoundNBT compound) {
+    protected void readAdditionalSaveData(CompoundNBT compound) {
         if (compound.contains("Death")) {
             death = Death.fromNBT(compound.getCompound("Death"));
         } else { // Compatibility
@@ -303,7 +303,7 @@ public class CorpseEntity extends CorpseBoundingBoxBase {
     }
 
     @Override
-    protected void writeAdditional(CompoundNBT compound) {
+    protected void addAdditionalSaveData(CompoundNBT compound) {
         compound.put("Death", death.toNBT());
         compound.putInt("Age", age);
         if (emptyAge >= 0) {
@@ -312,7 +312,7 @@ public class CorpseEntity extends CorpseBoundingBoxBase {
     }
 
     @Override
-    public IPacket<?> createSpawnPacket() {
+    public IPacket<?> getAddEntityPacket() {
         return NetworkHooks.getEntitySpawningPacket(this);
     }
 

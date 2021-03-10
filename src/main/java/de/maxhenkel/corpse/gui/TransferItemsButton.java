@@ -18,7 +18,7 @@ public class TransferItemsButton extends Button {
     @Override
     public void renderButton(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
         RenderSystem.color4f(1F, 1F, 1F, 1F);
-        Minecraft.getInstance().getTextureManager().bindTexture(CorpseAdditionalScreen.CORPSE_GUI_TEXTURE);
+        Minecraft.getInstance().getTextureManager().bind(CorpseAdditionalScreen.CORPSE_GUI_TEXTURE);
         if (isHovered) {
             blit(matrixStack, x, y, 176, 10, WIDTH, HEIGHT);
         } else {

@@ -14,7 +14,7 @@ public class DummyPlayerRenderer extends PlayerRenderer {
     }
 
     @Override
-    protected void renderName(AbstractClientPlayerEntity entityIn, ITextComponent displayNameIn, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn) {
+    protected void renderNameTag(AbstractClientPlayerEntity entityIn, ITextComponent displayNameIn, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn) {
 
     }
 }

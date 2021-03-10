@@ -27,7 +27,7 @@ public class MessageSwitchInventoryPage implements Message {
 
     @Override
     public void executeServerSide(NetworkEvent.Context context) {
-        Container container = context.getSender().openContainer;
+        Container container = context.getSender().containerMenu;
         if (container instanceof CorpseAdditionalContainer) {
             CorpseAdditionalContainer containerCorpse = (CorpseAdditionalContainer) container;
             containerCorpse.setSlots(page * 54);

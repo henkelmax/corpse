@@ -18,20 +18,20 @@ public abstract class CorpseContainerFactory<T extends CorpseContainerBase> impl
         boolean isHistory = buffer.readBoolean();
         boolean additionalItemsEmpty = buffer.readBoolean();
         if (isHistory) {
-            Death death = Death.fromNBT(buffer.readCompoundTag());
+            Death death = Death.fromNBT(buffer.readNbt());
             if (!additionalItemsEmpty) {
                 // That the client knows if the additional items slot isn't empty
                 death.getAdditionalItems().add(new ItemStack(Items.STONE));
             }
-            return create(windowId, inv, CorpseEntity.createFromDeath(inv.player, death), inv.player.abilities.isCreativeMode, isHistory);
+            return create(windowId, inv, CorpseEntity.createFromDeath(inv.player, death), inv.player.abilities.instabuild, isHistory);
         } else {
-            UUID uuid = buffer.readUniqueId();
+            UUID uuid = buffer.readUUID();
 
             AxisAlignedBB aabb = inv.player.getBoundingBox();
-            aabb = aabb.grow(10D);
-            Optional<CorpseEntity> entity = inv.player.world.getEntitiesWithinAABB(CorpseEntity.class, aabb)
+            aabb = aabb.inflate(10D);
+            Optional<CorpseEntity> entity = inv.player.level.getEntitiesOfClass(CorpseEntity.class, aabb)
                     .stream()
-                    .filter(corpse -> corpse.getUniqueID().equals(uuid) && corpse.getDistance(inv.player) <= 5)
+                    .filter(corpse -> corpse.getUUID().equals(uuid) && corpse.distanceTo(inv.player) <= 5)
                     .findFirst();
             return entity.map(corpseEntity -> {
                 if (!additionalItemsEmpty) {

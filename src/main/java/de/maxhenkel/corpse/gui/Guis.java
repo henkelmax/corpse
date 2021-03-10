@@ -19,9 +19,9 @@ public class Guis {
             packetBuffer.writeBoolean(history);
             packetBuffer.writeBoolean(corpse.isAdditionalInventoryEmpty());
             if (history) {
-                packetBuffer.writeCompoundTag(corpse.getDeath().toNBT(false));
+                packetBuffer.writeNbt(corpse.getDeath().toNBT(false));
             } else {
-                packetBuffer.writeUniqueId(corpse.getUniqueID());
+                packetBuffer.writeUUID(corpse.getUUID());
             }
         });
     }
@@ -34,9 +34,9 @@ public class Guis {
                 packetBuffer.writeBoolean(history);
                 packetBuffer.writeBoolean(corpse.isAdditionalInventoryEmpty());
                 if (history) {
-                    packetBuffer.writeCompoundTag(corpse.getDeath().toNBT(false));
+                    packetBuffer.writeNbt(corpse.getDeath().toNBT(false));
                 } else {
-                    packetBuffer.writeUniqueId(corpse.getUniqueID());
+                    packetBuffer.writeUUID(corpse.getUUID());
                 }
             });
         }
@@ -60,12 +60,12 @@ public class Guis {
      * @param uuid         the death id
      */
     public static void openCorpseGUI(ServerPlayerEntity playerToShow, UUID player, UUID uuid) {
-        Death death = DeathManager.getDeath(playerToShow.getServerWorld(), player, uuid);
+        Death death = DeathManager.getDeath(playerToShow.getLevel(), player, uuid);
         if (death == null) {
             return;
         }
         CorpseEntity corpse = CorpseEntity.createFromDeath(playerToShow, death);
-        openCorpseGUI(playerToShow, corpse, playerToShow.abilities.isCreativeMode, true);
+        openCorpseGUI(playerToShow, corpse, playerToShow.abilities.instabuild, true);
     }
 
 }

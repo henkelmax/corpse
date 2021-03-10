@@ -107,7 +107,7 @@ public class Main {
                     .setTrackingRange(128)
                     .setUpdateInterval(1)
                     .setShouldReceiveVelocityUpdates(true)
-                    .size(2F, 0.5F)
+                    .sized(2F, 0.5F)
                     .setCustomClientFactory((spawnEntity, world) -> new CorpseEntity(world));
         });
         event.getRegistry().register(CORPSE_ENTITY_TYPE);

@@ -37,8 +37,8 @@ public class CorpseInventoryContainer extends CorpseContainerBase implements ITr
             addSlot(new LockedSlot(armorInventory, slotIndex, 8 + i * 18, 18, true, !editable) {
                 @OnlyIn(Dist.CLIENT)
                 @Override
-                public Pair<ResourceLocation, ResourceLocation> getBackground() {
-                    return Pair.of(PlayerContainer.LOCATION_BLOCKS_TEXTURE, ARMOR_SLOT_TEXTURES[slotIndex]);
+                public Pair<ResourceLocation, ResourceLocation> getNoItemIcon() {
+                    return Pair.of(PlayerContainer.BLOCK_ATLAS, ARMOR_SLOT_TEXTURES[slotIndex]);
                 }
             });
         }
@@ -46,8 +46,8 @@ public class CorpseInventoryContainer extends CorpseContainerBase implements ITr
         addSlot(new LockedSlot(offHandInventory, 0, 98, 18, true, !editable) {
             @OnlyIn(Dist.CLIENT)
             @Override
-            public Pair<ResourceLocation, ResourceLocation> getBackground() {
-                return Pair.of(PlayerContainer.LOCATION_BLOCKS_TEXTURE, PlayerContainer.EMPTY_ARMOR_SLOT_SHIELD);
+            public Pair<ResourceLocation, ResourceLocation> getNoItemIcon() {
+                return Pair.of(PlayerContainer.BLOCK_ATLAS, PlayerContainer.EMPTY_ARMOR_SLOT_SHIELD);
             }
         });
 
@@ -78,14 +78,14 @@ public class CorpseInventoryContainer extends CorpseContainerBase implements ITr
         ServerPlayerEntity player = (ServerPlayerEntity) playerInventory.player;
 
         NonNullList<ItemStack> additionalItems = NonNullList.create();
-        fill(additionalItems, mainInventory, playerInventory.mainInventory);
-        fill(additionalItems, armorInventory, playerInventory.armorInventory);
-        fill(additionalItems, offHandInventory, playerInventory.offHandInventory);
+        fill(additionalItems, mainInventory, playerInventory.items);
+        fill(additionalItems, armorInventory, playerInventory.armor);
+        fill(additionalItems, offHandInventory, playerInventory.offhand);
 
         additionalItems.addAll(corpse.getDeath().getAdditionalItems());
         NonNullList<ItemStack> restItems = NonNullList.create();
         for (ItemStack stack : additionalItems) {
-            if (!player.inventory.addItemStackToInventory(stack)) {
+            if (!player.inventory.add(stack)) {
                 restItems.add(stack);
             }
         }
@@ -98,8 +98,8 @@ public class CorpseInventoryContainer extends CorpseContainerBase implements ITr
     }
 
     private void fill(List<ItemStack> additionalItems, IInventory inventory, NonNullList<ItemStack> playerInv) {
-        for (int i = 0; i < inventory.getSizeInventory(); i++) {
-            ItemStack stack = inventory.getStackInSlot(i);
+        for (int i = 0; i < inventory.getContainerSize(); i++) {
+            ItemStack stack = inventory.getItem(i);
             if (stack.isEmpty()) {
                 continue;
             }
@@ -107,14 +107,14 @@ public class CorpseInventoryContainer extends CorpseContainerBase implements ITr
             if (!playerStack.isEmpty()) {
                 additionalItems.add(playerStack);
             }
-            inventory.setInventorySlotContents(i, ItemStack.EMPTY);
+            inventory.setItem(i, ItemStack.EMPTY);
             playerInv.set(i, stack);
         }
     }
 
     @Override
-    public void detectAndSendChanges() {
-        super.detectAndSendChanges();
+    public void broadcastChanges() {
+        super.broadcastChanges();
         if (corpse.isMainInventoryEmpty() && !corpse.isAdditionalInventoryEmpty() && playerInventory.player instanceof ServerPlayerEntity) {
             Guis.openAdditionalItems((ServerPlayerEntity) playerInventory.player, this);
         }

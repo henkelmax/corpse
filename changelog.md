@@ -1,1 +1,1 @@
-- Fixed only owner config option not working
+- Updated to official mappings

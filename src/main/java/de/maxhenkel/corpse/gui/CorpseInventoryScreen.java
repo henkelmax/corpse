@@ -36,8 +36,8 @@ public class CorpseInventoryScreen extends ScreenBase<CorpseInventoryContainer> 
         this.playerInventory = playerInventory;
         this.corpse = corpse;
 
-        xSize = 176;
-        ySize = 245;
+        imageWidth = 176;
+        imageHeight = 245;
     }
 
     @Override
@@ -55,7 +55,7 @@ public class CorpseInventoryScreen extends ScreenBase<CorpseInventoryContainer> 
     protected void updateButtons() {
         buttons.clear();
 
-        CorpseEntity corpse = container.getCorpse();
+        CorpseEntity corpse = menu.getCorpse();
         if (!corpse.isMainInventoryEmpty() && !corpse.isAdditionalInventoryEmpty()) {
             takeItems = addLeftButton(TRANSFER_ITEMS, PRESS_TRANSFER_ITEMS);
             additionalItems = addRightButton(ADDITIONAL_ITEMS, PRESS_ADDITIONAL_ITEMS);
@@ -67,28 +67,28 @@ public class CorpseInventoryScreen extends ScreenBase<CorpseInventoryContainer> 
             additionalItems = addCenterButton(ADDITIONAL_ITEMS, PRESS_ADDITIONAL_ITEMS);
         }
         if (takeItems != null) {
-            takeItems.active = container.isEditable();
+            takeItems.active = menu.isEditable();
         }
     }
 
     private Button addLeftButton(ITextComponent text, Button.IPressable pressable) {
-        return addButton(new Button(guiLeft + PADDING, guiTop + 120, 80, BUTTON_HEIGHT, text, pressable));
+        return addButton(new Button(leftPos + PADDING, topPos + 120, 80, BUTTON_HEIGHT, text, pressable));
     }
 
     private Button addRightButton(ITextComponent text, Button.IPressable pressable) {
-        return addButton(new Button(guiLeft + xSize - 80 - PADDING, guiTop + 120, 80, BUTTON_HEIGHT, text, pressable));
+        return addButton(new Button(leftPos + imageWidth - 80 - PADDING, topPos + 120, 80, BUTTON_HEIGHT, text, pressable));
     }
 
     private Button addCenterButton(ITextComponent text, Button.IPressable pressable) {
-        return addButton(new Button(guiLeft + xSize / 2 - 50, guiTop + 120, 100, BUTTON_HEIGHT, text, pressable));
+        return addButton(new Button(leftPos + imageWidth / 2 - 50, topPos + 120, 100, BUTTON_HEIGHT, text, pressable));
     }
 
     @Override
-    public void drawGuiContainerForegroundLayer(MatrixStack matrixStack, int mouseX, int mouseY) {
-        super.drawGuiContainerForegroundLayer(matrixStack, mouseX, mouseY);
+    public void renderLabels(MatrixStack matrixStack, int mouseX, int mouseY) {
+        super.renderLabels(matrixStack, mouseX, mouseY);
 
-        font.func_243248_b(matrixStack, corpse.getDisplayName(), 7, 7, FONT_COLOR);
-        font.func_243248_b(matrixStack, playerInventory.getDisplayName(), 7, ySize - 96 + 2, FONT_COLOR);
+        font.draw(matrixStack, corpse.getDisplayName(), 7, 7, FONT_COLOR);
+        font.draw(matrixStack, playerInventory.getDisplayName(), 7, imageHeight - 96 + 2, FONT_COLOR);
     }
 
 }

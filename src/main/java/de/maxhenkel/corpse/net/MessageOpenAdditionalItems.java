@@ -20,10 +20,10 @@ public class MessageOpenAdditionalItems implements Message {
 
     @Override
     public void executeServerSide(NetworkEvent.Context context) {
-        if (!(context.getSender().openContainer instanceof CorpseInventoryContainer)) {
+        if (!(context.getSender().containerMenu instanceof CorpseInventoryContainer)) {
             return;
         }
-        Guis.openAdditionalItems(context.getSender(), (CorpseInventoryContainer) context.getSender().openContainer);
+        Guis.openAdditionalItems(context.getSender(), (CorpseInventoryContainer) context.getSender().containerMenu);
     }
 
     @Override

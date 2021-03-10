@@ -37,18 +37,18 @@ public class MessageSpawnDeathParticles implements Message {
     @OnlyIn(Dist.CLIENT)
     private void spawnParticles() {
         ClientPlayerEntity player = Minecraft.getInstance().player;
-        Optional<CorpseEntity> c = player.world.getEntitiesWithinAABB(CorpseEntity.class, player.getBoundingBox().grow(64D), corpseEntity -> corpseEntity.getUniqueID().equals(corpseUUID)).stream().findAny();
+        Optional<CorpseEntity> c = player.level.getEntitiesOfClass(CorpseEntity.class, player.getBoundingBox().inflate(64D), corpseEntity -> corpseEntity.getUUID().equals(corpseUUID)).stream().findAny();
         c.ifPresent(CorpseEntity::spawnDeathParticles);
     }
 
     @Override
     public MessageSpawnDeathParticles fromBytes(PacketBuffer buf) {
-        corpseUUID = buf.readUniqueId();
+        corpseUUID = buf.readUUID();
         return this;
     }
 
     @Override
     public void toBytes(PacketBuffer buf) {
-        buf.writeUniqueId(corpseUUID);
+        buf.writeUUID(corpseUUID);
     }
 }
