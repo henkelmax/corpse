@@ -54,6 +54,7 @@ public class CorpseInventoryScreen extends ScreenBase<CorpseInventoryContainer> 
 
     protected void updateButtons() {
         buttons.clear();
+        children.clear();
 
         CorpseEntity corpse = menu.getCorpse();
         if (!corpse.isMainInventoryEmpty() && !corpse.isAdditionalInventoryEmpty()) {
