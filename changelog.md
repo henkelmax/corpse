@@ -1,1 +1,1 @@
-- Fixed corpse GUI
+- Fixed loosing items when transferring items while dying
