@@ -1,5 +1,4 @@
-# Corpse ![](http://cf.way2muchnoise.eu/full_316582_downloads.svg)
-![](http://cf.way2muchnoise.eu/versions/316582.svg)
+# Corpse ![](http://cf.way2muchnoise.eu/full_316582_downloads.svg) ![](http://cf.way2muchnoise.eu/versions/316582.svg)
 
 ## Links
 - [CurseForge](https://www.curseforge.com/minecraft/mc-mods/corpse)
