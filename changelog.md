@@ -1,1 +1,1 @@
-- Fixed loosing items when transferring items while dying
+- Added ukrainian translation
