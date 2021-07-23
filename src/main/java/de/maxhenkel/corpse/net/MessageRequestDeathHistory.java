@@ -4,11 +4,11 @@ import de.maxhenkel.corelib.death.Death;
 import de.maxhenkel.corelib.death.DeathManager;
 import de.maxhenkel.corelib.net.Message;
 import de.maxhenkel.corpse.Main;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.fml.network.NetworkDirection;
-import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraftforge.fmllegacy.network.NetworkDirection;
+import net.minecraftforge.fmllegacy.network.NetworkEvent;
 
 import java.util.List;
 import java.util.UUID;
@@ -30,20 +30,20 @@ public class MessageRequestDeathHistory implements Message {
     }
 
     @Override
-    public MessageRequestDeathHistory fromBytes(PacketBuffer buf) {
+    public MessageRequestDeathHistory fromBytes(FriendlyByteBuf buf) {
         return this;
     }
 
     @Override
-    public void toBytes(PacketBuffer buf) {
+    public void toBytes(FriendlyByteBuf buf) {
 
     }
 
-    public static boolean sendDeathHistory(ServerPlayerEntity player) {
+    public static boolean sendDeathHistory(ServerPlayer player) {
         return sendDeathHistory(player, player.getUUID());
     }
 
-    public static boolean sendDeathHistory(ServerPlayerEntity playerToSend, UUID playerUUID) {
+    public static boolean sendDeathHistory(ServerPlayer playerToSend, UUID playerUUID) {
         List<Death> deaths = DeathManager.getDeaths(playerToSend.getLevel(), playerUUID);
         if (deaths == null) {
             return false;

@@ -7,74 +7,73 @@ import de.maxhenkel.corelib.net.NetUtils;
 import de.maxhenkel.corpse.Main;
 import de.maxhenkel.corpse.gui.Guis;
 import de.maxhenkel.corpse.net.MessageSpawnDeathParticles;
-import net.minecraft.entity.EntitySize;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.MoverType;
-import net.minecraft.entity.Pose;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.inventory.InventoryHelper;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.IPacket;
-import net.minecraft.network.datasync.DataParameter;
-import net.minecraft.network.datasync.DataSerializers;
-import net.minecraft.network.datasync.EntityDataManager;
-import net.minecraft.particles.ParticleTypes;
+import net.minecraft.core.NonNullList;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.FluidTags;
-import net.minecraft.util.*;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.world.Containers;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.fml.network.NetworkHooks;
+import net.minecraftforge.fmllegacy.network.NetworkHooks;
 
 import java.util.Optional;
 import java.util.UUID;
 
 public class CorpseEntity extends CorpseBoundingBoxBase {
 
-    private static final DataParameter<Optional<UUID>> ID = EntityDataManager.defineId(CorpseEntity.class, DataSerializers.OPTIONAL_UUID);
-    private static final DataParameter<String> NAME = EntityDataManager.defineId(CorpseEntity.class, DataSerializers.STRING);
-    private static final DataParameter<Boolean> SKELETON = EntityDataManager.defineId(CorpseEntity.class, DataSerializers.BOOLEAN);
-    private static final DataParameter<Byte> MODEL = EntityDataManager.defineId(CorpseEntity.class, DataSerializers.BYTE);
-    private static final DataParameter<NonNullList<ItemStack>> EQUIPMENT = EntityDataManager.defineId(CorpseEntity.class, DataSerializerItemList.ITEM_LIST);
+    private static final EntityDataAccessor<Optional<UUID>> ID = SynchedEntityData.defineId(CorpseEntity.class, EntityDataSerializers.OPTIONAL_UUID);
+    private static final EntityDataAccessor<String> NAME = SynchedEntityData.defineId(CorpseEntity.class, EntityDataSerializers.STRING);
+    private static final EntityDataAccessor<Boolean> SKELETON = SynchedEntityData.defineId(CorpseEntity.class, EntityDataSerializers.BOOLEAN);
+    private static final EntityDataAccessor<Byte> MODEL = SynchedEntityData.defineId(CorpseEntity.class, EntityDataSerializers.BYTE);
+    private static final EntityDataAccessor<NonNullList<ItemStack>> EQUIPMENT = SynchedEntityData.defineId(CorpseEntity.class, DataSerializerItemList.ITEM_LIST);
 
     private int age;
     private int emptyAge;
 
     protected Death death;
 
-    public CorpseEntity(EntityType type, World world) {
+    public CorpseEntity(EntityType type, Level world) {
         super(type, world);
         blocksBuilding = true;
         emptyAge = -1;
         death = new Death.Builder(new UUID(0L, 0L), new UUID(0L, 0L)).build();
     }
 
-    public CorpseEntity(World world) {
+    public CorpseEntity(Level world) {
         this(Main.CORPSE_ENTITY_TYPE, world);
     }
 
-    public static CorpseEntity createFromDeath(PlayerEntity player, Death death) {
+    public static CorpseEntity createFromDeath(Player player, Death death) {
         CorpseEntity corpse = new CorpseEntity(player.level);
         corpse.death = death;
         corpse.setCorpseUUID(death.getPlayerUUID());
         corpse.setCorpseName(death.getPlayerName());
         corpse.setEquipment(death.getEquipment());
         corpse.setPos(death.getPosX(), Math.max(death.getPosY(), 0D), death.getPosZ());
-        corpse.yRot = player.yRot;
+        corpse.setYRot(player.getYRot());
         corpse.setCorpseModel(death.getModel());
         return corpse;
     }
 
     @Override
-    protected float getEyeHeight(Pose poseIn, EntitySize sizeIn) {
+    protected float getEyeHeight(Pose poseIn, EntityDimensions sizeIn) {
         return sizeIn.height * 0.35F;
     }
 
@@ -86,7 +85,7 @@ public class CorpseEntity extends CorpseBoundingBoxBase {
 
         if (!isNoGravity()) {
             double yMotion = 0D;
-            Vector3d motion = getDeltaMovement();
+            Vec3 motion = getDeltaMovement();
             if (isEyeInFluid(FluidTags.WATER) || isEyeInFluid(FluidTags.LAVA)) {
                 if (motion.y < 0D) {
                     yMotion = motion.y + (motion.y < 0.03D ? 0.01D : 0D);
@@ -109,14 +108,14 @@ public class CorpseEntity extends CorpseBoundingBoxBase {
             return;
         }
         if (Main.SERVER_CONFIG.corpseForceDespawnTime.get() > 0 && age > Main.SERVER_CONFIG.corpseForceDespawnTime.get()) {
-            remove();
+            discard();
             return;
         }
         boolean empty = isEmpty();
         if (empty && emptyAge < 0) {
             emptyAge = age;
         } else if (empty && age - emptyAge >= Main.SERVER_CONFIG.corpseDespawnTime.get()) {
-            remove();
+            discard();
         }
     }
 
@@ -137,36 +136,36 @@ public class CorpseEntity extends CorpseBoundingBoxBase {
     @Override
     public boolean hurt(DamageSource source, float amount) {
         if (Main.SERVER_CONFIG.lavaDamage.get() && source.isFire() && amount >= 2F) {
-            remove();
+            discard();
         }
         return super.hurt(source, amount);
     }
 
     @Override
-    public ActionResultType interact(PlayerEntity player, Hand hand) {
-        if (!level.isClientSide && player instanceof ServerPlayerEntity) {
-            ServerPlayerEntity playerMP = (ServerPlayerEntity) player;
+    public InteractionResult interact(Player player, InteractionHand hand) {
+        if (!level.isClientSide && player instanceof ServerPlayer) {
+            ServerPlayer playerMP = (ServerPlayer) player;
             if (Main.SERVER_CONFIG.onlyOwnerAccess.get()) {
                 boolean isOp = playerMP.hasPermissions(playerMP.server.getOperatorUserPermissionLevel());
                 if (isOp || !getCorpseUUID().isPresent() || playerMP.getUUID().equals(getCorpseUUID().get())) {
-                    Guis.openCorpseGUI((ServerPlayerEntity) player, this);
+                    Guis.openCorpseGUI((ServerPlayer) player, this);
                 } else if (Main.SERVER_CONFIG.skeletonAccess.get() && isSkeleton()) {
-                    Guis.openCorpseGUI((ServerPlayerEntity) player, this);
+                    Guis.openCorpseGUI((ServerPlayer) player, this);
                 }
             } else {
-                Guis.openCorpseGUI((ServerPlayerEntity) player, this);
+                Guis.openCorpseGUI((ServerPlayer) player, this);
             }
         }
-        return ActionResultType.SUCCESS;
+        return InteractionResult.SUCCESS;
     }
 
     @Override
-    public ITextComponent getDisplayName() {
+    public Component getDisplayName() {
         String name = getCorpseName();
         if (name == null || name.trim().isEmpty()) {
             return super.getDisplayName();
         } else {
-            return new TranslationTextComponent("entity.corpse.corpse_of", getCorpseName());
+            return new TranslatableComponent("entity.corpse.corpse_of", getCorpseName());
         }
     }
 
@@ -178,13 +177,13 @@ public class CorpseEntity extends CorpseBoundingBoxBase {
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public AxisAlignedBB getBoundingBoxForCulling() {
+    public AABB getBoundingBoxForCulling() {
         return getBoundingBox();
     }
 
     @Override
     public boolean isPickable() {
-        return !removed;
+        return isAlive();
     }
 
     public Optional<UUID> getCorpseUUID() {
@@ -246,18 +245,17 @@ public class CorpseEntity extends CorpseBoundingBoxBase {
         entityData.define(NAME, "");
         entityData.define(SKELETON, false);
         entityData.define(MODEL, (byte) 0);
-        entityData.define(EQUIPMENT, NonNullList.withSize(EquipmentSlotType.values().length, ItemStack.EMPTY));
+        entityData.define(EQUIPMENT, NonNullList.withSize(EquipmentSlot.values().length, ItemStack.EMPTY));
     }
 
     @Override
-    public void remove() {
+    public void remove(RemovalReason reason) {
         for (ItemStack item : death.getAllItems()) {
-            InventoryHelper.dropItemStack(level, getX(), getY(), getZ(), item);
+            Containers.dropItemStack(level, getX(), getY(), getZ(), item);
         }
-        super.remove();
-
-        if (level instanceof ServerWorld) {
-            ServerWorld serverWorld = (ServerWorld) level;
+        super.remove(reason);
+        if (level instanceof ServerLevel) {
+            ServerLevel serverWorld = (ServerLevel) level;
             serverWorld.getPlayers(player -> player.distanceToSqr(getX(), getY(), getZ()) <= 64D * 64D).forEach(playerEntity -> NetUtils.sendTo(Main.SIMPLE_CHANNEL, playerEntity, new MessageSpawnDeathParticles(getUUID())));
         }
     }
@@ -266,7 +264,7 @@ public class CorpseEntity extends CorpseBoundingBoxBase {
         double x = getX();
         double y = getY();
         double z = getZ();
-        Vector3d lookVec = getLookAngle().normalize();
+        Vec3 lookVec = getLookAngle().normalize();
         for (int i = 0; i <= 10; i++) {
             double d = ((((double) i) / 10D) - 0.5D) * 2D;
             level.addParticle(ParticleTypes.LARGE_SMOKE, x + lookVec.x * d + (level.random.nextDouble() - 0.5D), y + 0.25D, z + lookVec.z * d + (level.random.nextDouble() - 0.5D), 0D, 0D, 0D);
@@ -274,7 +272,7 @@ public class CorpseEntity extends CorpseBoundingBoxBase {
     }
 
     @Override
-    protected void readAdditionalSaveData(CompoundNBT compound) {
+    protected void readAdditionalSaveData(CompoundTag compound) {
         if (compound.contains("Death")) {
             death = Death.fromNBT(compound.getCompound("Death"));
         } else { // Compatibility
@@ -287,7 +285,7 @@ public class CorpseEntity extends CorpseBoundingBoxBase {
             NonNullList<ItemStack> additionalItems = NonNullList.withSize(size, ItemStack.EMPTY);
             ItemUtils.readInventory(compound, "Inventory", additionalItems);
             builder.additionalItems(additionalItems);
-            NonNullList<ItemStack> equipment = NonNullList.withSize(EquipmentSlotType.values().length, ItemStack.EMPTY);
+            NonNullList<ItemStack> equipment = NonNullList.withSize(EquipmentSlot.values().length, ItemStack.EMPTY);
             ItemUtils.readItemList(compound, "Equipment", equipment);
             builder.equipment(equipment);
             builder.playerName(compound.getString("Name"));
@@ -303,7 +301,7 @@ public class CorpseEntity extends CorpseBoundingBoxBase {
     }
 
     @Override
-    protected void addAdditionalSaveData(CompoundNBT compound) {
+    protected void addAdditionalSaveData(CompoundTag compound) {
         compound.put("Death", death.toNBT());
         compound.putInt("Age", age);
         if (emptyAge >= 0) {
@@ -312,7 +310,7 @@ public class CorpseEntity extends CorpseBoundingBoxBase {
     }
 
     @Override
-    public IPacket<?> getAddEntityPacket() {
+    public Packet<?> getAddEntityPacket() {
         return NetworkHooks.getEntitySpawningPacket(this);
     }
 

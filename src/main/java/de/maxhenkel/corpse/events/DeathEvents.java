@@ -4,7 +4,7 @@ import de.maxhenkel.corelib.death.DeathManager;
 import de.maxhenkel.corelib.death.PlayerDeathEvent;
 import de.maxhenkel.corpse.Main;
 import de.maxhenkel.corpse.entities.CorpseEntity;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 public class DeathEvents {
@@ -24,7 +24,7 @@ public class DeathEvents {
         new Thread(() -> deleteOldDeaths(event.getPlayer().getLevel())).start();
     }
 
-    public static void deleteOldDeaths(ServerWorld serverWorld) {
+    public static void deleteOldDeaths(ServerLevel serverWorld) {
         int ageInDays = Main.SERVER_CONFIG.maxDeathAge.get();
         if (ageInDays < 0) {
             return;

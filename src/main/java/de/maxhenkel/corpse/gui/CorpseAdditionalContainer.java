@@ -4,16 +4,16 @@ import de.maxhenkel.corelib.inventory.ItemListInventory;
 import de.maxhenkel.corelib.inventory.LockedSlot;
 import de.maxhenkel.corpse.Main;
 import de.maxhenkel.corpse.entities.CorpseEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.Inventory;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.SimpleContainer;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.wrapper.PlayerMainInvWrapper;
 
 public class CorpseAdditionalContainer extends CorpseContainerBase implements ITransferrable {
 
     private PlayerMainInvWrapper playerWrapper;
 
-    public CorpseAdditionalContainer(int id, PlayerInventory playerInventory, CorpseEntity corpse, boolean editable, boolean history) {
+    public CorpseAdditionalContainer(int id, Inventory playerInventory, CorpseEntity corpse, boolean editable, boolean history) {
         super(Main.CONTAINER_TYPE_CORPSE_ADDITIONAL_ITEMS, id, playerInventory, corpse, editable, history);
         this.inventory = new ItemListInventory(corpse.getDeath().getAdditionalItems());
         this.playerWrapper = new PlayerMainInvWrapper(playerInventory);
@@ -29,7 +29,7 @@ public class CorpseAdditionalContainer extends CorpseContainerBase implements IT
                 if (index < inventory.getContainerSize()) {
                     addSlot(new LockedSlot(inventory, index, 8 + k * 18, 19 + j * 18, true, !editable));
                 } else {
-                    addSlot(new LockedSlot(new Inventory(1), 0, 8 + k * 18, 19 + j * 18, true, true));
+                    addSlot(new LockedSlot(new SimpleContainer(1), 0, 8 + k * 18, 19 + j * 18, true, true));
                 }
             }
         }

@@ -1,19 +1,19 @@
 package de.maxhenkel.corpse.entities;
 
 import de.maxhenkel.corpse.Main;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.monster.SkeletonEntity;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.NonNullList;
-import net.minecraft.world.World;
+import net.minecraft.core.NonNullList;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.monster.Skeleton;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 
-public class DummySkeleton extends SkeletonEntity {
+public class DummySkeleton extends Skeleton {
 
-    public DummySkeleton(World world, NonNullList<ItemStack> equipment) {
+    public DummySkeleton(Level world, NonNullList<ItemStack> equipment) {
         super(EntityType.SKELETON, world);
-        if(Main.SERVER_CONFIG.renderEquipment.get()){
-            for (EquipmentSlotType type : EquipmentSlotType.values()) {
+        if (Main.SERVER_CONFIG.renderEquipment.get()) {
+            for (EquipmentSlot type : EquipmentSlot.values()) {
                 setItemSlot(type, equipment.get(type.ordinal()));
             }
         }

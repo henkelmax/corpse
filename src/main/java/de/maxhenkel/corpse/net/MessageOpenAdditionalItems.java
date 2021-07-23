@@ -3,9 +3,9 @@ package de.maxhenkel.corpse.net;
 import de.maxhenkel.corelib.net.Message;
 import de.maxhenkel.corpse.gui.CorpseInventoryContainer;
 import de.maxhenkel.corpse.gui.Guis;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraftforge.fmllegacy.network.NetworkEvent;
 
 public class MessageOpenAdditionalItems implements Message {
 
@@ -27,12 +27,12 @@ public class MessageOpenAdditionalItems implements Message {
     }
 
     @Override
-    public MessageOpenAdditionalItems fromBytes(PacketBuffer buf) {
+    public MessageOpenAdditionalItems fromBytes(FriendlyByteBuf buf) {
         return this;
     }
 
     @Override
-    public void toBytes(PacketBuffer buf) {
+    public void toBytes(FriendlyByteBuf buf) {
 
     }
 }

@@ -3,18 +3,18 @@ package de.maxhenkel.corpse.gui;
 import de.maxhenkel.corelib.death.Death;
 import de.maxhenkel.corelib.death.DeathManager;
 import de.maxhenkel.corpse.entities.CorpseEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraftforge.fml.network.NetworkHooks;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraftforge.fmllegacy.network.NetworkHooks;
 
 import java.util.UUID;
 
 public class Guis {
 
-    public static void openAdditionalItems(ServerPlayerEntity player, CorpseInventoryContainer container) {
+    public static void openAdditionalItems(ServerPlayer player, CorpseInventoryContainer container) {
         openAdditionalItems(player, container.getCorpse(), container.isEditable(), container.isHistory());
     }
 
-    public static void openAdditionalItems(ServerPlayerEntity player, CorpseEntity corpse, boolean editable, boolean history) {
+    public static void openAdditionalItems(ServerPlayer player, CorpseEntity corpse, boolean editable, boolean history) {
         NetworkHooks.openGui(player, new CorpseAdditionalItemsContainerProvider(corpse, editable, history), packetBuffer -> {
             packetBuffer.writeBoolean(history);
             packetBuffer.writeBoolean(corpse.isAdditionalInventoryEmpty());
@@ -26,7 +26,7 @@ public class Guis {
         });
     }
 
-    public static void openCorpseGUI(ServerPlayerEntity player, CorpseEntity corpse, boolean editable, boolean history) {
+    public static void openCorpseGUI(ServerPlayer player, CorpseEntity corpse, boolean editable, boolean history) {
         if (corpse.isMainInventoryEmpty() && !corpse.isEmpty()) {
             openAdditionalItems(player, corpse, editable, history);
         } else {
@@ -48,7 +48,7 @@ public class Guis {
      * @param player the player
      * @param corpse the corpse
      */
-    public static void openCorpseGUI(ServerPlayerEntity player, CorpseEntity corpse) {
+    public static void openCorpseGUI(ServerPlayer player, CorpseEntity corpse) {
         openCorpseGUI(player, corpse, true, false);
     }
 
@@ -59,13 +59,13 @@ public class Guis {
      * @param player       the player the death is from
      * @param uuid         the death id
      */
-    public static void openCorpseGUI(ServerPlayerEntity playerToShow, UUID player, UUID uuid) {
+    public static void openCorpseGUI(ServerPlayer playerToShow, UUID player, UUID uuid) {
         Death death = DeathManager.getDeath(playerToShow.getLevel(), player, uuid);
         if (death == null) {
             return;
         }
         CorpseEntity corpse = CorpseEntity.createFromDeath(playerToShow, death);
-        openCorpseGUI(playerToShow, corpse, playerToShow.abilities.instabuild, true);
+        openCorpseGUI(playerToShow, corpse, playerToShow.getAbilities().instabuild, true);
     }
 
 }

@@ -10,12 +10,13 @@ import de.maxhenkel.corpse.events.DeathEvents;
 import de.maxhenkel.corpse.events.KeyEvents;
 import de.maxhenkel.corpse.gui.*;
 import de.maxhenkel.corpse.net.*;
-import net.minecraft.client.settings.KeyBinding;
-import net.minecraft.entity.EntityClassification;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.client.KeyMapping;
+import net.minecraft.client.renderer.entity.EntityRenderers;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.MobCategory;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.MenuType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
@@ -23,13 +24,13 @@ import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.DistExecutor;
-import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.fml.network.simple.SimpleChannel;
+import net.minecraftforge.fmlclient.registry.RenderingRegistry;
+import net.minecraftforge.fmllegacy.network.simple.SimpleChannel;
 import net.minecraftforge.registries.DataSerializerEntry;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -44,18 +45,18 @@ public class Main {
     public static final Logger LOGGER = LogManager.getLogger(Main.MODID);
 
     @OnlyIn(Dist.CLIENT)
-    public static KeyBinding KEY_DEATH_HISTORY;
+    public static KeyMapping KEY_DEATH_HISTORY;
 
     public static SimpleChannel SIMPLE_CHANNEL;
     public static EntityType<CorpseEntity> CORPSE_ENTITY_TYPE;
-    public static ContainerType<CorpseAdditionalContainer> CONTAINER_TYPE_CORPSE_ADDITIONAL_ITEMS;
-    public static ContainerType<CorpseInventoryContainer> CONTAINER_TYPE_CORPSE_INVENTORY;
+    public static MenuType<CorpseAdditionalContainer> CONTAINER_TYPE_CORPSE_ADDITIONAL_ITEMS;
+    public static MenuType<CorpseInventoryContainer> CONTAINER_TYPE_CORPSE_INVENTORY;
     public static ServerConfig SERVER_CONFIG;
 
     public Main() {
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::commonSetup);
         FMLJavaModLoadingContext.get().getModEventBus().addGenericListener(EntityType.class, this::registerEntities);
-        FMLJavaModLoadingContext.get().getModEventBus().addGenericListener(ContainerType.class, this::registerContainers);
+        FMLJavaModLoadingContext.get().getModEventBus().addGenericListener(MenuType.class, this::registerContainers);
         FMLJavaModLoadingContext.get().getModEventBus().addGenericListener(DataSerializerEntry.class, this::registerSerializers);
 
         SERVER_CONFIG = CommonRegistry.registerConfig(ModConfig.Type.SERVER, ServerConfig.class);
@@ -97,12 +98,14 @@ public class Main {
         KEY_DEATH_HISTORY = ClientRegistry.registerKeyBinding("key.corpse.death_history", "key.categories.misc", GLFW.GLFW_KEY_U);
         MinecraftForge.EVENT_BUS.register(new KeyEvents());
 
-        RenderingRegistry.registerEntityRenderingHandler(CORPSE_ENTITY_TYPE, CorpseRenderer::new);
+        // TODO fix
+        // RenderingRegistry.registerEntityRenderingHandler(CORPSE_ENTITY_TYPE, CorpseRenderer::new);
+        EntityRenderers.register(CORPSE_ENTITY_TYPE, CorpseRenderer::new);
     }
 
     @SubscribeEvent
     public void registerEntities(RegistryEvent.Register<EntityType<?>> event) {
-        CORPSE_ENTITY_TYPE = CommonRegistry.registerEntity(Main.MODID, "corpse", EntityClassification.MISC, CorpseEntity.class, corpseEntityBuilder -> {
+        CORPSE_ENTITY_TYPE = CommonRegistry.registerEntity(Main.MODID, "corpse", MobCategory.MISC, CorpseEntity.class, corpseEntityBuilder -> {
             corpseEntityBuilder
                     .setTrackingRange(128)
                     .setUpdateInterval(1)
@@ -114,19 +117,19 @@ public class Main {
     }
 
     @SubscribeEvent
-    public void registerContainers(RegistryEvent.Register<ContainerType<?>> event) {
-        CONTAINER_TYPE_CORPSE_ADDITIONAL_ITEMS = new ContainerType<>(new CorpseContainerFactory<CorpseAdditionalContainer>() {
+    public void registerContainers(RegistryEvent.Register<MenuType<?>> event) {
+        CONTAINER_TYPE_CORPSE_ADDITIONAL_ITEMS = new MenuType<>(new CorpseContainerFactory<CorpseAdditionalContainer>() {
             @Override
-            public CorpseAdditionalContainer create(int id, PlayerInventory playerInventory, CorpseEntity corpse, boolean editable, boolean history) {
+            public CorpseAdditionalContainer create(int id, Inventory playerInventory, CorpseEntity corpse, boolean editable, boolean history) {
                 return new CorpseAdditionalContainer(id, playerInventory, corpse, editable, history);
             }
         });
         CONTAINER_TYPE_CORPSE_ADDITIONAL_ITEMS.setRegistryName(new ResourceLocation(Main.MODID, "corpse_additonal_items"));
         event.getRegistry().register(CONTAINER_TYPE_CORPSE_ADDITIONAL_ITEMS);
 
-        CONTAINER_TYPE_CORPSE_INVENTORY = new ContainerType<>(new CorpseContainerFactory<CorpseInventoryContainer>() {
+        CONTAINER_TYPE_CORPSE_INVENTORY = new MenuType<>(new CorpseContainerFactory<CorpseInventoryContainer>() {
             @Override
-            public CorpseInventoryContainer create(int id, PlayerInventory playerInventory, CorpseEntity corpse, boolean editable, boolean history) {
+            public CorpseInventoryContainer create(int id, Inventory playerInventory, CorpseEntity corpse, boolean editable, boolean history) {
                 return new CorpseInventoryContainer(id, playerInventory, corpse, editable, history);
             }
         });

@@ -2,10 +2,10 @@ package de.maxhenkel.corpse.net;
 
 import de.maxhenkel.corelib.net.Message;
 import de.maxhenkel.corpse.gui.CorpseAdditionalContainer;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraftforge.fmllegacy.network.NetworkEvent;
 
 public class MessageSwitchInventoryPage implements Message {
 
@@ -27,7 +27,7 @@ public class MessageSwitchInventoryPage implements Message {
 
     @Override
     public void executeServerSide(NetworkEvent.Context context) {
-        Container container = context.getSender().containerMenu;
+        AbstractContainerMenu container = context.getSender().containerMenu;
         if (container instanceof CorpseAdditionalContainer) {
             CorpseAdditionalContainer containerCorpse = (CorpseAdditionalContainer) container;
             containerCorpse.setSlots(page * 54);
@@ -35,13 +35,13 @@ public class MessageSwitchInventoryPage implements Message {
     }
 
     @Override
-    public MessageSwitchInventoryPage fromBytes(PacketBuffer buf) {
+    public MessageSwitchInventoryPage fromBytes(FriendlyByteBuf buf) {
         page = buf.readInt();
         return this;
     }
 
     @Override
-    public void toBytes(PacketBuffer buf) {
+    public void toBytes(FriendlyByteBuf buf) {
         buf.writeInt(page);
     }
 }

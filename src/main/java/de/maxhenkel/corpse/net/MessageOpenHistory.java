@@ -4,13 +4,13 @@ import de.maxhenkel.corelib.death.Death;
 import de.maxhenkel.corelib.net.Message;
 import de.maxhenkel.corpse.gui.DeathHistoryScreen;
 import net.minecraft.client.Minecraft;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraftforge.fmllegacy.network.NetworkEvent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,14 +38,14 @@ public class MessageOpenHistory implements Message {
         if (deaths.size() > 0) {
             Minecraft.getInstance().setScreen(new DeathHistoryScreen(deaths));
         } else {
-            Minecraft.getInstance().player.displayClientMessage(new TranslationTextComponent("message.corpse.no_death_history"), true);
+            Minecraft.getInstance().player.displayClientMessage(new TranslatableComponent("message.corpse.no_death_history"), true);
         }
     }
 
     @Override
-    public MessageOpenHistory fromBytes(PacketBuffer buf) {
-        CompoundNBT compound = buf.readNbt();
-        ListNBT list = compound.getList("Deaths", 10);
+    public MessageOpenHistory fromBytes(FriendlyByteBuf buf) {
+        CompoundTag compound = buf.readNbt();
+        ListTag list = compound.getList("Deaths", 10);
 
         deaths = new ArrayList<>();
         for (int i = 0; i < list.size(); i++) {
@@ -56,12 +56,12 @@ public class MessageOpenHistory implements Message {
     }
 
     @Override
-    public void toBytes(PacketBuffer buf) {
-        CompoundNBT compound = new CompoundNBT();
+    public void toBytes(FriendlyByteBuf buf) {
+        CompoundTag compound = new CompoundTag();
 
-        ListNBT list = new ListNBT();
+        ListTag list = new ListTag();
         for (Death d : deaths) {
-            CompoundNBT c = d.toNBT(false);
+            CompoundTag c = d.toNBT(false);
             list.add(c);
         }
 

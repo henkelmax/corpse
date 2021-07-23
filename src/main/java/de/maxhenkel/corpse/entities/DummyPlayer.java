@@ -2,24 +2,24 @@ package de.maxhenkel.corpse.entities;
 
 import com.mojang.authlib.GameProfile;
 import de.maxhenkel.corpse.Main;
-import net.minecraft.client.entity.player.RemoteClientPlayerEntity;
-import net.minecraft.client.world.ClientWorld;
-import net.minecraft.entity.EntitySize;
-import net.minecraft.entity.Pose;
-import net.minecraft.entity.player.PlayerModelPart;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.NonNullList;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.player.RemotePlayer;
+import net.minecraft.core.NonNullList;
+import net.minecraft.world.entity.EntityDimensions;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.Pose;
+import net.minecraft.world.entity.player.PlayerModelPart;
+import net.minecraft.world.item.ItemStack;
 
-public class DummyPlayer extends RemoteClientPlayerEntity {
+public class DummyPlayer extends RemotePlayer {
 
     private final byte model;
 
-    public DummyPlayer(ClientWorld world, GameProfile gameProfile, NonNullList<ItemStack> equipment, byte model) {
+    public DummyPlayer(ClientLevel world, GameProfile gameProfile, NonNullList<ItemStack> equipment, byte model) {
         super(world, gameProfile);
         this.model = model;
         if (Main.SERVER_CONFIG.renderEquipment.get()) {
-            for (EquipmentSlotType type : EquipmentSlotType.values()) {
+            for (EquipmentSlot type : EquipmentSlot.values()) {
                 setItemSlot(type, equipment.get(type.ordinal()));
             }
         }
@@ -32,8 +32,8 @@ public class DummyPlayer extends RemoteClientPlayerEntity {
     }
 
     @Override
-    public EntitySize getDimensions(Pose pose) {
-        return new EntitySize(super.getDimensions(pose).width, Float.MAX_VALUE, true);
+    public EntityDimensions getDimensions(Pose pose) {
+        return new EntityDimensions(super.getDimensions(pose).width, Float.MAX_VALUE, true);
     }
 
     @Override

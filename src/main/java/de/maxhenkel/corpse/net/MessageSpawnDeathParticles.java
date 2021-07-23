@@ -3,11 +3,11 @@ package de.maxhenkel.corpse.net;
 import de.maxhenkel.corelib.net.Message;
 import de.maxhenkel.corpse.entities.CorpseEntity;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.player.ClientPlayerEntity;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraftforge.fmllegacy.network.NetworkEvent;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -36,19 +36,19 @@ public class MessageSpawnDeathParticles implements Message {
 
     @OnlyIn(Dist.CLIENT)
     private void spawnParticles() {
-        ClientPlayerEntity player = Minecraft.getInstance().player;
+        LocalPlayer player = Minecraft.getInstance().player;
         Optional<CorpseEntity> c = player.level.getEntitiesOfClass(CorpseEntity.class, player.getBoundingBox().inflate(64D), corpseEntity -> corpseEntity.getUUID().equals(corpseUUID)).stream().findAny();
         c.ifPresent(CorpseEntity::spawnDeathParticles);
     }
 
     @Override
-    public MessageSpawnDeathParticles fromBytes(PacketBuffer buf) {
+    public MessageSpawnDeathParticles fromBytes(FriendlyByteBuf buf) {
         corpseUUID = buf.readUUID();
         return this;
     }
 
     @Override
-    public void toBytes(PacketBuffer buf) {
+    public void toBytes(FriendlyByteBuf buf) {
         buf.writeUUID(corpseUUID);
     }
 }

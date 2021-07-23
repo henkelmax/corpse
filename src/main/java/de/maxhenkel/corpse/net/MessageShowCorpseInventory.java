@@ -2,9 +2,9 @@ package de.maxhenkel.corpse.net;
 
 import de.maxhenkel.corelib.net.Message;
 import de.maxhenkel.corpse.gui.Guis;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraftforge.fmllegacy.network.NetworkEvent;
 
 import java.util.UUID;
 
@@ -33,14 +33,14 @@ public class MessageShowCorpseInventory implements Message {
     }
 
     @Override
-    public MessageShowCorpseInventory fromBytes(PacketBuffer buf) {
+    public MessageShowCorpseInventory fromBytes(FriendlyByteBuf buf) {
         playerUUID = new UUID(buf.readLong(), buf.readLong());
         deathID = new UUID(buf.readLong(), buf.readLong());
         return this;
     }
 
     @Override
-    public void toBytes(PacketBuffer buf) {
+    public void toBytes(FriendlyByteBuf buf) {
         buf.writeLong(playerUUID.getMostSignificantBits());
         buf.writeLong(playerUUID.getLeastSignificantBits());
         buf.writeLong(deathID.getMostSignificantBits());
