@@ -1,1 +1,1 @@
-- Added Jade support
+- Fixed compatibility with custom world heights

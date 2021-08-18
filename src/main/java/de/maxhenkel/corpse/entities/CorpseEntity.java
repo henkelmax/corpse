@@ -92,13 +92,13 @@ public class CorpseEntity extends CorpseBoundingBoxBase {
                 } else {
                     yMotion = motion.y + (motion.y < 0.03D ? 5E-4D : 0D);
                 }
-            } else if (Main.SERVER_CONFIG.fallIntoVoid.get() || getY() > 0D) {
+            } else if (Main.SERVER_CONFIG.fallIntoVoid.get() || getY() > level.getMinBuildHeight()) {
                 yMotion = Math.max(-2D, motion.y - 0.0625D);
             }
             setDeltaMovement(getDeltaMovement().x * 0.75D, yMotion, getDeltaMovement().z * 0.75D);
 
-            if (!Main.SERVER_CONFIG.fallIntoVoid.get() && getY() < 0D) {
-                teleportTo(getX(), 0F, getZ());
+            if (!Main.SERVER_CONFIG.fallIntoVoid.get() && getY() < level.getMinBuildHeight()) {
+                teleportTo(getX(), level.getMinBuildHeight(), getZ());
             }
 
             move(MoverType.SELF, getDeltaMovement());
