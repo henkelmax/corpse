@@ -13,7 +13,6 @@ public class PluginCorpse implements IWailaPlugin {
     public void register(IRegistrar registrar) {
         registrar.registerComponentProvider(HUDHandlerCorpse.INSTANCE, TooltipPosition.HEAD, CorpseEntity.class);
         registrar.registerComponentProvider(HUDHandlerCorpse.INSTANCE, TooltipPosition.BODY, CorpseEntity.class);
-        registrar.registerComponentProvider(HUDHandlerCorpse.INSTANCE, TooltipPosition.TAIL, CorpseEntity.class);
         registrar.registerEntityDataProvider(HUDHandlerCorpse.INSTANCE, CorpseEntity.class);
     }
 
