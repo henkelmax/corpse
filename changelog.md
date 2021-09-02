@@ -1,1 +1,2 @@
-- Fixed compatibility with custom world heights
+- Fixed freeze with epic fight mod
+- Re added JEI support

@@ -33,7 +33,7 @@ public class DummyPlayer extends RemotePlayer {
 
     @Override
     public EntityDimensions getDimensions(Pose pose) {
-        return new EntityDimensions(super.getDimensions(pose).width, Float.MAX_VALUE, true);
+        return new EntityDimensions(super.getDimensions(pose).width, 1000, true);
     }
 
     @Override
