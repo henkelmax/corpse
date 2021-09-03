@@ -1,1 +1,1 @@
-- Added ukrainian translation
+- Fixed freeze with epic fight mod
