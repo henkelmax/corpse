@@ -1,2 +1,1 @@
-- Fixed freeze with epic fight mod
-- Re added JEI support
+- Added french translation
