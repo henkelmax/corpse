@@ -1,0 +1,21 @@
+{
+  "entity.corpse.corpse": "시체",
+  "entity.corpse.corpse_of": "%s의 시체",
+  "button.corpse.previous": "이전",
+  "button.corpse.next": "다음",
+  "gui.corpse.page": "%s / %s",
+  "gui.corpse.death_history.title": "플레이어 사망 기록",
+  "gui.corpse.death_history.name": "이름",
+  "gui.corpse.death_history.date_format": "yyyy/MM/dd HH:mm:ss",
+  "gui.corpse.death_history.dimension": "차원",
+  "gui.corpse.death_history.location": "좌표",
+  "button.corpse.show_items": "아이템 보기",
+  "key.corpse.death_history": "플레이어 사망 기록 보기",
+  "message.corpse.no_death_history": "플레이어 사망 기록이 없습니다",
+  "chat.corpse.teleport_death_location": "사망위치 %s로 순간이동했습니다",
+  "tooltip.corpse.teleport": "순간이동",
+  "tooltip.corpse.death_date": "죽은 날 : %s",
+  "tooltip.corpse.item_count": "아이템 %s 스택",
+  "button.corpse.transfer_items": "아이템 회수",
+  "button.corpse.additional_items": "추가 아이템 회수"
+}
