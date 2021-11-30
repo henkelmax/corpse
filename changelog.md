@@ -1,1 +1,1 @@
-- Added korean translation
+- Updated to 1.18

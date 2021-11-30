@@ -4,7 +4,7 @@ import de.maxhenkel.corelib.death.Death;
 import de.maxhenkel.corelib.death.DeathManager;
 import de.maxhenkel.corpse.entities.CorpseEntity;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraftforge.fmllegacy.network.NetworkHooks;
+import net.minecraftforge.network.NetworkHooks;
 
 import java.util.UUID;
 
