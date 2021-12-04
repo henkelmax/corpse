@@ -1,1 +1,1 @@
-- Added korean translation
+- Fixed corpse not spawning lower than y=0
