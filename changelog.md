@@ -1,1 +1,1 @@
-- Fixed loader version requirement
+- Fixed corpse not spawning lower than y=0
