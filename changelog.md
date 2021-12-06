@@ -1,1 +1,1 @@
-- Fixed corpse not spawning lower than y=0
+- Re added JEI and Jade integration
