@@ -1,1 +1,1 @@
-- Re added JEI and Jade integration
+- Updated to 1.18.1
