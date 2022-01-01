@@ -1,0 +1,21 @@
+{
+  "entity.corpse.corpse": "Lik",
+  "entity.corpse.corpse_of": "%ss lik",
+  "button.corpse.previous": "Tillbaka",
+  "button.corpse.next": "Nästa",
+  "gui.corpse.page": "%s av %s",
+  "gui.corpse.death_history.title": "Dödshistorik för spelare",
+  "gui.corpse.death_history.name": "Namn",
+  "gui.corpse.death_history.date_format": "yyyy/MM/dd HH:mm:ss",
+  "gui.corpse.death_history.dimension": "Dimension",
+  "gui.corpse.death_history.location": "Plats",
+  "button.corpse.show_items": "Föremål",
+  "key.corpse.death_history": "Öppna spelarens dödshistorik",
+  "message.corpse.no_death_history": "Ingen dödshistorik för spelaren",
+  "chat.corpse.teleport_death_location": "Teleportera till dödsplatsen %s",
+  "tooltip.corpse.teleport": "Teleportera",
+  "tooltip.corpse.death_date": "Dog %s",
+  "tooltip.corpse.item_count": "Innehåller %s förmeålsgrupp(er)",
+  "button.corpse.transfer_items": "Överför föremål",
+  "button.corpse.additional_items": "Ytterligare föremål"
+}
