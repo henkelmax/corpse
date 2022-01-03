@@ -1,2 +1,3 @@
 - Fixed skin layers not persistent
 - Fixed cape position on corpses
+- Added swedish translation
