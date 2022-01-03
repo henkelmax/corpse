@@ -1,1 +1,3 @@
 - Fixed corpse not spawning lower than y=0
+- Fixed skin layers not persistent
+- Fixed cape position on corpses

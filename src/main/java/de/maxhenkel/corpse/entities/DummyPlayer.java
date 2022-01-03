@@ -24,6 +24,11 @@ public class DummyPlayer extends RemotePlayer {
             }
         }
         refreshDimensions();
+
+        setPos(0D, 0D, 0D);
+        xo = 0D;
+        yo = 0D;
+        zo = 0D;
     }
 
     @Override
