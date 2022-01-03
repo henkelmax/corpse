@@ -1,1 +1,2 @@
-- Updated to 1.18.1
+- Fixed skin layers not persistent
+- Fixed cape position on corpses

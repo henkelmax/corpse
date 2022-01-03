@@ -294,6 +294,7 @@ public class CorpseEntity extends CorpseBoundingBoxBase {
         setEquipment(death.getEquipment());
         setCorpseUUID(death.getPlayerUUID());
         setCorpseName(death.getPlayerName());
+        setCorpseModel(death.getModel());
         age = compound.getInt("Age");
         if (compound.contains("EmptyAge")) {
             emptyAge = compound.getInt("EmptyAge");
