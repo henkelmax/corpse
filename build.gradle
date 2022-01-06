@@ -126,6 +126,7 @@ curseforge {
         changelog = file('changelog.md')
         releaseType = curse_release_type
         addGameVersion mod_minecraft_version
+        addGameVersion 'Java 17'
         mainArtifact(jar) {
             displayName = "[${mod_minecraft_version}] ${mod_name} ${mod_version}"
             relations {
