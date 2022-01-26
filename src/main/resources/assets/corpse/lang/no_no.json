@@ -1,0 +1,21 @@
+{
+  "entity.corpse.corpse": "Lik",
+  "entity.corpse.corpse_of": "Liket til %s",
+  "button.corpse.previous": "Tilbake",
+  "button.corpse.next": "Neste",
+  "gui.corpse.page": "%s av %s",
+  "gui.corpse.death_history.title": "Spillers dødshistorikk",
+  "gui.corpse.death_history.name": "Navn",
+  "gui.corpse.death_history.date_format": "dd/MM/yyyy HH:mm:ss",
+  "gui.corpse.death_history.dimension": "Dimensjon",
+  "gui.corpse.death_history.location": "Lokasjon",
+  "button.corpse.show_items": "Gjenstander",
+  "key.corpse.death_history": "Åpne spillers dødshistorikk",
+  "message.corpse.no_death_history": "Ingen dødshistorikk",
+  "chat.corpse.teleport_death_location": "Teleporter til dødslokasjon %s",
+  "tooltip.corpse.teleport": "Teleporter",
+  "tooltip.corpse.death_date": "Døde den %s",
+  "tooltip.corpse.item_count": "Inneholder %s stabel(er)",
+  "button.corpse.transfer_items": "Overfør gjenstander",
+  "button.corpse.additional_items": "Ekstra gjenstander"
+}
