@@ -1,0 +1,21 @@
+{
+  "entity.corpse.corpse": "Cadavere",
+  "entity.corpse.corpse_of": "Cadavere di %s",
+  "button.corpse.previous": "Indietro",
+  "button.corpse.next": "Avanti",
+  "gui.corpse.page": "%s su %s",
+  "gui.corpse.death_history.title": "Cronologia di morti del giocatore",
+  "gui.corpse.death_history.name": "Nome",
+  "gui.corpse.death_history.date_format": "yyyy/MM/dd HH:mm:ss",
+  "gui.corpse.death_history.dimension": "Dimensione",
+  "gui.corpse.death_history.location": "Posizione",
+  "button.corpse.show_items": "Oggetti",
+  "key.corpse.death_history": "Apri cronologia di morti del giocatore",
+  "message.corpse.no_death_history": "Cronologia di morti del giocatore vuota",
+  "chat.corpse.teleport_death_location": "Teletrasporta alla posizione di morte %s",
+  "tooltip.corpse.teleport": "Teletrasporta",
+  "tooltip.corpse.death_date": "Morto il %s",
+  "tooltip.corpse.item_count": "Contiene %s pila/e",
+  "button.corpse.transfer_items": "Trasferisci oggetti",
+  "button.corpse.additional_items": "Oggetti aggiuntivi"
+}
