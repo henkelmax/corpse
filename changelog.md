@@ -1,1 +1,1 @@
-- Added Norwegian translation
+- Added Italian translation
