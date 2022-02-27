@@ -1,1 +1,1 @@
-- Added Italian translation
+- Fixed crash with Tinkers Construct

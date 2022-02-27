@@ -80,9 +80,6 @@ public class CorpseEntity extends CorpseBoundingBoxBase {
     @Override
     public void tick() {
         super.tick();
-        age++;
-        setIsSkeleton(age >= Main.SERVER_CONFIG.corpseSkeletonTime.get());
-
         if (!isNoGravity()) {
             double yMotion = 0D;
             Vec3 motion = getDeltaMovement();
@@ -107,6 +104,10 @@ public class CorpseEntity extends CorpseBoundingBoxBase {
         if (level.isClientSide) {
             return;
         }
+
+        age++;
+        setIsSkeleton(age >= Main.SERVER_CONFIG.corpseSkeletonTime.get());
+
         if (Main.SERVER_CONFIG.corpseForceDespawnTime.get() > 0 && age > Main.SERVER_CONFIG.corpseForceDespawnTime.get()) {
             discard();
             return;
