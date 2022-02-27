@@ -20,17 +20,12 @@ public class CorpseRenderer extends EntityRenderer<CorpseEntity> {
 
     private final CachedMap<CorpseEntity, DummyPlayer> players;
     private final CachedMap<CorpseEntity, DummySkeleton> skeletons;
-    private final DummyPlayerRenderer playerRenderer;
-    private final DummyPlayerRenderer playerRendererSmallArms;
-    private final SkeletonRenderer skeletonRenderer;
+    private static final Minecraft MC = Minecraft.getInstance();
 
     public CorpseRenderer(EntityRendererManager renderManager) {
         super(renderManager);
         players = new CachedMap<>(10_000L);
         skeletons = new CachedMap<>(10_000L);
-        playerRenderer = new DummyPlayerRenderer(renderManager, false);
-        playerRendererSmallArms = new DummyPlayerRenderer(renderManager, true);
-        skeletonRenderer = new SkeletonRenderer(renderManager);
     }
 
     @Override
@@ -55,16 +50,16 @@ public class CorpseRenderer extends EntityRenderer<CorpseEntity> {
 
         if (entity.isSkeleton()) {
             DummySkeleton skeleton = skeletons.get(entity, () -> new DummySkeleton(entity.level, entity.getEquipment()));
-            skeletonRenderer.render(skeleton, entityYaw, 1F, matrixStack, buffer, packedLightIn);
+            getRenderer(skeleton).render(skeleton, entityYaw, 1F, matrixStack, buffer, packedLightIn);
         } else {
-            AbstractClientPlayerEntity abstractClientPlayerEntity = players.get(entity, () -> new DummyPlayer((ClientWorld) entity.level, new GameProfile(entity.getCorpseUUID().orElse(new UUID(0L, 0L)), entity.getCorpseName()), entity.getEquipment(), entity.getCorpseModel()));
-            if (PlayerSkins.isSlim(entity.getCorpseUUID().orElse(new UUID(0L, 0L)))) {
-                playerRendererSmallArms.render(abstractClientPlayerEntity, 0F, 1F, matrixStack, buffer, packedLightIn);
-            } else {
-                playerRenderer.render(abstractClientPlayerEntity, 0F, 1F, matrixStack, buffer, packedLightIn);
-            }
+            AbstractClientPlayer abstractClientPlayerEntity = players.get(entity, () -> new DummyPlayer((ClientLevel) entity.level, new GameProfile(entity.getCorpseUUID().orElse(new UUID(0L, 0L)), entity.getCorpseName()), entity.getEquipment(), entity.getCorpseModel()));
+            getRenderer(abstractClientPlayerEntity).render(abstractClientPlayerEntity, 0F, 1F, matrixStack, buffer, packedLightIn);
         }
         matrixStack.popPose();
+    }
+
+    private <T extends Entity> EntityRenderer<? super T> getRenderer(T entity) {
+        return MC.getEntityRenderDispatcher().getRenderer(entity);
     }
 
 }

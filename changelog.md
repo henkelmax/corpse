@@ -1,1 +1,1 @@
-- Fixed freeze with epic fight mod
+- Fixed crash
