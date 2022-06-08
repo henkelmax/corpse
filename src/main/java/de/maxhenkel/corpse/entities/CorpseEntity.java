@@ -11,8 +11,8 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -43,6 +43,7 @@ public class CorpseEntity extends CorpseBoundingBoxBase {
     private static final EntityDataAccessor<Boolean> SKELETON = SynchedEntityData.defineId(CorpseEntity.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Byte> MODEL = SynchedEntityData.defineId(CorpseEntity.class, EntityDataSerializers.BYTE);
     private static final EntityDataAccessor<NonNullList<ItemStack>> EQUIPMENT = SynchedEntityData.defineId(CorpseEntity.class, DataSerializerItemList.ITEM_LIST);
+    // private static final EntityDataAccessor<NonNullList<ItemStack>> EQUIPMENT = SynchedEntityData.defineId(CorpseEntity.class, Main.ITEM_LIST_SERIALIZER.get()); //TODO Fix
 
     private int age;
     private int emptyAge;
@@ -57,7 +58,7 @@ public class CorpseEntity extends CorpseBoundingBoxBase {
     }
 
     public CorpseEntity(Level world) {
-        this(Main.CORPSE_ENTITY_TYPE, world);
+        this(Main.CORPSE_ENTITY_TYPE.get(), world);
     }
 
     public static CorpseEntity createFromDeath(Player player, Death death) {
@@ -166,7 +167,7 @@ public class CorpseEntity extends CorpseBoundingBoxBase {
         if (name == null || name.trim().isEmpty()) {
             return super.getDisplayName();
         } else {
-            return new TranslatableComponent("entity.corpse.corpse_of", getCorpseName());
+            return Component.translatable("entity.corpse.corpse_of", getCorpseName());
         }
     }
 
@@ -313,7 +314,7 @@ public class CorpseEntity extends CorpseBoundingBoxBase {
 
     @Override
     public Packet<?> getAddEntityPacket() {
-        return NetworkHooks.getEntitySpawningPacket(this);
+        return new ClientboundAddEntityPacket(this);
     }
 
 }

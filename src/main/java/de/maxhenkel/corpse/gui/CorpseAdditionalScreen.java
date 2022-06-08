@@ -8,7 +8,7 @@ import de.maxhenkel.corpse.net.MessageTransferItems;
 import de.maxhenkel.corpse.net.MessageSwitchInventoryPage;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 
@@ -45,14 +45,14 @@ public class CorpseAdditionalScreen extends ScreenBase<CorpseAdditionalContainer
         int left = (width - imageWidth) / 2;
         int buttonWidth = 50;
         int buttonHeight = 20;
-        previous = addRenderableWidget(new Button(left + PADDING, topPos + 149 - buttonHeight, buttonWidth, buttonHeight, new TranslatableComponent("button.corpse.previous"), button -> {
+        previous = addRenderableWidget(new Button(left + PADDING, topPos + 149 - buttonHeight, buttonWidth, buttonHeight, Component.translatable("button.corpse.previous"), button -> {
             page--;
             if (page < 0) {
                 page = 0;
             }
             Main.SIMPLE_CHANNEL.sendToServer(new MessageSwitchInventoryPage(page));
         }));
-        next = addRenderableWidget(new Button(left + imageWidth - buttonWidth - PADDING, topPos + 149 - buttonHeight, buttonWidth, buttonHeight, new TranslatableComponent("button.corpse.next"), button -> {
+        next = addRenderableWidget(new Button(left + imageWidth - buttonWidth - PADDING, topPos + 149 - buttonHeight, buttonWidth, buttonHeight, Component.translatable("button.corpse.next"), button -> {
             page++;
             if (page >= getPages()) {
                 page = getPages() - 1;
@@ -84,7 +84,7 @@ public class CorpseAdditionalScreen extends ScreenBase<CorpseAdditionalContainer
         font.draw(matrixStack, corpse.getDisplayName(), leftPos + 7, topPos + 7, FONT_COLOR);
         font.draw(matrixStack, playerInventory.getDisplayName(), leftPos + 7, topPos + imageHeight - 96 + 2, FONT_COLOR);
 
-        TranslatableComponent pageName = new TranslatableComponent("gui.corpse.page", page + 1, getPages());
+        MutableComponent pageName = Component.translatable("gui.corpse.page", page + 1, getPages());
         int pageWidth = font.width(pageName);
         font.draw(matrixStack, pageName, leftPos + imageWidth / 2 - pageWidth / 2, topPos + imageHeight - 113, FONT_COLOR);
     }
@@ -94,7 +94,7 @@ public class CorpseAdditionalScreen extends ScreenBase<CorpseAdditionalContainer
         super.renderLabels(matrixStack, mouseX, mouseY);
 
         if (mouseX >= leftPos + imageWidth - TransferItemsButton.WIDTH - 9 && mouseX < leftPos + imageWidth - 9 && mouseY >= topPos + 5 && mouseY < topPos + 5 + TransferItemsButton.HEIGHT) {
-            renderTooltip(matrixStack, Collections.singletonList(new TranslatableComponent("button.corpse.transfer_items").getVisualOrderText()), mouseX - leftPos, mouseY - topPos);
+            renderTooltip(matrixStack, Collections.singletonList(Component.translatable("button.corpse.transfer_items").getVisualOrderText()), mouseX - leftPos, mouseY - topPos);
         }
     }
 }

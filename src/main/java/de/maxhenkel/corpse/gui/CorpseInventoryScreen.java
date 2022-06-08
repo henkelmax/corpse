@@ -8,7 +8,7 @@ import de.maxhenkel.corpse.net.MessageOpenAdditionalItems;
 import de.maxhenkel.corpse.net.MessageTransferItems;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 
@@ -16,8 +16,8 @@ public class CorpseInventoryScreen extends ScreenBase<CorpseInventoryContainer> 
 
     public static final ResourceLocation CORPSE_GUI_TEXTURE = new ResourceLocation(Main.MODID, "textures/gui/inventory_corpse.png");
 
-    public static final TranslatableComponent TRANSFER_ITEMS = new TranslatableComponent("button.corpse.transfer_items");
-    public static final TranslatableComponent ADDITIONAL_ITEMS = new TranslatableComponent("button.corpse.additional_items");
+    public static final MutableComponent TRANSFER_ITEMS = Component.translatable("button.corpse.transfer_items");
+    public static final MutableComponent ADDITIONAL_ITEMS = Component.translatable("button.corpse.additional_items");
 
     public static final Button.OnPress PRESS_TRANSFER_ITEMS = (b) -> Main.SIMPLE_CHANNEL.sendToServer(new MessageTransferItems());
     public static final Button.OnPress PRESS_ADDITIONAL_ITEMS = (b) -> Main.SIMPLE_CHANNEL.sendToServer(new MessageOpenAdditionalItems());

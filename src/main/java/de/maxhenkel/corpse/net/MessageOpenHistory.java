@@ -7,7 +7,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.network.NetworkEvent;
@@ -38,7 +38,7 @@ public class MessageOpenHistory implements Message {
         if (deaths.size() > 0) {
             Minecraft.getInstance().setScreen(new DeathHistoryScreen(deaths));
         } else {
-            Minecraft.getInstance().player.displayClientMessage(new TranslatableComponent("message.corpse.no_death_history"), true);
+            Minecraft.getInstance().player.displayClientMessage(Component.translatable("message.corpse.no_death_history"), true);
         }
     }
 

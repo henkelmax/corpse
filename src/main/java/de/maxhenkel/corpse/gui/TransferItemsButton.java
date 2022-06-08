@@ -4,7 +4,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.renderer.GameRenderer;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 
 public class TransferItemsButton extends Button {
 
@@ -12,7 +12,7 @@ public class TransferItemsButton extends Button {
     public static final int HEIGHT = 10;
 
     public TransferItemsButton(int x, int y, Button.OnPress pressable) {
-        super(x, y, WIDTH, HEIGHT, TextComponent.EMPTY, pressable);
+        super(x, y, WIDTH, HEIGHT, Component.empty(), pressable);
     }
 
     @Override

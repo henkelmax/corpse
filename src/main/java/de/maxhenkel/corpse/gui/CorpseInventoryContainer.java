@@ -26,7 +26,7 @@ public class CorpseInventoryContainer extends CorpseContainerBase implements ITr
     private ItemListInventory offHandInventory;
 
     public CorpseInventoryContainer(int id, Inventory playerInventory, CorpseEntity corpse, boolean editable, boolean history) {
-        super(Main.CONTAINER_TYPE_CORPSE_INVENTORY, id, playerInventory, corpse, editable, history);
+        super(Main.CONTAINER_TYPE_CORPSE_INVENTORY.get(), id, playerInventory, corpse, editable, history);
 
         mainInventory = new ItemListInventory(corpse.getDeath().getMainInventory());
         armorInventory = new ItemListInventory(corpse.getDeath().getArmorInventory());

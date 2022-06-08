@@ -11,7 +11,6 @@ import de.maxhenkel.corpse.Main;
 import de.maxhenkel.corpse.entities.DummyPlayer;
 import de.maxhenkel.corpse.net.MessageShowCorpseInventory;
 import net.minecraft.ChatFormatting;
-import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
@@ -41,7 +40,7 @@ public class DeathHistoryScreen extends ScreenBase<AbstractContainerMenu> {
     private int hSplit;
 
     public DeathHistoryScreen(List<Death> deaths) {
-        super(DEATH_HISTORY_GUI_TEXTURE, new DeathHistoryContainer(), Minecraft.getInstance().player.getInventory(), new TranslatableComponent("gui.death_history.corpse.title"));
+        super(DEATH_HISTORY_GUI_TEXTURE, new DeathHistoryContainer(), Minecraft.getInstance().player.getInventory(), Component.translatable("gui.death_history.corpse.title"));
         this.players = new CachedMap<>(10_000L);
         this.deaths = deaths;
         this.index = 0;
@@ -59,18 +58,18 @@ public class DeathHistoryScreen extends ScreenBase<AbstractContainerMenu> {
         int padding = 7;
         int buttonWidth = 50;
         int buttonHeight = 20;
-        previous = addRenderableWidget(new Button(leftPos + padding, topPos + imageHeight - buttonHeight - padding, buttonWidth, buttonHeight, new TranslatableComponent("button.corpse.previous"), button -> {
+        previous = addRenderableWidget(new Button(leftPos + padding, topPos + imageHeight - buttonHeight - padding, buttonWidth, buttonHeight, Component.translatable("button.corpse.previous"), button -> {
             index--;
             if (index < 0) {
                 index = 0;
             }
         }));
 
-        addRenderableWidget(new Button(leftPos + (imageWidth - buttonWidth) / 2, topPos + imageHeight - buttonHeight - padding, buttonWidth, buttonHeight, new TranslatableComponent("button.corpse.show_items"), button -> {
+        addRenderableWidget(new Button(leftPos + (imageWidth - buttonWidth) / 2, topPos + imageHeight - buttonHeight - padding, buttonWidth, buttonHeight, Component.translatable("button.corpse.show_items"), button -> {
             Main.SIMPLE_CHANNEL.sendToServer(new MessageShowCorpseInventory(getCurrentDeath().getPlayerUUID(), getCurrentDeath().getId()));
         }));
 
-        next = addRenderableWidget(new Button(leftPos + imageWidth - buttonWidth - padding, topPos + imageHeight - buttonHeight - padding, buttonWidth, buttonHeight, new TranslatableComponent("button.corpse.next"), button -> {
+        next = addRenderableWidget(new Button(leftPos + imageWidth - buttonWidth - padding, topPos + imageHeight - buttonHeight - padding, buttonWidth, buttonHeight, Component.translatable("button.corpse.next"), button -> {
             index++;
             if (index >= deaths.size()) {
                 index = deaths.size() - 1;
@@ -83,13 +82,13 @@ public class DeathHistoryScreen extends ScreenBase<AbstractContainerMenu> {
     public boolean mouseClicked(double x, double y, int clickType) {
         if (x >= leftPos + 7 && x <= leftPos + hSplit && y >= topPos + 70 && y <= topPos + 100 + font.lineHeight) {
             BlockPos pos = getCurrentDeath().getBlockPos();
-            Component teleport = ComponentUtils.wrapInSquareBrackets(new TranslatableComponent("chat.coordinates", pos.getX(), pos.getY(), pos.getZ()))
+            Component teleport = ComponentUtils.wrapInSquareBrackets(Component.translatable("chat.coordinates", pos.getX(), pos.getY(), pos.getZ()))
                     .withStyle((style) -> style
                             .applyFormat(ChatFormatting.GREEN)
                             .withClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/execute in " + getCurrentDeath().getDimension() + " run tp @s " + pos.getX() + " " + pos.getY() + " " + pos.getZ()))
-                            .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TranslatableComponent("chat.coordinates.tooltip")))
+                            .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Component.translatable("chat.coordinates.tooltip")))
                     );
-            minecraft.player.sendMessage(new TranslatableComponent("chat.corpse.teleport_death_location", teleport), Util.NIL_UUID);
+            minecraft.player.sendSystemMessage(Component.translatable("chat.corpse.teleport_death_location", teleport));
             minecraft.getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1F));
             minecraft.setScreen(null);
         }
@@ -102,27 +101,27 @@ public class DeathHistoryScreen extends ScreenBase<AbstractContainerMenu> {
         Death death = getCurrentDeath();
 
         // Title
-        MutableComponent title = new TranslatableComponent("gui.corpse.death_history.title").withStyle(ChatFormatting.BLACK);
+        MutableComponent title = Component.translatable("gui.corpse.death_history.title").withStyle(ChatFormatting.BLACK);
         int titleWidth = font.width(title.getString());
         font.draw(matrixStack, title.getVisualOrderText(), (imageWidth - titleWidth) / 2, 7, 0);
 
         // Date
-        MutableComponent date = new TextComponent(getDate(death.getTimestamp()).getString()).withStyle(ChatFormatting.DARK_GRAY);
+        MutableComponent date = Component.literal(getDate(death.getTimestamp()).getString()).withStyle(ChatFormatting.DARK_GRAY);
         int dateWidth = font.width(date);
         font.draw(matrixStack, date.getVisualOrderText(), (imageWidth - dateWidth) / 2, 20, 0);
 
         // Name
         drawLeft(matrixStack,
-                new TranslatableComponent("gui.corpse.death_history.name")
-                        .append(new TextComponent(":"))
+                Component.translatable("gui.corpse.death_history.name")
+                        .append(Component.literal(":"))
                         .withStyle(ChatFormatting.DARK_GRAY),
                 40);
 
-        drawRight(matrixStack, new TextComponent(death.getPlayerName()).withStyle(ChatFormatting.GRAY), 40);
+        drawRight(matrixStack, Component.literal(death.getPlayerName()).withStyle(ChatFormatting.GRAY), 40);
 
         // Dimension
-        MutableComponent dimension = new TranslatableComponent("gui.corpse.death_history.dimension")
-                .append(new TextComponent(":"))
+        MutableComponent dimension = Component.translatable("gui.corpse.death_history.dimension")
+                .append(Component.literal(":"))
                 .withStyle(ChatFormatting.DARK_GRAY);
 
         drawLeft(matrixStack, dimension, 55);
@@ -137,20 +136,19 @@ public class DeathHistoryScreen extends ScreenBase<AbstractContainerMenu> {
             shortened = true;
         }
 
-        drawRight(matrixStack,
-                new TranslatableComponent(dimensionName + (shortened ? "..." : "")).withStyle(ChatFormatting.GRAY), 55);
+        drawRight(matrixStack, Component.translatable(dimensionName + (shortened ? "..." : "")).withStyle(ChatFormatting.GRAY), 55);
 
         // Location
         drawLeft(matrixStack,
-                new TranslatableComponent("gui.corpse.death_history.location")
-                        .append(new TranslatableComponent(":"))
+                Component.translatable("gui.corpse.death_history.location")
+                        .append(Component.literal(":"))
                         .withStyle(ChatFormatting.DARK_GRAY)
                 , 70);
 
 
-        drawRight(matrixStack, new TextComponent(Math.round(death.getPosX()) + " X").withStyle(ChatFormatting.GRAY), 70);
-        drawRight(matrixStack, new TextComponent(Math.round(death.getPosY()) + " Y").withStyle(ChatFormatting.GRAY), 85);
-        drawRight(matrixStack, new TextComponent(Math.round(death.getPosZ()) + " Z").withStyle(ChatFormatting.GRAY), 100);
+        drawRight(matrixStack, Component.literal(Math.round(death.getPosX()) + " X").withStyle(ChatFormatting.GRAY), 70);
+        drawRight(matrixStack, Component.literal(Math.round(death.getPosY()) + " Y").withStyle(ChatFormatting.GRAY), 85);
+        drawRight(matrixStack, Component.literal(Math.round(death.getPosZ()) + " Z").withStyle(ChatFormatting.GRAY), 100);
 
         // Player
         RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
@@ -160,9 +158,9 @@ public class DeathHistoryScreen extends ScreenBase<AbstractContainerMenu> {
         InventoryScreen.renderEntityInInventory((int) (imageWidth * 0.75D), imageHeight / 2 + 30, 40, (int) (leftPos + (imageWidth * 0.75D)) - mouseX, (imageHeight / 2) - mouseY, dummyPlayer);
 
         if (mouseX >= leftPos + 7 && mouseX <= leftPos + hSplit && mouseY >= topPos + 70 && mouseY <= topPos + 100 + font.lineHeight) {
-            renderTooltip(matrixStack, Collections.singletonList(new TranslatableComponent("tooltip.corpse.teleport").getVisualOrderText()), mouseX - leftPos, mouseY - topPos);
+            renderTooltip(matrixStack, Collections.singletonList(Component.translatable("tooltip.corpse.teleport").getVisualOrderText()), mouseX - leftPos, mouseY - topPos);
         } else if (mouseX >= leftPos + 7 && mouseX <= leftPos + hSplit && mouseY >= topPos + 55 && mouseY <= topPos + 55 + font.lineHeight) {
-            renderTooltip(matrixStack, Lists.newArrayList(new TranslatableComponent("gui.corpse.death_history.dimension").getVisualOrderText(), new TextComponent(death.getDimension()).withStyle(ChatFormatting.GRAY).getVisualOrderText()), mouseX - leftPos, mouseY - topPos);
+            renderTooltip(matrixStack, Lists.newArrayList(Component.translatable("gui.corpse.death_history.dimension").getVisualOrderText(), Component.literal(death.getDimension()).withStyle(ChatFormatting.GRAY).getVisualOrderText()), mouseX - leftPos, mouseY - topPos);
 
         }
     }
@@ -172,15 +170,15 @@ public class DeathHistoryScreen extends ScreenBase<AbstractContainerMenu> {
     public static Component getDate(long timestamp) {
         SimpleDateFormat dateFormat;
         try {
-            dateFormat = new SimpleDateFormat(new TranslatableComponent("gui.corpse.death_history.date_format").getString());
+            dateFormat = new SimpleDateFormat(Component.translatable("gui.corpse.death_history.date_format").getString());
         } catch (Exception e) {
             if (!errorShown) {
-                Main.LOGGER.error("Failed to create date format. This indicates a broken translation: 'gui.corpse.death_history.date_format' translated to {}", new TranslatableComponent("gui.corpse.death_history.date_format").getString());
+                Main.LOGGER.error("Failed to create date format. This indicates a broken translation: 'gui.corpse.death_history.date_format' translated to {}", Component.translatable("gui.corpse.death_history.date_format").getString());
                 errorShown = true;
             }
             dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
         }
-        return new TextComponent(dateFormat.format(new Date(timestamp)));
+        return Component.literal(dateFormat.format(new Date(timestamp)));
     }
 
     @Override
