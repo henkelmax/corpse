@@ -12,11 +12,13 @@ import de.maxhenkel.corpse.gui.*;
 import de.maxhenkel.corpse.net.*;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.renderer.entity.EntityRenderers;
-import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.core.NonNullList;
+import net.minecraft.network.syncher.EntityDataSerializer;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
@@ -56,9 +58,8 @@ public class Main {
     public static final RegistryObject<MenuType<CorpseAdditionalContainer>> CONTAINER_TYPE_CORPSE_ADDITIONAL_ITEMS = MENU_REGISTER.register("corpse_additional_items", Main::createCorpseAdditionalItemsMenuType);
     public static final RegistryObject<MenuType<CorpseInventoryContainer>> CONTAINER_TYPE_CORPSE_INVENTORY = MENU_REGISTER.register("corpse_inventory", Main::createCorpseInventoryMenuType);
 
-    //TODO Fix
-    // private static final DeferredRegister<EntityDataSerializer<?>> DATA_SERIALIZER_REGISTER = DeferredRegister.create(ForgeRegistries.DATA_SERIALIZERS.get(), Main.MODID);
-    // public static final RegistryObject<EntityDataSerializer<NonNullList<ItemStack>>> ITEM_LIST_SERIALIZER = DATA_SERIALIZER_REGISTER.register("item_list", () -> DataSerializerItemList.ITEM_LIST);
+    private static final DeferredRegister<EntityDataSerializer<?>> DATA_SERIALIZER_REGISTER = DeferredRegister.create(ForgeRegistries.Keys.DATA_SERIALIZERS, Main.MODID);
+    public static final RegistryObject<EntityDataSerializer<NonNullList<ItemStack>>> ITEM_LIST_SERIALIZER = DATA_SERIALIZER_REGISTER.register("item_list", () -> DataSerializerItemList.create());
 
     public static ServerConfig SERVER_CONFIG;
 
@@ -69,9 +70,7 @@ public class Main {
 
         ITEM_REGISTER.register(FMLJavaModLoadingContext.get().getModEventBus());
         MENU_REGISTER.register(FMLJavaModLoadingContext.get().getModEventBus());
-
-        //TODO Fix
-        EntityDataSerializers.registerSerializer(DataSerializerItemList.ITEM_LIST);
+        DATA_SERIALIZER_REGISTER.register(FMLJavaModLoadingContext.get().getModEventBus());
     }
 
     @SubscribeEvent

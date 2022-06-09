@@ -1,6 +1,5 @@
 package de.maxhenkel.corpse.entities;
 
-import de.maxhenkel.corelib.dataserializers.DataSerializerItemList;
 import de.maxhenkel.corelib.death.Death;
 import de.maxhenkel.corelib.item.ItemUtils;
 import de.maxhenkel.corelib.net.NetUtils;
@@ -31,7 +30,6 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.network.NetworkHooks;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -42,8 +40,7 @@ public class CorpseEntity extends CorpseBoundingBoxBase {
     private static final EntityDataAccessor<String> NAME = SynchedEntityData.defineId(CorpseEntity.class, EntityDataSerializers.STRING);
     private static final EntityDataAccessor<Boolean> SKELETON = SynchedEntityData.defineId(CorpseEntity.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Byte> MODEL = SynchedEntityData.defineId(CorpseEntity.class, EntityDataSerializers.BYTE);
-    private static final EntityDataAccessor<NonNullList<ItemStack>> EQUIPMENT = SynchedEntityData.defineId(CorpseEntity.class, DataSerializerItemList.ITEM_LIST);
-    // private static final EntityDataAccessor<NonNullList<ItemStack>> EQUIPMENT = SynchedEntityData.defineId(CorpseEntity.class, Main.ITEM_LIST_SERIALIZER.get()); //TODO Fix
+    private static final EntityDataAccessor<NonNullList<ItemStack>> EQUIPMENT = SynchedEntityData.defineId(CorpseEntity.class, Main.ITEM_LIST_SERIALIZER.get());
 
     private int age;
     private int emptyAge;

@@ -1,1 +1,1 @@
-- Updated to 1.19
+- Fixed item list data serializer
