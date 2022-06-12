@@ -1,1 +1,1 @@
-- Re add JEI integration
+- Updated corpse save format
