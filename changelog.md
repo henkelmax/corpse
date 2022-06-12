@@ -1,1 +1,1 @@
-- Fixed item list data serializer
+- Updated corpse save format
