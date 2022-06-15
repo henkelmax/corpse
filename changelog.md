@@ -1,1 +1,1 @@
-- Updated corpse save format
+- Re added Jade integration

@@ -1,19 +1,22 @@
 package de.maxhenkel.corpse.integration.waila;
 
 import de.maxhenkel.corpse.entities.CorpseEntity;
-import mcp.mobius.waila.api.IRegistrar;
-import mcp.mobius.waila.api.IWailaPlugin;
-import mcp.mobius.waila.api.TooltipPosition;
-import mcp.mobius.waila.api.WailaPlugin;
+import snownee.jade.api.IWailaClientRegistration;
+import snownee.jade.api.IWailaCommonRegistration;
+import snownee.jade.api.IWailaPlugin;
+import snownee.jade.api.WailaPlugin;
 
 @WailaPlugin
 public class PluginCorpse implements IWailaPlugin {
 
     @Override
-    public void register(IRegistrar registrar) {
-        registrar.registerComponentProvider(HUDHandlerCorpse.INSTANCE, TooltipPosition.HEAD, CorpseEntity.class);
-        registrar.registerComponentProvider(HUDHandlerCorpse.INSTANCE, TooltipPosition.BODY, CorpseEntity.class);
-        registrar.registerEntityDataProvider(HUDHandlerCorpse.INSTANCE, CorpseEntity.class);
+    public void registerClient(IWailaClientRegistration registration) {
+        registration.registerEntityComponent(HUDHandlerCorpse.INSTANCE, CorpseEntity.class);
+    }
+
+    @Override
+    public void register(IWailaCommonRegistration registration) {
+        registration.registerEntityDataProvider(HUDHandlerCorpse.INSTANCE, CorpseEntity.class);
     }
 
 }
