@@ -1,3 +1,5 @@
+<!-- modrinth_exclude.start -->
+
 # Corpse ![](http://cf.way2muchnoise.eu/full_316582_downloads.svg) ![](http://cf.way2muchnoise.eu/versions/316582.svg)
 
 ## Links
@@ -8,6 +10,8 @@
 - [Credits](https://modrepo.de/minecraft/corpse/credits)
 
 ---
+
+<!-- modrinth_exclude.end -->
 
 This mod brings a corpse into the game.
 It will spawn upon your death containing all items that you had in your inventory.
