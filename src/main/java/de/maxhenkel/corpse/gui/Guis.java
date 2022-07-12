@@ -15,7 +15,7 @@ public class Guis {
     }
 
     public static void openAdditionalItems(ServerPlayer player, CorpseEntity corpse, boolean editable, boolean history) {
-        NetworkHooks.openGui(player, new CorpseAdditionalItemsContainerProvider(corpse, editable, history), packetBuffer -> {
+        NetworkHooks.openScreen(player, new CorpseAdditionalItemsContainerProvider(corpse, editable, history), packetBuffer -> {
             packetBuffer.writeBoolean(history);
             packetBuffer.writeBoolean(corpse.isAdditionalInventoryEmpty());
             if (history) {
@@ -30,7 +30,7 @@ public class Guis {
         if (corpse.isMainInventoryEmpty() && !corpse.isEmpty()) {
             openAdditionalItems(player, corpse, editable, history);
         } else {
-            NetworkHooks.openGui(player, new CorpseContainerProvider(corpse, editable, history), packetBuffer -> {
+            NetworkHooks.openScreen(player, new CorpseContainerProvider(corpse, editable, history), packetBuffer -> {
                 packetBuffer.writeBoolean(history);
                 packetBuffer.writeBoolean(corpse.isAdditionalInventoryEmpty());
                 if (history) {
