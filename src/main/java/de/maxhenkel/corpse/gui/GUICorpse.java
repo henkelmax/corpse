@@ -58,9 +58,17 @@ public class GUICorpse extends GUIBase {
             CommonProxy.simpleNetworkWrapper.sendToServer(new MessageSwitchInventoryPage(page));
         } else if (button.id == 1) {
             page++;
+            //Dirty Fix to fix this issue: https://github.com/henkelmax/corpse/issues/115
+            //No way any mod would require more than 200 54 slot pages, make that be a sanity limit to prevent 1 million page or some shit
+            if(page >= 200) {
+            	page = 200;
+            }
+            /* 
             if (page >= getPages()) {
                 page = getPages() - 1;
             }
+            */
+            System.out.println("Requesting server send me page = " + page);
             CommonProxy.simpleNetworkWrapper.sendToServer(new MessageSwitchInventoryPage(page));
         }
     }
@@ -73,11 +81,13 @@ public class GUICorpse extends GUIBase {
         } else {
             previous.enabled = true;
         }
-
-        if (page >= getPages() - 1) {
-            next.enabled = false;
-        } else {
-            next.enabled = true;
+        //Dirty Fix to fix this issue: https://github.com/henkelmax/corpse/issues/115
+        //200 page limit is just a sanity check more than anything.
+        //if (page >= getPages() - 1) {
+        if(page >= 200) {
+        	next.enabled = false;
+        }else {
+        	next.enabled = true;
         }
     }
 
