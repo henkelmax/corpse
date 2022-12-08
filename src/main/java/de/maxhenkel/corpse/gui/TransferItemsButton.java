@@ -2,17 +2,23 @@ package de.maxhenkel.corpse.gui;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.AbstractButton;
+import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 
-public class TransferItemsButton extends Button {
+import java.util.function.Consumer;
+
+public class TransferItemsButton extends AbstractButton {
 
     public static final int WIDTH = 18;
     public static final int HEIGHT = 10;
 
-    public TransferItemsButton(int x, int y, Button.OnPress pressable) {
-        super(x, y, WIDTH, HEIGHT, Component.empty(), pressable);
+    private Consumer<TransferItemsButton> onPress;
+
+    public TransferItemsButton(int x, int y, Consumer<TransferItemsButton> onPress) {
+        super(x, y, WIDTH, HEIGHT, Component.empty());
+        this.onPress = onPress;
     }
 
     @Override
@@ -21,9 +27,19 @@ public class TransferItemsButton extends Button {
         RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
         RenderSystem.setShaderTexture(0, CorpseAdditionalScreen.CORPSE_GUI_TEXTURE);
         if (isHovered) {
-            blit(matrixStack, x, y, 176, 10, WIDTH, HEIGHT);
+            blit(matrixStack, getX(), getY(), 176, 10, WIDTH, HEIGHT);
         } else {
-            blit(matrixStack, x, y, 176, 0, WIDTH, HEIGHT);
+            blit(matrixStack, getX(), getY(), 176, 0, WIDTH, HEIGHT);
         }
+    }
+
+    @Override
+    protected void updateWidgetNarration(NarrationElementOutput output) {
+        updateWidgetNarration(output);
+    }
+
+    @Override
+    public void onPress() {
+        onPress.accept(this);
     }
 }

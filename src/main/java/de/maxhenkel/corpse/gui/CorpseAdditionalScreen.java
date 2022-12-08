@@ -45,20 +45,20 @@ public class CorpseAdditionalScreen extends ScreenBase<CorpseAdditionalContainer
         int left = (width - imageWidth) / 2;
         int buttonWidth = 50;
         int buttonHeight = 20;
-        previous = addRenderableWidget(new Button(left + PADDING, topPos + 149 - buttonHeight, buttonWidth, buttonHeight, Component.translatable("button.corpse.previous"), button -> {
+        previous = addRenderableWidget(Button.builder(Component.translatable("button.corpse.previous"), button -> {
             page--;
             if (page < 0) {
                 page = 0;
             }
             Main.SIMPLE_CHANNEL.sendToServer(new MessageSwitchInventoryPage(page));
-        }));
-        next = addRenderableWidget(new Button(left + imageWidth - buttonWidth - PADDING, topPos + 149 - buttonHeight, buttonWidth, buttonHeight, Component.translatable("button.corpse.next"), button -> {
+        }).bounds(left + PADDING, topPos + 149 - buttonHeight, buttonWidth, buttonHeight).build());
+        next = addRenderableWidget(Button.builder(Component.translatable("button.corpse.next"), button -> {
             page++;
             if (page >= getPages()) {
                 page = getPages() - 1;
             }
             Main.SIMPLE_CHANNEL.sendToServer(new MessageSwitchInventoryPage(page));
-        }));
+        }).bounds(left + imageWidth - buttonWidth - PADDING, topPos + 149 - buttonHeight, buttonWidth, buttonHeight).build());
 
         addRenderableWidget(new TransferItemsButton(left + imageWidth - TransferItemsButton.WIDTH - 9, topPos + 5, button -> {
             Main.SIMPLE_CHANNEL.sendToServer(new MessageTransferItems());

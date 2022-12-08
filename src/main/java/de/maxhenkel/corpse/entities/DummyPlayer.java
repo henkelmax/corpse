@@ -9,20 +9,14 @@ import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.player.PlayerModelPart;
-import net.minecraft.world.entity.player.ProfilePublicKey;
 import net.minecraft.world.item.ItemStack;
-import org.jetbrains.annotations.Nullable;
 
 public class DummyPlayer extends RemotePlayer {
 
     private final byte model;
 
     public DummyPlayer(ClientLevel world, GameProfile gameProfile, NonNullList<ItemStack> equipment, byte model) {
-        this(world, gameProfile, null, equipment, model);
-    }
-
-    public DummyPlayer(ClientLevel world, GameProfile gameProfile, @Nullable ProfilePublicKey profilePublicKey, NonNullList<ItemStack> equipment, byte model) {
-        super(world, gameProfile, profilePublicKey);
+        super(world, gameProfile);
         this.model = model;
         if (Main.SERVER_CONFIG.renderEquipment.get()) {
             for (EquipmentSlot type : EquipmentSlot.values()) {

@@ -2,7 +2,7 @@ package de.maxhenkel.corpse.entities;
 
 import com.mojang.authlib.GameProfile;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
 import de.maxhenkel.corelib.CachedMap;
 import de.maxhenkel.corpse.Main;
 import net.minecraft.client.Minecraft;
@@ -38,13 +38,13 @@ public class CorpseRenderer extends EntityRenderer<CorpseEntity> {
         super.render(entity, entityYaw, partialTicks, matrixStack, buffer, packedLightIn);
         matrixStack.pushPose();
 
-        matrixStack.mulPose(Vector3f.YP.rotationDegrees(-entity.getYRot()));
+        matrixStack.mulPose(Axis.YP.rotationDegrees(-entity.getYRot()));
 
         if (Main.SERVER_CONFIG.spawnCorpseOnFace.get()) {
-            matrixStack.mulPose(Vector3f.XP.rotationDegrees(90F));
+            matrixStack.mulPose(Axis.XP.rotationDegrees(90F));
             matrixStack.translate(0D, -1D, -2.01D / 16D);
         } else {
-            matrixStack.mulPose(Vector3f.XP.rotationDegrees(-90F));
+            matrixStack.mulPose(Axis.XP.rotationDegrees(-90F));
             matrixStack.translate(0D, -1D, 2.01D / 16D);
         }
 

@@ -72,15 +72,15 @@ public class CorpseInventoryScreen extends ScreenBase<CorpseInventoryContainer> 
     }
 
     private Button addLeftButton(Component text, Button.OnPress pressable) {
-        return addRenderableWidget(new Button(leftPos + PADDING, topPos + 120, 80, BUTTON_HEIGHT, text, pressable));
+        return addRenderableWidget(Button.builder(text, pressable).bounds(leftPos + PADDING, topPos + 120, 80, BUTTON_HEIGHT).build());
     }
 
     private Button addRightButton(Component text, Button.OnPress pressable) {
-        return addRenderableWidget(new Button(leftPos + imageWidth - 80 - PADDING, topPos + 120, 80, BUTTON_HEIGHT, text, pressable));
+        return addRenderableWidget(Button.builder(text, pressable).bounds(leftPos + imageWidth - 80 - PADDING, topPos + 120, 80, BUTTON_HEIGHT).build());
     }
 
     private Button addCenterButton(Component text, Button.OnPress pressable) {
-        return addRenderableWidget(new Button(leftPos + imageWidth / 2 - 50, topPos + 120, 100, BUTTON_HEIGHT, text, pressable));
+        return addRenderableWidget(Button.builder(text, pressable).bounds(leftPos + imageWidth / 2 - 50, topPos + 120, 100, BUTTON_HEIGHT).build());
     }
 
     @Override

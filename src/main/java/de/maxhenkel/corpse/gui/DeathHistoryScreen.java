@@ -58,24 +58,24 @@ public class DeathHistoryScreen extends ScreenBase<AbstractContainerMenu> {
         int padding = 7;
         int buttonWidth = 50;
         int buttonHeight = 20;
-        previous = addRenderableWidget(new Button(leftPos + padding, topPos + imageHeight - buttonHeight - padding, buttonWidth, buttonHeight, Component.translatable("button.corpse.previous"), button -> {
+        previous = addRenderableWidget(Button.builder(Component.translatable("button.corpse.previous"), button -> {
             index--;
             if (index < 0) {
                 index = 0;
             }
-        }));
+        }).bounds(leftPos + padding, topPos + imageHeight - buttonHeight - padding, buttonWidth, buttonHeight).build());
 
-        addRenderableWidget(new Button(leftPos + (imageWidth - buttonWidth) / 2, topPos + imageHeight - buttonHeight - padding, buttonWidth, buttonHeight, Component.translatable("button.corpse.show_items"), button -> {
+        addRenderableWidget(Button.builder(Component.translatable("button.corpse.show_items"), button -> {
             Main.SIMPLE_CHANNEL.sendToServer(new MessageShowCorpseInventory(getCurrentDeath().getPlayerUUID(), getCurrentDeath().getId()));
-        }));
+        }).bounds(leftPos + (imageWidth - buttonWidth) / 2, topPos + imageHeight - buttonHeight - padding, buttonWidth, buttonHeight).build());
 
-        next = addRenderableWidget(new Button(leftPos + imageWidth - buttonWidth - padding, topPos + imageHeight - buttonHeight - padding, buttonWidth, buttonHeight, Component.translatable("button.corpse.next"), button -> {
+        next = addRenderableWidget(Button.builder(Component.translatable("button.corpse.next"), button -> {
             index++;
             if (index >= deaths.size()) {
                 index = deaths.size() - 1;
             }
 
-        }));
+        }).bounds(leftPos + imageWidth - buttonWidth - padding, topPos + imageHeight - buttonHeight - padding, buttonWidth, buttonHeight).build());
     }
 
     @Override
