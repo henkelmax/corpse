@@ -4,8 +4,6 @@
 
 ## Links
 - [CurseForge](https://www.curseforge.com/minecraft/mc-mods/corpse)
-- [ModRepo](https://modrepo.de/minecraft/corpse/overview)
-- [GitHub](https://github.com/henkelmax/corpse)
 - [FAQ](https://modrepo.de/minecraft/corpse/faq)
 - [Credits](https://modrepo.de/minecraft/corpse/credits)
 
