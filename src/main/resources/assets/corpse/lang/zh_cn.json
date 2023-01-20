@@ -3,6 +3,7 @@
   "entity.corpse.corpse_of": "%s 的遗体",
   "button.corpse.previous": "上一页",
   "button.corpse.next": "下一页",
+  "gui.corpse.page": "%s of %s",
   "gui.corpse.death_history.title": "死亡历史",
   "gui.corpse.death_history.name": "名字",
   "gui.corpse.death_history.date_format": "yyyy/MM/dd HH:mm:ss",
@@ -12,5 +13,10 @@
   "key.corpse.death_history": "打开死亡历史",
   "message.corpse.no_death_history": "无死亡历史",
   "chat.corpse.teleport_death_location": "传送至上次死亡地点 %s",
-  "tooltip.corpse.teleport": "传送"
+  "tooltip.corpse.teleport": "传送",
+  "tooltip.corpse.death_date": "死于 %s",
+  "tooltip.corpse.item_count": "包含 %s 个堆叠",
+  "button.corpse.transfer_items": "转移物品",
+  "button.corpse.additional_items": "额外的物品",
+  "config.jade.plugin_corpse.corpse": "遗体"
 }
