@@ -1,0 +1,22 @@
+{
+  "entity.corpse.corpse": "Cadáver",
+  "entity.corpse.corpse_of": "Cadáver de %s",
+  "button.corpse.previous": "Atrás",
+  "button.corpse.next": "Siguiente",
+  "gui.corpse.page": "%s de %s",
+  "gui.corpse.death_history.title": "Historial de muertes del jugador",
+  "gui.corpse.death_history.name": "Nombre",
+  "gui.corpse.death_history.date_format": "aaaa/MM/dd HH:mm:ss",
+  "gui.corpse.death_history.dimension": "Dimensión",
+  "gui.corpse.death_history.location": "Ubicación",
+  "button.corpse.show_items": "Items",
+  "key.corpse.death_history": "Abrir historial de muertes de jugadores",
+  "message.corpse.no_death_history": "Sin historial de muertes de jugadores",
+  "chat.corpse.teleport_death_location": "Teletransportarse al lugar de muerte %s",
+  "tooltip.corpse.teleport": "Teletransportarse",
+  "tooltip.corpse.death_date": "Murió el %s",
+  "tooltip.corpse.item_count": "Contiene %s pila(s)",
+  "button.corpse.transfer_items": "Robar Items",
+  "button.corpse.additional_items": "Items adicionales",
+  "config.jade.plugin_corpse.corpse": "Cadáver"
+}
