@@ -1,1 +1,1 @@
-- Added Spanish translations
+- Updated to 1.19.4

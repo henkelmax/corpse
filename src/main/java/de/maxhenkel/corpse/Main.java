@@ -17,6 +17,8 @@ import net.minecraft.network.syncher.EntityDataSerializer;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.flag.FeatureFlagSet;
+import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
@@ -134,7 +136,7 @@ public class Main {
             public CorpseAdditionalContainer create(int id, Inventory playerInventory, CorpseEntity corpse, boolean editable, boolean history) {
                 return new CorpseAdditionalContainer(id, playerInventory, corpse, editable, history);
             }
-        });
+        }, FeatureFlags.VANILLA_SET);
     }
 
     private static MenuType<CorpseInventoryContainer> createCorpseInventoryMenuType() {
@@ -143,7 +145,7 @@ public class Main {
             public CorpseInventoryContainer create(int id, Inventory playerInventory, CorpseEntity corpse, boolean editable, boolean history) {
                 return new CorpseInventoryContainer(id, playerInventory, corpse, editable, history);
             }
-        });
+        }, FeatureFlags.VANILLA_SET);
     }
 
 }
