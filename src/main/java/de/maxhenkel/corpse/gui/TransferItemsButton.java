@@ -35,7 +35,7 @@ public class TransferItemsButton extends AbstractButton {
 
     @Override
     protected void updateWidgetNarration(NarrationElementOutput output) {
-        updateWidgetNarration(output);
+        defaultButtonNarrationText(output);
     }
 
     @Override

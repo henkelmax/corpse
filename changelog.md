@@ -1,1 +1,1 @@
-- Added Spanish translations
+- Fixed crash with narrator enabled
