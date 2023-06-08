@@ -12,6 +12,7 @@ import de.maxhenkel.corpse.entities.DummyPlayer;
 import de.maxhenkel.corpse.net.MessageShowCorpseInventory;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
@@ -96,35 +97,35 @@ public class DeathHistoryScreen extends ScreenBase<AbstractContainerMenu> {
     }
 
     @Override
-    protected void renderLabels(PoseStack matrixStack, int mouseX, int mouseY) {
-        super.renderLabels(matrixStack, mouseX, mouseY);
+    protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+        super.renderLabels(guiGraphics, mouseX, mouseY);
         Death death = getCurrentDeath();
 
         // Title
         MutableComponent title = Component.translatable("gui.corpse.death_history.title").withStyle(ChatFormatting.BLACK);
         int titleWidth = font.width(title.getString());
-        font.draw(matrixStack, title.getVisualOrderText(), (imageWidth - titleWidth) / 2, 7, 0);
+        guiGraphics.drawString(font, title.getVisualOrderText(), (imageWidth - titleWidth) / 2, 7, 0, false);
 
         // Date
         MutableComponent date = Component.literal(getDate(death.getTimestamp()).getString()).withStyle(ChatFormatting.DARK_GRAY);
         int dateWidth = font.width(date);
-        font.draw(matrixStack, date.getVisualOrderText(), (imageWidth - dateWidth) / 2, 20, 0);
+        guiGraphics.drawString(font, date.getVisualOrderText(), (imageWidth - dateWidth) / 2, 20, 0, false);
 
         // Name
-        drawLeft(matrixStack,
+        drawLeft(guiGraphics,
                 Component.translatable("gui.corpse.death_history.name")
                         .append(Component.literal(":"))
                         .withStyle(ChatFormatting.DARK_GRAY),
                 40);
 
-        drawRight(matrixStack, Component.literal(death.getPlayerName()).withStyle(ChatFormatting.GRAY), 40);
+        drawRight(guiGraphics, Component.literal(death.getPlayerName()).withStyle(ChatFormatting.GRAY), 40);
 
         // Dimension
         MutableComponent dimension = Component.translatable("gui.corpse.death_history.dimension")
                 .append(Component.literal(":"))
                 .withStyle(ChatFormatting.DARK_GRAY);
 
-        drawLeft(matrixStack, dimension, 55);
+        drawLeft(guiGraphics, dimension, 55);
 
         String dimensionName = death.getDimension().split(":")[1];
         boolean shortened = false;
@@ -136,31 +137,31 @@ public class DeathHistoryScreen extends ScreenBase<AbstractContainerMenu> {
             shortened = true;
         }
 
-        drawRight(matrixStack, Component.translatable(dimensionName + (shortened ? "..." : "")).withStyle(ChatFormatting.GRAY), 55);
+        drawRight(guiGraphics, Component.translatable(dimensionName + (shortened ? "..." : "")).withStyle(ChatFormatting.GRAY), 55);
 
         // Location
-        drawLeft(matrixStack,
+        drawLeft(guiGraphics,
                 Component.translatable("gui.corpse.death_history.location")
                         .append(Component.literal(":"))
                         .withStyle(ChatFormatting.DARK_GRAY)
                 , 70);
 
 
-        drawRight(matrixStack, Component.literal(Math.round(death.getPosX()) + " X").withStyle(ChatFormatting.GRAY), 70);
-        drawRight(matrixStack, Component.literal(Math.round(death.getPosY()) + " Y").withStyle(ChatFormatting.GRAY), 85);
-        drawRight(matrixStack, Component.literal(Math.round(death.getPosZ()) + " Z").withStyle(ChatFormatting.GRAY), 100);
+        drawRight(guiGraphics, Component.literal(Math.round(death.getPosX()) + " X").withStyle(ChatFormatting.GRAY), 70);
+        drawRight(guiGraphics, Component.literal(Math.round(death.getPosY()) + " Y").withStyle(ChatFormatting.GRAY), 85);
+        drawRight(guiGraphics, Component.literal(Math.round(death.getPosZ()) + " Z").withStyle(ChatFormatting.GRAY), 100);
 
         // Player
         RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
 
         DummyPlayer dummyPlayer = players.get(death, () -> new DummyPlayer(minecraft.level, new GameProfile(death.getPlayerUUID(), death.getPlayerName()), death.getEquipment(), death.getModel()));
 
-        InventoryScreen.renderEntityInInventoryFollowsMouse(matrixStack, (int) (imageWidth * 0.75D), imageHeight / 2 + 30, 40, (int) (leftPos + (imageWidth * 0.75D)) - mouseX, (imageHeight / 2) - mouseY, dummyPlayer);
+        InventoryScreen.renderEntityInInventoryFollowsMouse(guiGraphics, (int) (imageWidth * 0.75D), imageHeight / 2 + 30, 40, (int) (leftPos + (imageWidth * 0.75D)) - mouseX, (imageHeight / 2) - mouseY, dummyPlayer);
 
         if (mouseX >= leftPos + 7 && mouseX <= leftPos + hSplit && mouseY >= topPos + 70 && mouseY <= topPos + 100 + font.lineHeight) {
-            renderTooltip(matrixStack, Collections.singletonList(Component.translatable("tooltip.corpse.teleport").getVisualOrderText()), mouseX - leftPos, mouseY - topPos);
+            guiGraphics.renderTooltip(font, Collections.singletonList(Component.translatable("tooltip.corpse.teleport").getVisualOrderText()), mouseX - leftPos, mouseY - topPos);
         } else if (mouseX >= leftPos + 7 && mouseX <= leftPos + hSplit && mouseY >= topPos + 55 && mouseY <= topPos + 55 + font.lineHeight) {
-            renderTooltip(matrixStack, Lists.newArrayList(Component.translatable("gui.corpse.death_history.dimension").getVisualOrderText(), Component.literal(death.getDimension()).withStyle(ChatFormatting.GRAY).getVisualOrderText()), mouseX - leftPos, mouseY - topPos);
+            guiGraphics.renderTooltip(font, Lists.newArrayList(Component.translatable("gui.corpse.death_history.dimension").getVisualOrderText(), Component.literal(death.getDimension()).withStyle(ChatFormatting.GRAY).getVisualOrderText()), mouseX - leftPos, mouseY - topPos);
 
         }
     }
@@ -189,13 +190,13 @@ public class DeathHistoryScreen extends ScreenBase<AbstractContainerMenu> {
         next.active = index < deaths.size() - 1;
     }
 
-    public void drawLeft(PoseStack matrixStack, MutableComponent text, int height) {
-        font.draw(matrixStack, text.getVisualOrderText(), 7, height, 0);
+    public void drawLeft(GuiGraphics guiGraphics, MutableComponent text, int height) {
+        guiGraphics.drawString(font, text.getVisualOrderText(), 7, height, 0, false);
     }
 
-    public void drawRight(PoseStack matrixStack, MutableComponent text, int height) {
+    public void drawRight(GuiGraphics guiGraphics, MutableComponent text, int height) {
         int strWidth = font.width(text);
-        font.draw(matrixStack, text.getVisualOrderText(), hSplit - strWidth, height, 0);
+        guiGraphics.drawString(font, text.getVisualOrderText(), hSplit - strWidth, height, 0, false);
     }
 
     public Death getCurrentDeath() {

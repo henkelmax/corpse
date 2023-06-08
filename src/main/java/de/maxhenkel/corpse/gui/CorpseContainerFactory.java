@@ -29,7 +29,7 @@ public abstract class CorpseContainerFactory<T extends CorpseContainerBase> impl
 
             AABB aabb = inv.player.getBoundingBox();
             aabb = aabb.inflate(10D);
-            Optional<CorpseEntity> entity = inv.player.level.getEntitiesOfClass(CorpseEntity.class, aabb)
+            Optional<CorpseEntity> entity = inv.player.level().getEntitiesOfClass(CorpseEntity.class, aabb)
                     .stream()
                     .filter(corpse -> corpse.getUUID().equals(uuid) && corpse.distanceTo(inv.player) <= 5)
                     .findFirst();

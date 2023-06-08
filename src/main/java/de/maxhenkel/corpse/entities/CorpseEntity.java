@@ -62,12 +62,12 @@ public class CorpseEntity extends CorpseBoundingBoxBase {
     }
 
     public static CorpseEntity createFromDeath(Player player, Death death) {
-        CorpseEntity corpse = new CorpseEntity(player.level);
+        CorpseEntity corpse = new CorpseEntity(player.level());
         corpse.death = death;
         corpse.setCorpseUUID(death.getPlayerUUID());
         corpse.setCorpseName(death.getPlayerName());
         corpse.setEquipment(death.getEquipment());
-        corpse.setPos(death.getPosX(), Math.max(death.getPosY(), player.level.getMinBuildHeight()), death.getPosZ());
+        corpse.setPos(death.getPosX(), Math.max(death.getPosY(), player.level().getMinBuildHeight()), death.getPosZ());
         corpse.setYRot(player.getYRot());
         corpse.setCorpseModel(death.getModel());
         return corpse;
@@ -90,19 +90,19 @@ public class CorpseEntity extends CorpseBoundingBoxBase {
                 } else {
                     yMotion = motion.y + (motion.y < 0.03D ? 5E-4D : 0D);
                 }
-            } else if (Main.SERVER_CONFIG.fallIntoVoid.get() || getY() > level.getMinBuildHeight()) {
+            } else if (Main.SERVER_CONFIG.fallIntoVoid.get() || getY() > level().getMinBuildHeight()) {
                 yMotion = Math.max(-2D, motion.y - 0.0625D);
             }
             setDeltaMovement(getDeltaMovement().x * 0.75D, yMotion, getDeltaMovement().z * 0.75D);
 
-            if (!Main.SERVER_CONFIG.fallIntoVoid.get() && getY() < level.getMinBuildHeight()) {
-                teleportTo(getX(), level.getMinBuildHeight(), getZ());
+            if (!Main.SERVER_CONFIG.fallIntoVoid.get() && getY() < level().getMinBuildHeight()) {
+                teleportTo(getX(), level().getMinBuildHeight(), getZ());
             }
 
             move(MoverType.SELF, getDeltaMovement());
         }
 
-        if (level.isClientSide) {
+        if (level().isClientSide) {
             return;
         }
 
@@ -145,7 +145,7 @@ public class CorpseEntity extends CorpseBoundingBoxBase {
 
     @Override
     public InteractionResult interact(Player player, InteractionHand hand) {
-        if (!level.isClientSide && player instanceof ServerPlayer) {
+        if (!level().isClientSide && player instanceof ServerPlayer) {
             ServerPlayer playerMP = (ServerPlayer) player;
             if (Main.SERVER_CONFIG.onlyOwnerAccess.get()) {
                 boolean isOp = playerMP.hasPermissions(playerMP.server.getOperatorUserPermissionLevel());
@@ -253,11 +253,10 @@ public class CorpseEntity extends CorpseBoundingBoxBase {
     @Override
     public void remove(RemovalReason reason) {
         for (ItemStack item : death.getAllItems()) {
-            Containers.dropItemStack(level, getX(), getY(), getZ(), item);
+            Containers.dropItemStack(level(), getX(), getY(), getZ(), item);
         }
         super.remove(reason);
-        if (level instanceof ServerLevel) {
-            ServerLevel serverWorld = (ServerLevel) level;
+        if (level() instanceof ServerLevel serverWorld) {
             serverWorld.getPlayers(player -> player.distanceToSqr(getX(), getY(), getZ()) <= 64D * 64D).forEach(playerEntity -> NetUtils.sendTo(Main.SIMPLE_CHANNEL, playerEntity, new MessageSpawnDeathParticles(getUUID())));
         }
     }
@@ -269,7 +268,7 @@ public class CorpseEntity extends CorpseBoundingBoxBase {
         Vec3 lookVec = getLookAngle().normalize();
         for (int i = 0; i <= 10; i++) {
             double d = ((((double) i) / 10D) - 0.5D) * 2D;
-            level.addParticle(ParticleTypes.LARGE_SMOKE, x + lookVec.x * d + (level.random.nextDouble() - 0.5D), y + 0.25D, z + lookVec.z * d + (level.random.nextDouble() - 0.5D), 0D, 0D, 0D);
+            level().addParticle(ParticleTypes.LARGE_SMOKE, x + lookVec.x * d + (level().random.nextDouble() - 0.5D), y + 0.25D, z + lookVec.z * d + (level().random.nextDouble() - 0.5D), 0D, 0D, 0D);
         }
     }
 

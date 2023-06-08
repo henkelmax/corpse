@@ -37,7 +37,7 @@ public class MessageSpawnDeathParticles implements Message {
     @OnlyIn(Dist.CLIENT)
     private void spawnParticles() {
         LocalPlayer player = Minecraft.getInstance().player;
-        Optional<CorpseEntity> c = player.level.getEntitiesOfClass(CorpseEntity.class, player.getBoundingBox().inflate(64D), corpseEntity -> corpseEntity.getUUID().equals(corpseUUID)).stream().findAny();
+        Optional<CorpseEntity> c = player.level().getEntitiesOfClass(CorpseEntity.class, player.getBoundingBox().inflate(64D), corpseEntity -> corpseEntity.getUUID().equals(corpseUUID)).stream().findAny();
         c.ifPresent(CorpseEntity::spawnDeathParticles);
     }
 

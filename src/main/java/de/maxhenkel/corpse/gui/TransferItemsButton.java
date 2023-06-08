@@ -1,7 +1,7 @@
 package de.maxhenkel.corpse.gui;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractButton;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.renderer.GameRenderer;
@@ -22,14 +22,13 @@ public class TransferItemsButton extends AbstractButton {
     }
 
     @Override
-    public void renderWidget(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
+    public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
-        RenderSystem.setShaderTexture(0, CorpseAdditionalScreen.CORPSE_GUI_TEXTURE);
         if (isHovered) {
-            blit(matrixStack, getX(), getY(), 176, 10, WIDTH, HEIGHT);
+            guiGraphics.blit(CorpseAdditionalScreen.CORPSE_GUI_TEXTURE, getX(), getY(), 176, 10, WIDTH, HEIGHT);
         } else {
-            blit(matrixStack, getX(), getY(), 176, 0, WIDTH, HEIGHT);
+            guiGraphics.blit(CorpseAdditionalScreen.CORPSE_GUI_TEXTURE, getX(), getY(), 176, 0, WIDTH, HEIGHT);
         }
     }
 

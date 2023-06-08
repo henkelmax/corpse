@@ -1,1 +1,1 @@
-- Fixed crash with narrator enabled
+- Updated to 1.20

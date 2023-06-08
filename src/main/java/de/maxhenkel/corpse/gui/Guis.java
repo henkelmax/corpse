@@ -60,7 +60,7 @@ public class Guis {
      * @param uuid         the death id
      */
     public static void openCorpseGUI(ServerPlayer playerToShow, UUID player, UUID uuid) {
-        Death death = DeathManager.getDeath(playerToShow.getLevel(), player, uuid);
+        Death death = DeathManager.getDeath(playerToShow.serverLevel(), player, uuid);
         if (death == null) {
             return;
         }

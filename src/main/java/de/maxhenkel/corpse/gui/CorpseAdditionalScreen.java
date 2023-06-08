@@ -6,6 +6,7 @@ import de.maxhenkel.corpse.Main;
 import de.maxhenkel.corpse.entities.CorpseEntity;
 import de.maxhenkel.corpse.net.MessageTransferItems;
 import de.maxhenkel.corpse.net.MessageSwitchInventoryPage;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -78,23 +79,23 @@ public class CorpseAdditionalScreen extends ScreenBase<CorpseAdditionalContainer
     }
 
     @Override
-    public void render(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
-        super.render(matrixStack, mouseX, mouseY, partialTicks);
+    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+        super.render(guiGraphics, mouseX, mouseY, partialTicks);
 
-        font.draw(matrixStack, corpse.getDisplayName(), leftPos + 7, topPos + 7, FONT_COLOR);
-        font.draw(matrixStack, playerInventory.getDisplayName(), leftPos + 7, topPos + imageHeight - 96 + 2, FONT_COLOR);
+        guiGraphics.drawString(font, corpse.getDisplayName(), leftPos + 7, topPos + 7, FONT_COLOR, false);
+        guiGraphics.drawString(font, playerInventory.getDisplayName(), leftPos + 7, topPos + imageHeight - 96 + 2, FONT_COLOR, false);
 
         MutableComponent pageName = Component.translatable("gui.corpse.page", page + 1, getPages());
         int pageWidth = font.width(pageName);
-        font.draw(matrixStack, pageName, leftPos + imageWidth / 2 - pageWidth / 2, topPos + imageHeight - 113, FONT_COLOR);
+        guiGraphics.drawString(font, pageName, leftPos + imageWidth / 2 - pageWidth / 2, topPos + imageHeight - 113, FONT_COLOR, false);
     }
 
     @Override
-    protected void renderLabels(PoseStack matrixStack, int mouseX, int mouseY) {
-        super.renderLabels(matrixStack, mouseX, mouseY);
+    protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+        super.renderLabels(guiGraphics, mouseX, mouseY);
 
         if (mouseX >= leftPos + imageWidth - TransferItemsButton.WIDTH - 9 && mouseX < leftPos + imageWidth - 9 && mouseY >= topPos + 5 && mouseY < topPos + 5 + TransferItemsButton.HEIGHT) {
-            renderTooltip(matrixStack, Collections.singletonList(Component.translatable("button.corpse.transfer_items").getVisualOrderText()), mouseX - leftPos, mouseY - topPos);
+            guiGraphics.renderTooltip(font, Collections.singletonList(Component.translatable("button.corpse.transfer_items").getVisualOrderText()), mouseX - leftPos, mouseY - topPos);
         }
     }
 }

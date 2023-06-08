@@ -49,10 +49,10 @@ public class CorpseRenderer extends EntityRenderer<CorpseEntity> {
         }
 
         if (entity.isSkeleton()) {
-            DummySkeleton skeleton = skeletons.get(entity, () -> new DummySkeleton(entity.level, entity.getEquipment()));
+            DummySkeleton skeleton = skeletons.get(entity, () -> new DummySkeleton(entity.level(), entity.getEquipment()));
             getRenderer(skeleton).render(skeleton, entityYaw, 1F, matrixStack, buffer, packedLightIn);
         } else {
-            AbstractClientPlayer abstractClientPlayerEntity = players.get(entity, () -> new DummyPlayer((ClientLevel) entity.level, new GameProfile(entity.getCorpseUUID().orElse(new UUID(0L, 0L)), entity.getCorpseName()), entity.getEquipment(), entity.getCorpseModel()));
+            AbstractClientPlayer abstractClientPlayerEntity = players.get(entity, () -> new DummyPlayer((ClientLevel) entity.level(), new GameProfile(entity.getCorpseUUID().orElse(new UUID(0L, 0L)), entity.getCorpseName()), entity.getEquipment(), entity.getCorpseModel()));
             getRenderer(abstractClientPlayerEntity).render(abstractClientPlayerEntity, 0F, 1F, matrixStack, buffer, packedLightIn);
         }
         matrixStack.popPose();

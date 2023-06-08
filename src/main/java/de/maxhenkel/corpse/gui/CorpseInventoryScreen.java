@@ -6,6 +6,7 @@ import de.maxhenkel.corpse.Main;
 import de.maxhenkel.corpse.entities.CorpseEntity;
 import de.maxhenkel.corpse.net.MessageOpenAdditionalItems;
 import de.maxhenkel.corpse.net.MessageTransferItems;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -84,11 +85,11 @@ public class CorpseInventoryScreen extends ScreenBase<CorpseInventoryContainer> 
     }
 
     @Override
-    public void renderLabels(PoseStack matrixStack, int mouseX, int mouseY) {
-        super.renderLabels(matrixStack, mouseX, mouseY);
+    public void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+        super.renderLabels(guiGraphics, mouseX, mouseY);
 
-        font.draw(matrixStack, corpse.getDisplayName(), 7, 7, FONT_COLOR);
-        font.draw(matrixStack, playerInventory.getDisplayName(), 7, imageHeight - 96 + 2, FONT_COLOR);
+        guiGraphics.drawString(font, corpse.getDisplayName(), 7, 7, FONT_COLOR, false);
+        guiGraphics.drawString(font, playerInventory.getDisplayName(), 7, imageHeight - 96 + 2, FONT_COLOR, false);
     }
 
 }
