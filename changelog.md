@@ -1,1 +1,3 @@
-- Fixed Jade integration
+- Added JEI to mods.toml
+- Added Jade to mods.toml
+- Switch to NeoGradle

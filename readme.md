@@ -1,8 +1,9 @@
 <!-- modrinth_exclude.start -->
 
-# Corpse ![](http://cf.way2muchnoise.eu/full_316582_downloads.svg) ![](http://cf.way2muchnoise.eu/versions/316582.svg)
+# Corpse
 
 ## Links
+- [Modrinth](https://modrinth.com/mod/corpse)
 - [CurseForge](https://www.curseforge.com/minecraft/mc-mods/corpse)
 - [FAQ](https://modrepo.de/minecraft/corpse/faq)
 - [Credits](https://modrepo.de/minecraft/corpse/credits)
