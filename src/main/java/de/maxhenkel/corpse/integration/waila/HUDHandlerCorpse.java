@@ -17,7 +17,7 @@ import snownee.jade.api.IServerDataProvider;
 import snownee.jade.api.ITooltip;
 import snownee.jade.api.config.IPluginConfig;
 
-public class HUDHandlerCorpse implements IEntityComponentProvider, IServerDataProvider<Entity> {
+public class HUDHandlerCorpse implements IEntityComponentProvider, IServerDataProvider<EntityAccessor> {
 
     public static final ResourceLocation OBJECT_NAME_TAG = new ResourceLocation("jade", "object_name");
 
@@ -47,8 +47,8 @@ public class HUDHandlerCorpse implements IEntityComponentProvider, IServerDataPr
     }
 
     @Override
-    public void appendServerData(CompoundTag compoundTag, ServerPlayer serverPlayer, Level level, Entity entity, boolean b) {
-        if (entity instanceof CorpseEntity corpse) {
+    public void appendServerData(CompoundTag compoundTag, EntityAccessor entityAccessor) {
+        if (entityAccessor.getEntity() instanceof CorpseEntity corpse) {
             Death death = corpse.getDeath();
             compoundTag.put("Death", death.toNBT(false));
             compoundTag.putInt("ItemCount", (int) death.getAllItems().stream().filter(itemStack -> !itemStack.isEmpty()).count());
