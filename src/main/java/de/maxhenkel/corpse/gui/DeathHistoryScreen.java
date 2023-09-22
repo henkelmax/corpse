@@ -3,10 +3,10 @@ package de.maxhenkel.corpse.gui;
 import com.google.common.collect.Lists;
 import com.mojang.authlib.GameProfile;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import de.maxhenkel.corelib.CachedMap;
 import de.maxhenkel.corelib.death.Death;
 import de.maxhenkel.corelib.inventory.ScreenBase;
+import de.maxhenkel.corelib.net.NetUtils;
 import de.maxhenkel.corpse.Main;
 import de.maxhenkel.corpse.entities.DummyPlayer;
 import de.maxhenkel.corpse.net.MessageShowCorpseInventory;
@@ -67,7 +67,7 @@ public class DeathHistoryScreen extends ScreenBase<AbstractContainerMenu> {
         }).bounds(leftPos + padding, topPos + imageHeight - buttonHeight - padding, buttonWidth, buttonHeight).build());
 
         addRenderableWidget(Button.builder(Component.translatable("button.corpse.show_items"), button -> {
-            Main.SIMPLE_CHANNEL.sendToServer(new MessageShowCorpseInventory(getCurrentDeath().getPlayerUUID(), getCurrentDeath().getId()));
+            NetUtils.sendToServer(Main.SIMPLE_CHANNEL, new MessageShowCorpseInventory(getCurrentDeath().getPlayerUUID(), getCurrentDeath().getId()));
         }).bounds(leftPos + (imageWidth - buttonWidth) / 2, topPos + imageHeight - buttonHeight - padding, buttonWidth, buttonHeight).build());
 
         next = addRenderableWidget(Button.builder(Component.translatable("button.corpse.next"), button -> {
@@ -156,7 +156,8 @@ public class DeathHistoryScreen extends ScreenBase<AbstractContainerMenu> {
 
         DummyPlayer dummyPlayer = players.get(death, () -> new DummyPlayer(minecraft.level, new GameProfile(death.getPlayerUUID(), death.getPlayerName()), death.getEquipment(), death.getModel()));
 
-        InventoryScreen.renderEntityInInventoryFollowsMouse(guiGraphics, (int) (imageWidth * 0.75D), imageHeight / 2 + 30, 40, (int) (leftPos + (imageWidth * 0.75D)) - mouseX, (imageHeight / 2) - mouseY, dummyPlayer);
+        InventoryScreen.renderEntityInInventoryFollowsMouse(guiGraphics, (int) (leftPos + imageWidth * 0.75D) - 25, topPos + imageHeight / 2 + 5, (int) (leftPos + imageWidth * 0.75D) + 25, topPos + imageHeight / 2 + 55, 30, 0.0625F, mouseX, mouseY, dummyPlayer);
+        //InventoryScreen.renderEntityInInventoryFollowsMouse(guiGraphics, guiLeft + TEXTURE_X / 2 - 25, guiTop + 70, guiLeft + TEXTURE_X / 2 + 25, guiTop + 140, 30, 0.0625F, mouseX, mouseY, player);
 
         if (mouseX >= leftPos + 7 && mouseX <= leftPos + hSplit && mouseY >= topPos + 70 && mouseY <= topPos + 100 + font.lineHeight) {
             guiGraphics.renderTooltip(font, Collections.singletonList(Component.translatable("tooltip.corpse.teleport").getVisualOrderText()), mouseX - leftPos, mouseY - topPos);

@@ -2,6 +2,7 @@ package de.maxhenkel.corpse.gui;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import de.maxhenkel.corelib.inventory.ScreenBase;
+import de.maxhenkel.corelib.net.NetUtils;
 import de.maxhenkel.corpse.Main;
 import de.maxhenkel.corpse.entities.CorpseEntity;
 import de.maxhenkel.corpse.net.MessageTransferItems;
@@ -51,18 +52,18 @@ public class CorpseAdditionalScreen extends ScreenBase<CorpseAdditionalContainer
             if (page < 0) {
                 page = 0;
             }
-            Main.SIMPLE_CHANNEL.sendToServer(new MessageSwitchInventoryPage(page));
+            NetUtils.sendToServer(Main.SIMPLE_CHANNEL, new MessageSwitchInventoryPage(page));
         }).bounds(left + PADDING, topPos + 149 - buttonHeight, buttonWidth, buttonHeight).build());
         next = addRenderableWidget(Button.builder(Component.translatable("button.corpse.next"), button -> {
             page++;
             if (page >= getPages()) {
                 page = getPages() - 1;
             }
-            Main.SIMPLE_CHANNEL.sendToServer(new MessageSwitchInventoryPage(page));
+            NetUtils.sendToServer(Main.SIMPLE_CHANNEL, new MessageSwitchInventoryPage());
         }).bounds(left + imageWidth - buttonWidth - PADDING, topPos + 149 - buttonHeight, buttonWidth, buttonHeight).build());
 
         addRenderableWidget(new TransferItemsButton(left + imageWidth - TransferItemsButton.WIDTH - 9, topPos + 5, button -> {
-            Main.SIMPLE_CHANNEL.sendToServer(new MessageTransferItems());
+            NetUtils.sendToServer(Main.SIMPLE_CHANNEL, new MessageTransferItems());
         }));
     }
 

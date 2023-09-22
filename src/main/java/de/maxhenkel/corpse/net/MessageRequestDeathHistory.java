@@ -7,8 +7,7 @@ import de.maxhenkel.corpse.Main;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.network.NetworkDirection;
-import net.minecraftforge.network.NetworkEvent;
+import net.minecraftforge.event.network.CustomPayloadEvent;
 
 import java.util.List;
 import java.util.UUID;
@@ -25,7 +24,7 @@ public class MessageRequestDeathHistory implements Message {
     }
 
     @Override
-    public void executeServerSide(NetworkEvent.Context context) {
+    public void executeServerSide(CustomPayloadEvent.Context context) {
         sendDeathHistory(context.getSender());
     }
 
@@ -48,7 +47,7 @@ public class MessageRequestDeathHistory implements Message {
         if (deaths == null) {
             return false;
         }
-        Main.SIMPLE_CHANNEL.sendTo(new MessageOpenHistory(deaths), playerToSend.connection.connection, NetworkDirection.PLAY_TO_CLIENT);
+        Main.SIMPLE_CHANNEL.send(new MessageOpenHistory(deaths), playerToSend.connection.getConnection());
         return true;
     }
 }
