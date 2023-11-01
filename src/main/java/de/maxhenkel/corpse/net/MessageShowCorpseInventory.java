@@ -3,8 +3,8 @@ package de.maxhenkel.corpse.net;
 import de.maxhenkel.corelib.net.Message;
 import de.maxhenkel.corpse.gui.Guis;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.event.network.CustomPayloadEvent;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.neoforge.network.NetworkEvent;
 
 import java.util.UUID;
 
@@ -28,7 +28,7 @@ public class MessageShowCorpseInventory implements Message {
     }
 
     @Override
-    public void executeServerSide(CustomPayloadEvent.Context context) {
+    public void executeServerSide(NetworkEvent.Context context) {
         Guis.openCorpseGUI(context.getSender(), playerUUID, deathID);
     }
 

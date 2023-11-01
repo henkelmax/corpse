@@ -5,7 +5,7 @@ import de.maxhenkel.corelib.death.PlayerDeathEvent;
 import de.maxhenkel.corpse.Main;
 import de.maxhenkel.corpse.entities.CorpseEntity;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.neoforged.bus.api.SubscribeEvent;
 
 public class DeathEvents {
 

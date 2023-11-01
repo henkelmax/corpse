@@ -1,22 +1,22 @@
 package de.maxhenkel.corpse;
 
 import de.maxhenkel.corelib.config.ConfigBase;
-import net.minecraftforge.common.ForgeConfigSpec;
+import net.neoforged.neoforge.common.ModConfigSpec;
 
 public class ServerConfig extends ConfigBase {
 
-    public final ForgeConfigSpec.BooleanValue onlyOwnerAccess;
-    public final ForgeConfigSpec.BooleanValue skeletonAccess;
-    public final ForgeConfigSpec.IntValue corpseDespawnTime;
-    public final ForgeConfigSpec.IntValue corpseForceDespawnTime;
-    public final ForgeConfigSpec.IntValue corpseSkeletonTime;
-    public final ForgeConfigSpec.BooleanValue spawnCorpseOnFace;
-    public final ForgeConfigSpec.BooleanValue renderEquipment;
-    public final ForgeConfigSpec.BooleanValue fallIntoVoid;
-    public final ForgeConfigSpec.BooleanValue lavaDamage;
-    public final ForgeConfigSpec.IntValue maxDeathAge;
+    public final ModConfigSpec.BooleanValue onlyOwnerAccess;
+    public final ModConfigSpec.BooleanValue skeletonAccess;
+    public final ModConfigSpec.IntValue corpseDespawnTime;
+    public final ModConfigSpec.IntValue corpseForceDespawnTime;
+    public final ModConfigSpec.IntValue corpseSkeletonTime;
+    public final ModConfigSpec.BooleanValue spawnCorpseOnFace;
+    public final ModConfigSpec.BooleanValue renderEquipment;
+    public final ModConfigSpec.BooleanValue fallIntoVoid;
+    public final ModConfigSpec.BooleanValue lavaDamage;
+    public final ModConfigSpec.IntValue maxDeathAge;
 
-    public ServerConfig(ForgeConfigSpec.Builder builder) {
+    public ServerConfig(ModConfigSpec.Builder builder) {
         super(builder);
         onlyOwnerAccess = builder
                 .comment("If only the owner of the corpse can access the inventory")

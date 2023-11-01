@@ -4,8 +4,8 @@ import de.maxhenkel.corelib.net.Message;
 import de.maxhenkel.corpse.gui.CorpseInventoryContainer;
 import de.maxhenkel.corpse.gui.Guis;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.event.network.CustomPayloadEvent;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.neoforge.network.NetworkEvent;
 
 public class MessageOpenAdditionalItems implements Message {
 
@@ -19,7 +19,7 @@ public class MessageOpenAdditionalItems implements Message {
     }
 
     @Override
-    public void executeServerSide(CustomPayloadEvent.Context context) {
+    public void executeServerSide(NetworkEvent.Context context) {
         if (!(context.getSender().containerMenu instanceof CorpseInventoryContainer)) {
             return;
         }

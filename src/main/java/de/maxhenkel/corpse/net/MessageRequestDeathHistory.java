@@ -3,11 +3,12 @@ package de.maxhenkel.corpse.net;
 import de.maxhenkel.corelib.death.Death;
 import de.maxhenkel.corelib.death.DeathManager;
 import de.maxhenkel.corelib.net.Message;
+import de.maxhenkel.corelib.net.NetUtils;
 import de.maxhenkel.corpse.Main;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.event.network.CustomPayloadEvent;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.neoforge.network.NetworkEvent;
 
 import java.util.List;
 import java.util.UUID;
@@ -24,7 +25,7 @@ public class MessageRequestDeathHistory implements Message {
     }
 
     @Override
-    public void executeServerSide(CustomPayloadEvent.Context context) {
+    public void executeServerSide(NetworkEvent.Context context) {
         sendDeathHistory(context.getSender());
     }
 
@@ -47,7 +48,7 @@ public class MessageRequestDeathHistory implements Message {
         if (deaths == null) {
             return false;
         }
-        Main.SIMPLE_CHANNEL.send(new MessageOpenHistory(deaths), playerToSend.connection.getConnection());
+        NetUtils.sendTo(Main.SIMPLE_CHANNEL, playerToSend, new MessageOpenHistory(deaths));
         return true;
     }
 }

@@ -5,9 +5,9 @@ import de.maxhenkel.corpse.entities.CorpseEntity;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.event.network.CustomPayloadEvent;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.neoforge.network.NetworkEvent;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -30,7 +30,7 @@ public class MessageSpawnDeathParticles implements Message {
     }
 
     @Override
-    public void executeClientSide(CustomPayloadEvent.Context context) {
+    public void executeClientSide(NetworkEvent.Context context) {
         spawnParticles();
     }
 

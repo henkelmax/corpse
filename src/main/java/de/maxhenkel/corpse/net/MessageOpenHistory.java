@@ -8,9 +8,9 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.event.network.CustomPayloadEvent;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.neoforge.network.NetworkEvent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,7 +34,7 @@ public class MessageOpenHistory implements Message {
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public void executeClientSide(CustomPayloadEvent.Context context) {
+    public void executeClientSide(NetworkEvent.Context context) {
         if (deaths.size() > 0) {
             Minecraft.getInstance().setScreen(new DeathHistoryScreen(deaths));
         } else {

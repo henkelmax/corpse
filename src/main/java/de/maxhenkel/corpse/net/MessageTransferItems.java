@@ -4,8 +4,8 @@ import de.maxhenkel.corelib.net.Message;
 import de.maxhenkel.corpse.gui.ITransferrable;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.event.network.CustomPayloadEvent;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.neoforge.network.NetworkEvent;
 
 public class MessageTransferItems implements Message {
 
@@ -19,7 +19,7 @@ public class MessageTransferItems implements Message {
     }
 
     @Override
-    public void executeServerSide(CustomPayloadEvent.Context context) {
+    public void executeServerSide(NetworkEvent.Context context) {
         AbstractContainerMenu openContainer = context.getSender().containerMenu;
         if ((openContainer instanceof ITransferrable) && !context.getSender().isDeadOrDying()) {
             ITransferrable transferrable = (ITransferrable) openContainer;

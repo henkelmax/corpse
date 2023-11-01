@@ -7,7 +7,7 @@ import de.maxhenkel.corpse.entities.CorpseEntity;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.items.wrapper.PlayerMainInvWrapper;
+import net.neoforged.neoforge.items.wrapper.PlayerMainInvWrapper;
 
 public class CorpseAdditionalContainer extends CorpseContainerBase implements ITransferrable {
 
