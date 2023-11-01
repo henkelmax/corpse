@@ -156,6 +156,7 @@ public class DeathHistoryScreen extends ScreenBase<AbstractContainerMenu> {
 
         DummyPlayer dummyPlayer = players.get(death, () -> new DummyPlayer(minecraft.level, new GameProfile(death.getPlayerUUID(), death.getPlayerName()), death.getEquipment(), death.getModel()));
 
+        //TODO Fix
         InventoryScreen.renderEntityInInventoryFollowsMouse(guiGraphics, (int) (leftPos + imageWidth * 0.75D) - 25, topPos + imageHeight / 2 + 5, (int) (leftPos + imageWidth * 0.75D) + 25, topPos + imageHeight / 2 + 55, 30, 0.0625F, mouseX, mouseY, dummyPlayer);
         //InventoryScreen.renderEntityInInventoryFollowsMouse(guiGraphics, guiLeft + TEXTURE_X / 2 - 25, guiTop + 70, guiLeft + TEXTURE_X / 2 + 25, guiTop + 140, 30, 0.0625F, mouseX, mouseY, player);
 
