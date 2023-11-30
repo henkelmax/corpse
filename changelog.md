@@ -1,2 +1,1 @@
-- Updated NeoForge
-- Fixed corpse location misaligned
+- Added mod icon
