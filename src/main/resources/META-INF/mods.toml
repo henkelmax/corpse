@@ -8,6 +8,7 @@ version="${mod_version}"
 displayName="${mod_name}"
 updateJSONURL="https://maxhenkel.de/update/corpse.json"
 displayURL="https://www.curseforge.com/minecraft/mc-mods/corpse"
+logoFile="icon.png"
 authors="${mod_vendor}"
 description='''
 This mod brings a corpse into the game.
