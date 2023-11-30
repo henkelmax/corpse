@@ -84,7 +84,6 @@ dependencies {
     shadow fg.deobf("de.maxhenkel.corelib:corelib:${mod_minecraft_version}-${corelib_version}:api")
     runtimeOnly fg.deobf("de.maxhenkel.corelib:corelib:${mod_minecraft_version}-${corelib_version}")
     runtimeOnly fg.deobf("de.maxhenkel.corelib:corelib:${mod_minecraft_version}-${corelib_version}:javadoc")
-    mavenLocal()
 }
 
 jar {
@@ -198,6 +197,7 @@ repositories {
             includeGroup "curse.maven"
         }
     }
+    mavenLocal()
 }
 
 javadoc {
