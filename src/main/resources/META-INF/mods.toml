@@ -8,8 +8,7 @@ version="${mod_version}"
 displayName="${mod_name}"
 updateJSONURL="https://maxhenkel.de/update/corpse.json"
 displayURL="https://www.curseforge.com/minecraft/mc-mods/corpse"
-# logoFile="corpse.png"
-# credits=""
+logoFile="icon.png"
 authors="${mod_vendor}"
 description='''
 This mod brings a corpse into the game.
@@ -25,5 +24,17 @@ It will spawn upon your death containing all items that you had in your inventor
     modId="minecraft"
     mandatory=true
     versionRange="[${mod_minecraft_version}]"
+    ordering="NONE"
+    side="BOTH"
+[[dependencies.${mod_id}]]
+    modId="jei"
+    mandatory=false
+    versionRange="*"
+    ordering="NONE"
+    side="BOTH"
+[[dependencies.${mod_id}]]
+    modId="jade"
+    mandatory=false
+    versionRange="*"
     ordering="NONE"
     side="BOTH"
