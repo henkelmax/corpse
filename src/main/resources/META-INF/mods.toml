@@ -1,40 +1,40 @@
-modLoader="javafml"
-loaderVersion="${mod_loader_version}"
-license="All rights reserved"
-issueTrackerURL="https://github.com/henkelmax/corpse/issues"
+modLoader = "javafml"
+loaderVersion = "*"
+license = "All rights reserved"
+issueTrackerURL = "https://github.com/henkelmax/corpse/issues"
 [[mods]]
-modId="${mod_id}"
-version="${mod_version}"
-displayName="${mod_name}"
-updateJSONURL="https://maxhenkel.de/update/corpse.json"
-displayURL="https://www.curseforge.com/minecraft/mc-mods/corpse"
-logoFile="icon.png"
-authors="${mod_vendor}"
-description='''
+modId = "corpse"
+version = "${mod_version}"
+displayName = "Corpse"
+updateJSONURL = "https://update.maxhenkel.de/forge/corpse"
+displayURL = "https://www.curseforge.com/minecraft/mc-mods/corpse"
+logoFile = "icon.png"
+authors = "Max Henkel"
+description = '''
 This mod brings a corpse into the game.
 It will spawn upon your death containing all items that you had in your inventory.
 '''
-[[dependencies.${mod_id}]]
-    modId="forge"
-    mandatory=true
-    versionRange="${mod_forge_version}"
-    ordering="NONE"
-    side="BOTH"
-[[dependencies.${mod_id}]]
-    modId="minecraft"
-    mandatory=true
-    versionRange="[${mod_minecraft_version}]"
-    ordering="NONE"
-    side="BOTH"
-[[dependencies.${mod_id}]]
-    modId="jei"
-    mandatory=false
-    versionRange="*"
-    ordering="NONE"
-    side="BOTH"
-[[dependencies.${mod_id}]]
-    modId="jade"
-    mandatory=false
-    versionRange="*"
-    ordering="NONE"
-    side="BOTH"
+[[dependencies.corpse]]
+modId = "forge"
+mandatory = true
+versionRange = "${forge_dependency}"
+ordering = "NONE"
+side = "BOTH"
+[[dependencies.corpse]]
+modId = "minecraft"
+mandatory = true
+versionRange = "[${minecraft_version}]"
+ordering = "NONE"
+side = "BOTH"
+[[dependencies.corpse]]
+modId = "jei"
+mandatory = false
+versionRange = "*"
+ordering = "NONE"
+side = "BOTH"
+[[dependencies.corpse]]
+modId = "jade"
+mandatory = false
+versionRange = "*"
+ordering = "NONE"
+side = "BOTH"
