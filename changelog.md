@@ -1,2 +1,1 @@
-- Added mod icon
-- Updated corelib
+- Updated dependencies
