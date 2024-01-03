@@ -1,14 +1,19 @@
 package de.maxhenkel.corpse.net;
 
 import de.maxhenkel.corelib.net.Message;
+import de.maxhenkel.corpse.Main;
 import de.maxhenkel.corpse.gui.Guis;
 import net.minecraft.network.FriendlyByteBuf;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.neoforge.network.NetworkEvent;
+import net.minecraft.network.protocol.PacketFlow;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
+import net.neoforged.neoforge.network.handling.PlayPayloadContext;
 
 import java.util.UUID;
 
 public class MessageShowCorpseInventory implements Message {
+
+    public static ResourceLocation ID = new ResourceLocation(Main.MODID, "show_corpse_inventory");
 
     private UUID playerUUID;
     private UUID deathID;
@@ -23,13 +28,16 @@ public class MessageShowCorpseInventory implements Message {
     }
 
     @Override
-    public Dist getExecutingSide() {
-        return Dist.DEDICATED_SERVER;
+    public PacketFlow getExecutingSide() {
+        return PacketFlow.SERVERBOUND;
     }
 
     @Override
-    public void executeServerSide(NetworkEvent.Context context) {
-        Guis.openCorpseGUI(context.getSender(), playerUUID, deathID);
+    public void executeServerSide(PlayPayloadContext context) {
+        if (!(context.player().orElse(null) instanceof ServerPlayer sender)) {
+            return;
+        }
+        Guis.openCorpseGUI(sender, playerUUID, deathID);
     }
 
     @Override
@@ -45,5 +53,10 @@ public class MessageShowCorpseInventory implements Message {
         buf.writeLong(playerUUID.getLeastSignificantBits());
         buf.writeLong(deathID.getMostSignificantBits());
         buf.writeLong(deathID.getLeastSignificantBits());
+    }
+
+    @Override
+    public ResourceLocation id() {
+        return ID;
     }
 }

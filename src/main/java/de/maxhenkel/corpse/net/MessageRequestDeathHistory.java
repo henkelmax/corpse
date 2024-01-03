@@ -3,30 +3,36 @@ package de.maxhenkel.corpse.net;
 import de.maxhenkel.corelib.death.Death;
 import de.maxhenkel.corelib.death.DeathManager;
 import de.maxhenkel.corelib.net.Message;
-import de.maxhenkel.corelib.net.NetUtils;
 import de.maxhenkel.corpse.Main;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.protocol.PacketFlow;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.neoforge.network.NetworkEvent;
+import net.neoforged.neoforge.network.PacketDistributor;
+import net.neoforged.neoforge.network.handling.PlayPayloadContext;
 
 import java.util.List;
 import java.util.UUID;
 
 public class MessageRequestDeathHistory implements Message {
 
+    public static ResourceLocation ID = new ResourceLocation(Main.MODID, "request_death_history");
+
     public MessageRequestDeathHistory() {
 
     }
 
     @Override
-    public Dist getExecutingSide() {
-        return Dist.DEDICATED_SERVER;
+    public PacketFlow getExecutingSide() {
+        return PacketFlow.SERVERBOUND;
     }
 
     @Override
-    public void executeServerSide(NetworkEvent.Context context) {
-        sendDeathHistory(context.getSender());
+    public void executeServerSide(PlayPayloadContext context) {
+        if (!(context.player().orElse(null) instanceof ServerPlayer sender)) {
+            return;
+        }
+        sendDeathHistory(sender);
     }
 
     @Override
@@ -39,6 +45,11 @@ public class MessageRequestDeathHistory implements Message {
 
     }
 
+    @Override
+    public ResourceLocation id() {
+        return ID;
+    }
+
     public static boolean sendDeathHistory(ServerPlayer player) {
         return sendDeathHistory(player, player.getUUID());
     }
@@ -48,7 +59,7 @@ public class MessageRequestDeathHistory implements Message {
         if (deaths == null) {
             return false;
         }
-        NetUtils.sendTo(Main.SIMPLE_CHANNEL, playerToSend, new MessageOpenHistory(deaths));
+        PacketDistributor.PLAYER.with(playerToSend).send(new MessageOpenHistory(deaths));
         return true;
     }
 }

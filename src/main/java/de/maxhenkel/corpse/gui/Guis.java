@@ -4,7 +4,6 @@ import de.maxhenkel.corelib.death.Death;
 import de.maxhenkel.corelib.death.DeathManager;
 import de.maxhenkel.corpse.entities.CorpseEntity;
 import net.minecraft.server.level.ServerPlayer;
-import net.neoforged.neoforge.network.NetworkHooks;
 
 import java.util.UUID;
 
@@ -15,7 +14,7 @@ public class Guis {
     }
 
     public static void openAdditionalItems(ServerPlayer player, CorpseEntity corpse, boolean editable, boolean history) {
-        NetworkHooks.openScreen(player, new CorpseAdditionalItemsContainerProvider(corpse, editable, history), packetBuffer -> {
+        player.openMenu(new CorpseAdditionalItemsContainerProvider(corpse, editable, history), packetBuffer -> {
             packetBuffer.writeBoolean(history);
             packetBuffer.writeBoolean(corpse.isAdditionalInventoryEmpty());
             if (history) {
@@ -30,7 +29,7 @@ public class Guis {
         if (corpse.isMainInventoryEmpty() && !corpse.isEmpty()) {
             openAdditionalItems(player, corpse, editable, history);
         } else {
-            NetworkHooks.openScreen(player, new CorpseContainerProvider(corpse, editable, history), packetBuffer -> {
+            player.openMenu(new CorpseContainerProvider(corpse, editable, history), packetBuffer -> {
                 packetBuffer.writeBoolean(history);
                 packetBuffer.writeBoolean(corpse.isAdditionalInventoryEmpty());
                 if (history) {

@@ -6,7 +6,6 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import de.maxhenkel.corelib.CachedMap;
 import de.maxhenkel.corelib.death.Death;
 import de.maxhenkel.corelib.inventory.ScreenBase;
-import de.maxhenkel.corelib.net.NetUtils;
 import de.maxhenkel.corpse.Main;
 import de.maxhenkel.corpse.entities.DummyPlayer;
 import de.maxhenkel.corpse.net.MessageShowCorpseInventory;
@@ -21,6 +20,7 @@ import net.minecraft.network.chat.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.neoforged.neoforge.network.PacketDistributor;
 
 import java.text.SimpleDateFormat;
 import java.util.Collections;
@@ -67,7 +67,7 @@ public class DeathHistoryScreen extends ScreenBase<AbstractContainerMenu> {
         }).bounds(leftPos + padding, topPos + imageHeight - buttonHeight - padding, buttonWidth, buttonHeight).build());
 
         addRenderableWidget(Button.builder(Component.translatable("button.corpse.show_items"), button -> {
-            NetUtils.sendToServer(Main.SIMPLE_CHANNEL, new MessageShowCorpseInventory(getCurrentDeath().getPlayerUUID(), getCurrentDeath().getId()));
+            PacketDistributor.SERVER.noArg().send(new MessageShowCorpseInventory(getCurrentDeath().getPlayerUUID(), getCurrentDeath().getId()));
         }).bounds(leftPos + (imageWidth - buttonWidth) / 2, topPos + imageHeight - buttonHeight - padding, buttonWidth, buttonHeight).build());
 
         next = addRenderableWidget(Button.builder(Component.translatable("button.corpse.next"), button -> {

@@ -1,29 +1,37 @@
 package de.maxhenkel.corpse.net;
 
 import de.maxhenkel.corelib.net.Message;
+import de.maxhenkel.corpse.Main;
 import de.maxhenkel.corpse.gui.CorpseInventoryContainer;
 import de.maxhenkel.corpse.gui.Guis;
 import net.minecraft.network.FriendlyByteBuf;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.neoforge.network.NetworkEvent;
+import net.minecraft.network.protocol.PacketFlow;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
+import net.neoforged.neoforge.network.handling.PlayPayloadContext;
 
 public class MessageOpenAdditionalItems implements Message {
+
+    public static ResourceLocation ID = new ResourceLocation(Main.MODID, "open_additional_items");
 
     public MessageOpenAdditionalItems() {
 
     }
 
     @Override
-    public Dist getExecutingSide() {
-        return Dist.DEDICATED_SERVER;
+    public PacketFlow getExecutingSide() {
+        return PacketFlow.SERVERBOUND;
     }
 
     @Override
-    public void executeServerSide(NetworkEvent.Context context) {
-        if (!(context.getSender().containerMenu instanceof CorpseInventoryContainer)) {
+    public void executeServerSide(PlayPayloadContext context) {
+        if (!(context.player().orElse(null) instanceof ServerPlayer sender)) {
             return;
         }
-        Guis.openAdditionalItems(context.getSender(), (CorpseInventoryContainer) context.getSender().containerMenu);
+        if (!(sender.containerMenu instanceof CorpseInventoryContainer)) {
+            return;
+        }
+        Guis.openAdditionalItems(sender, (CorpseInventoryContainer) sender.containerMenu);
     }
 
     @Override
@@ -34,5 +42,10 @@ public class MessageOpenAdditionalItems implements Message {
     @Override
     public void toBytes(FriendlyByteBuf buf) {
 
+    }
+
+    @Override
+    public ResourceLocation id() {
+        return ID;
     }
 }

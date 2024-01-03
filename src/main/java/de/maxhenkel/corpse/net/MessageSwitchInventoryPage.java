@@ -1,13 +1,17 @@
 package de.maxhenkel.corpse.net;
 
 import de.maxhenkel.corelib.net.Message;
+import de.maxhenkel.corpse.Main;
 import de.maxhenkel.corpse.gui.CorpseAdditionalContainer;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.neoforge.network.NetworkEvent;
+import net.minecraft.network.protocol.PacketFlow;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
+import net.neoforged.neoforge.network.handling.PlayPayloadContext;
 
 public class MessageSwitchInventoryPage implements Message {
+
+    public static ResourceLocation ID = new ResourceLocation(Main.MODID, "switch_inventory_page");
 
     private int page;
 
@@ -21,15 +25,16 @@ public class MessageSwitchInventoryPage implements Message {
 
 
     @Override
-    public Dist getExecutingSide() {
-        return Dist.DEDICATED_SERVER;
+    public PacketFlow getExecutingSide() {
+        return PacketFlow.SERVERBOUND;
     }
 
     @Override
-    public void executeServerSide(NetworkEvent.Context context) {
-        AbstractContainerMenu container = context.getSender().containerMenu;
-        if (container instanceof CorpseAdditionalContainer) {
-            CorpseAdditionalContainer containerCorpse = (CorpseAdditionalContainer) container;
+    public void executeServerSide(PlayPayloadContext context) {
+        if (!(context.player().orElse(null) instanceof ServerPlayer sender)) {
+            return;
+        }
+        if (sender.containerMenu instanceof CorpseAdditionalContainer containerCorpse) {
             containerCorpse.setSlots(page * 54);
         }
     }
@@ -43,5 +48,10 @@ public class MessageSwitchInventoryPage implements Message {
     @Override
     public void toBytes(FriendlyByteBuf buf) {
         buf.writeInt(page);
+    }
+
+    @Override
+    public ResourceLocation id() {
+        return ID;
     }
 }

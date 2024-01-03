@@ -2,13 +2,11 @@ package de.maxhenkel.corpse.entities;
 
 import de.maxhenkel.corelib.death.Death;
 import de.maxhenkel.corelib.item.ItemUtils;
-import de.maxhenkel.corelib.net.NetUtils;
 import de.maxhenkel.corpse.Main;
 import de.maxhenkel.corpse.gui.Guis;
 import de.maxhenkel.corpse.net.MessageSpawnDeathParticles;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;
@@ -33,6 +31,8 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.neoforge.network.PacketDistributor;
+
 import java.util.Optional;
 import java.util.UUID;
 
@@ -256,7 +256,7 @@ public class CorpseEntity extends CorpseBoundingBoxBase {
         }
         super.remove(reason);
         if (level() instanceof ServerLevel serverWorld) {
-            serverWorld.getPlayers(player -> player.distanceToSqr(getX(), getY(), getZ()) <= 64D * 64D).forEach(playerEntity -> NetUtils.sendTo(Main.SIMPLE_CHANNEL, playerEntity, new MessageSpawnDeathParticles(getUUID())));
+            serverWorld.getPlayers(player -> player.distanceToSqr(getX(), getY(), getZ()) <= 64D * 64D).forEach(playerEntity -> PacketDistributor.PLAYER.with(playerEntity).send(new MessageSpawnDeathParticles(getUUID())));
         }
     }
 

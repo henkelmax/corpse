@@ -1,28 +1,33 @@
 package de.maxhenkel.corpse.net;
 
 import de.maxhenkel.corelib.net.Message;
+import de.maxhenkel.corpse.Main;
 import de.maxhenkel.corpse.gui.ITransferrable;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.neoforge.network.NetworkEvent;
+import net.minecraft.network.protocol.PacketFlow;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
+import net.neoforged.neoforge.network.handling.PlayPayloadContext;
 
 public class MessageTransferItems implements Message {
+
+    public static ResourceLocation ID = new ResourceLocation(Main.MODID, "transfer_items");
 
     public MessageTransferItems() {
 
     }
 
     @Override
-    public Dist getExecutingSide() {
-        return Dist.DEDICATED_SERVER;
+    public PacketFlow getExecutingSide() {
+        return PacketFlow.SERVERBOUND;
     }
 
     @Override
-    public void executeServerSide(NetworkEvent.Context context) {
-        AbstractContainerMenu openContainer = context.getSender().containerMenu;
-        if ((openContainer instanceof ITransferrable) && !context.getSender().isDeadOrDying()) {
-            ITransferrable transferrable = (ITransferrable) openContainer;
+    public void executeServerSide(PlayPayloadContext context) {
+        if (!(context.player().orElse(null) instanceof ServerPlayer sender)) {
+            return;
+        }
+        if ((sender.containerMenu instanceof ITransferrable transferrable) && !sender.isDeadOrDying()) {
             transferrable.transferItems();
         }
     }
@@ -35,6 +40,11 @@ public class MessageTransferItems implements Message {
     @Override
     public void toBytes(FriendlyByteBuf buf) {
 
+    }
+
+    @Override
+    public ResourceLocation id() {
+        return ID;
     }
 
 }

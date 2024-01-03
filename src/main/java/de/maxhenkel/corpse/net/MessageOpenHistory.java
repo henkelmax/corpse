@@ -2,20 +2,25 @@ package de.maxhenkel.corpse.net;
 
 import de.maxhenkel.corelib.death.Death;
 import de.maxhenkel.corelib.net.Message;
+import de.maxhenkel.corpse.Main;
 import de.maxhenkel.corpse.gui.DeathHistoryScreen;
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.protocol.PacketFlow;
+import net.minecraft.resources.ResourceLocation;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
-import net.neoforged.neoforge.network.NetworkEvent;
+import net.neoforged.neoforge.network.handling.PlayPayloadContext;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class MessageOpenHistory implements Message {
+
+    public static ResourceLocation ID = new ResourceLocation(Main.MODID, "open_history");
 
     private List<Death> deaths;
 
@@ -28,13 +33,13 @@ public class MessageOpenHistory implements Message {
     }
 
     @Override
-    public Dist getExecutingSide() {
-        return Dist.CLIENT;
+    public PacketFlow getExecutingSide() {
+        return PacketFlow.CLIENTBOUND;
     }
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public void executeClientSide(NetworkEvent.Context context) {
+    public void executeClientSide(PlayPayloadContext context) {
         if (deaths.size() > 0) {
             Minecraft.getInstance().setScreen(new DeathHistoryScreen(deaths));
         } else {
@@ -67,5 +72,10 @@ public class MessageOpenHistory implements Message {
 
         compound.put("Deaths", list);
         buf.writeNbt(compound);
+    }
+
+    @Override
+    public ResourceLocation id() {
+        return ID;
     }
 }

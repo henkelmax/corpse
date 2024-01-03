@@ -1,7 +1,6 @@
 package de.maxhenkel.corpse.gui;
 
 import de.maxhenkel.corelib.inventory.ScreenBase;
-import de.maxhenkel.corelib.net.NetUtils;
 import de.maxhenkel.corpse.Main;
 import de.maxhenkel.corpse.entities.CorpseEntity;
 import de.maxhenkel.corpse.net.MessageOpenAdditionalItems;
@@ -12,6 +11,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
+import net.neoforged.neoforge.network.PacketDistributor;
 
 public class CorpseInventoryScreen extends ScreenBase<CorpseInventoryContainer> {
 
@@ -20,8 +20,8 @@ public class CorpseInventoryScreen extends ScreenBase<CorpseInventoryContainer> 
     public static final MutableComponent TRANSFER_ITEMS = Component.translatable("button.corpse.transfer_items");
     public static final MutableComponent ADDITIONAL_ITEMS = Component.translatable("button.corpse.additional_items");
 
-    public static final Button.OnPress PRESS_TRANSFER_ITEMS = (b) -> NetUtils.sendToServer(Main.SIMPLE_CHANNEL, new MessageTransferItems());
-    public static final Button.OnPress PRESS_ADDITIONAL_ITEMS = (b) -> NetUtils.sendToServer(Main.SIMPLE_CHANNEL, new MessageOpenAdditionalItems());
+    public static final Button.OnPress PRESS_TRANSFER_ITEMS = (b) -> PacketDistributor.SERVER.noArg().send(new MessageTransferItems());
+    public static final Button.OnPress PRESS_ADDITIONAL_ITEMS = (b) -> PacketDistributor.SERVER.noArg().send(new MessageOpenAdditionalItems());
 
     private static final int PADDING = 7;
     private static final int BUTTON_HEIGHT = 20;

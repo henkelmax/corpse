@@ -1,18 +1,17 @@
 package de.maxhenkel.corpse.gui;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import de.maxhenkel.corelib.inventory.ScreenBase;
-import de.maxhenkel.corelib.net.NetUtils;
 import de.maxhenkel.corpse.Main;
 import de.maxhenkel.corpse.entities.CorpseEntity;
-import de.maxhenkel.corpse.net.MessageTransferItems;
 import de.maxhenkel.corpse.net.MessageSwitchInventoryPage;
+import de.maxhenkel.corpse.net.MessageTransferItems;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
+import net.neoforged.neoforge.network.PacketDistributor;
 
 import java.util.Collections;
 
@@ -52,18 +51,18 @@ public class CorpseAdditionalScreen extends ScreenBase<CorpseAdditionalContainer
             if (page < 0) {
                 page = 0;
             }
-            NetUtils.sendToServer(Main.SIMPLE_CHANNEL, new MessageSwitchInventoryPage(page));
+            PacketDistributor.SERVER.noArg().send(new MessageSwitchInventoryPage(page));
         }).bounds(left + PADDING, topPos + 149 - buttonHeight, buttonWidth, buttonHeight).build());
         next = addRenderableWidget(Button.builder(Component.translatable("button.corpse.next"), button -> {
             page++;
             if (page >= getPages()) {
                 page = getPages() - 1;
             }
-            NetUtils.sendToServer(Main.SIMPLE_CHANNEL, new MessageSwitchInventoryPage());
+            PacketDistributor.SERVER.noArg().send(new MessageSwitchInventoryPage());
         }).bounds(left + imageWidth - buttonWidth - PADDING, topPos + 149 - buttonHeight, buttonWidth, buttonHeight).build());
 
         addRenderableWidget(new TransferItemsButton(left + imageWidth - TransferItemsButton.WIDTH - 9, topPos + 5, button -> {
-            NetUtils.sendToServer(Main.SIMPLE_CHANNEL, new MessageTransferItems());
+            PacketDistributor.SERVER.noArg().send(new MessageTransferItems());
         }));
     }
 
