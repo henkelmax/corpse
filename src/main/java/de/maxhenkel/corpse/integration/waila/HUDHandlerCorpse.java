@@ -8,9 +8,6 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.level.Level;
 import snownee.jade.api.EntityAccessor;
 import snownee.jade.api.IEntityComponentProvider;
 import snownee.jade.api.IServerDataProvider;
@@ -33,7 +30,7 @@ public class HUDHandlerCorpse implements IEntityComponentProvider, IServerDataPr
 
             CompoundTag data = entityAccessor.getServerData();
             if (data.contains("Death")) {
-                Death death = Death.fromNBT(data.getCompound("Death"));
+                Death death = Death.fromNBT(corpse.registryAccess(), data.getCompound("Death"));
                 long timestamp = death.getTimestamp();
                 if (timestamp > 0L) {
                     iTooltip.add(Component.translatable("tooltip.corpse.death_date", DeathHistoryScreen.getDate(timestamp)));
@@ -50,7 +47,7 @@ public class HUDHandlerCorpse implements IEntityComponentProvider, IServerDataPr
     public void appendServerData(CompoundTag compoundTag, EntityAccessor entityAccessor) {
         if (entityAccessor.getEntity() instanceof CorpseEntity corpse) {
             Death death = corpse.getDeath();
-            compoundTag.put("Death", death.toNBT(false));
+            compoundTag.put("Death", death.toNBT(corpse.registryAccess(), false));
             compoundTag.putInt("ItemCount", (int) death.getAllItems().stream().filter(itemStack -> !itemStack.isEmpty()).count());
         }
     }

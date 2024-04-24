@@ -7,20 +7,21 @@ import de.maxhenkel.corpse.gui.DeathHistoryScreen;
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.PacketFlow;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
-import net.neoforged.neoforge.network.handling.PlayPayloadContext;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class MessageOpenHistory implements Message {
+public class MessageOpenHistory implements Message<MessageOpenHistory> {
 
-    public static ResourceLocation ID = new ResourceLocation(Main.MODID, "open_history");
+    public static final CustomPacketPayload.Type<MessageOpenHistory> TYPE = new CustomPacketPayload.Type<>(new ResourceLocation(Main.MODID, "open_history"));
 
     private List<Death> deaths;
 
@@ -39,7 +40,7 @@ public class MessageOpenHistory implements Message {
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public void executeClientSide(PlayPayloadContext context) {
+    public void executeClientSide(IPayloadContext context) {
         if (deaths.size() > 0) {
             Minecraft.getInstance().setScreen(new DeathHistoryScreen(deaths));
         } else {
@@ -48,25 +49,25 @@ public class MessageOpenHistory implements Message {
     }
 
     @Override
-    public MessageOpenHistory fromBytes(FriendlyByteBuf buf) {
+    public MessageOpenHistory fromBytes(RegistryFriendlyByteBuf buf) {
         CompoundTag compound = buf.readNbt();
         ListTag list = compound.getList("Deaths", 10);
 
         deaths = new ArrayList<>();
         for (int i = 0; i < list.size(); i++) {
-            deaths.add(Death.fromNBT(list.getCompound(i)));
+            deaths.add(Death.fromNBT(buf.registryAccess(), list.getCompound(i)));
         }
 
         return this;
     }
 
     @Override
-    public void toBytes(FriendlyByteBuf buf) {
+    public void toBytes(RegistryFriendlyByteBuf buf) {
         CompoundTag compound = new CompoundTag();
 
         ListTag list = new ListTag();
         for (Death d : deaths) {
-            CompoundTag c = d.toNBT(false);
+            CompoundTag c = d.toNBT(buf.registryAccess(), false);
             list.add(c);
         }
 
@@ -75,7 +76,7 @@ public class MessageOpenHistory implements Message {
     }
 
     @Override
-    public ResourceLocation id() {
-        return ID;
+    public Type<MessageOpenHistory> type() {
+        return TYPE;
     }
 }

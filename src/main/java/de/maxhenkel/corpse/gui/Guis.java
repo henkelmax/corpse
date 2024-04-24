@@ -18,7 +18,7 @@ public class Guis {
             packetBuffer.writeBoolean(history);
             packetBuffer.writeBoolean(corpse.isAdditionalInventoryEmpty());
             if (history) {
-                packetBuffer.writeNbt(corpse.getDeath().toNBT(false));
+                packetBuffer.writeNbt(corpse.getDeath().toNBT(corpse.registryAccess(), false));
             } else {
                 packetBuffer.writeUUID(corpse.getUUID());
             }
@@ -33,7 +33,7 @@ public class Guis {
                 packetBuffer.writeBoolean(history);
                 packetBuffer.writeBoolean(corpse.isAdditionalInventoryEmpty());
                 if (history) {
-                    packetBuffer.writeNbt(corpse.getDeath().toNBT(false));
+                    packetBuffer.writeNbt(corpse.getDeath().toNBT(corpse.registryAccess(), false));
                 } else {
                     packetBuffer.writeUUID(corpse.getUUID());
                 }

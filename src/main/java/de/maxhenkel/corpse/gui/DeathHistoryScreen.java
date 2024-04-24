@@ -67,7 +67,7 @@ public class DeathHistoryScreen extends ScreenBase<AbstractContainerMenu> {
         }).bounds(leftPos + padding, topPos + imageHeight - buttonHeight - padding, buttonWidth, buttonHeight).build());
 
         addRenderableWidget(Button.builder(Component.translatable("button.corpse.show_items"), button -> {
-            PacketDistributor.SERVER.noArg().send(new MessageShowCorpseInventory(getCurrentDeath().getPlayerUUID(), getCurrentDeath().getId()));
+            PacketDistributor.sendToServer(new MessageShowCorpseInventory(getCurrentDeath().getPlayerUUID(), getCurrentDeath().getId()));
         }).bounds(leftPos + (imageWidth - buttonWidth) / 2, topPos + imageHeight - buttonHeight - padding, buttonWidth, buttonHeight).build());
 
         next = addRenderableWidget(Button.builder(Component.translatable("button.corpse.next"), button -> {

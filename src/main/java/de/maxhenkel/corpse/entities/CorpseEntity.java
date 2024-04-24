@@ -73,11 +73,6 @@ public class CorpseEntity extends CorpseBoundingBoxBase {
     }
 
     @Override
-    protected float getEyeHeight(Pose poseIn, EntityDimensions sizeIn) {
-        return sizeIn.height * 0.35F;
-    }
-
-    @Override
     public void tick() {
         super.tick();
         if (!isNoGravity()) {
@@ -241,12 +236,12 @@ public class CorpseEntity extends CorpseBoundingBoxBase {
     }
 
     @Override
-    protected void defineSynchedData() {
-        entityData.define(ID, Optional.empty());
-        entityData.define(NAME, "");
-        entityData.define(SKELETON, false);
-        entityData.define(MODEL, (byte) 0);
-        entityData.define(EQUIPMENT, NonNullList.withSize(EquipmentSlot.values().length, ItemStack.EMPTY));
+    protected void defineSynchedData(SynchedEntityData.Builder builder) {
+        builder.define(ID, Optional.empty());
+        builder.define(NAME, "");
+        builder.define(SKELETON, false);
+        builder.define(MODEL, (byte) 0);
+        builder.define(EQUIPMENT, NonNullList.withSize(EquipmentSlot.values().length, ItemStack.EMPTY));
     }
 
     @Override
@@ -256,7 +251,7 @@ public class CorpseEntity extends CorpseBoundingBoxBase {
         }
         super.remove(reason);
         if (level() instanceof ServerLevel serverWorld) {
-            serverWorld.getPlayers(player -> player.distanceToSqr(getX(), getY(), getZ()) <= 64D * 64D).forEach(playerEntity -> PacketDistributor.PLAYER.with(playerEntity).send(new MessageSpawnDeathParticles(getUUID())));
+            serverWorld.getPlayers(player -> player.distanceToSqr(getX(), getY(), getZ()) <= 64D * 64D).forEach(playerEntity -> PacketDistributor.sendToPlayer(playerEntity, new MessageSpawnDeathParticles(getUUID())));
         }
     }
 
@@ -274,7 +269,7 @@ public class CorpseEntity extends CorpseBoundingBoxBase {
     @Override
     protected void readAdditionalSaveData(CompoundTag compound) {
         if (compound.contains("Death")) {
-            death = Death.fromNBT(compound.getCompound("Death"));
+            death = Death.fromNBT(registryAccess(), compound.getCompound("Death"));
         } else { // Compatibility
             UUID playerUUID = new UUID(compound.getLong("IDMost"), compound.getLong("IDLeast"));
             UUID deathID = new UUID(compound.getLong("DeathIDMost"), compound.getLong("DeathIDLeast"));
@@ -283,10 +278,10 @@ public class CorpseEntity extends CorpseBoundingBoxBase {
 
             int size = compound.getInt("InventorySize");
             NonNullList<ItemStack> additionalItems = NonNullList.withSize(size, ItemStack.EMPTY);
-            ItemUtils.readInventory(compound, "Inventory", additionalItems);
+            ItemUtils.readInventory(registryAccess(), compound, "Inventory", additionalItems);
             builder.additionalItems(additionalItems);
             NonNullList<ItemStack> equipment = NonNullList.withSize(EquipmentSlot.values().length, ItemStack.EMPTY);
-            ItemUtils.readItemList(compound, "Equipment", equipment);
+            ItemUtils.readItemList(registryAccess(), compound, "Equipment", equipment);
             builder.equipment(equipment);
             builder.playerName(compound.getString("Name"));
             death = builder.build();
@@ -303,7 +298,7 @@ public class CorpseEntity extends CorpseBoundingBoxBase {
 
     @Override
     protected void addAdditionalSaveData(CompoundTag compound) {
-        compound.put("Death", death.toNBT());
+        compound.put("Death", death.toNBT(registryAccess()));
         compound.putInt("Age", age);
         if (emptyAge >= 0) {
             compound.putInt("EmptyAge", emptyAge);

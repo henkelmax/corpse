@@ -3,15 +3,16 @@ package de.maxhenkel.corpse.net;
 import de.maxhenkel.corelib.net.Message;
 import de.maxhenkel.corpse.Main;
 import de.maxhenkel.corpse.gui.ITransferrable;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.protocol.PacketFlow;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
-import net.neoforged.neoforge.network.handling.PlayPayloadContext;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
 
-public class MessageTransferItems implements Message {
+public class MessageTransferItems implements Message<MessageTransferItems> {
 
-    public static ResourceLocation ID = new ResourceLocation(Main.MODID, "transfer_items");
+    public static final CustomPacketPayload.Type<MessageTransferItems> TYPE = new CustomPacketPayload.Type<>(new ResourceLocation(Main.MODID, "transfer_items"));
 
     public MessageTransferItems() {
 
@@ -23,8 +24,8 @@ public class MessageTransferItems implements Message {
     }
 
     @Override
-    public void executeServerSide(PlayPayloadContext context) {
-        if (!(context.player().orElse(null) instanceof ServerPlayer sender)) {
+    public void executeServerSide(IPayloadContext context) {
+        if (!(context.player() instanceof ServerPlayer sender)) {
             return;
         }
         if ((sender.containerMenu instanceof ITransferrable transferrable) && !sender.isDeadOrDying()) {
@@ -33,18 +34,18 @@ public class MessageTransferItems implements Message {
     }
 
     @Override
-    public MessageTransferItems fromBytes(FriendlyByteBuf buf) {
+    public MessageTransferItems fromBytes(RegistryFriendlyByteBuf buf) {
         return this;
     }
 
     @Override
-    public void toBytes(FriendlyByteBuf buf) {
+    public void toBytes(RegistryFriendlyByteBuf buf) {
 
     }
 
     @Override
-    public ResourceLocation id() {
-        return ID;
+    public Type<MessageTransferItems> type() {
+        return TYPE;
     }
 
 }

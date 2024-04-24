@@ -3,17 +3,18 @@ package de.maxhenkel.corpse.net;
 import de.maxhenkel.corelib.net.Message;
 import de.maxhenkel.corpse.Main;
 import de.maxhenkel.corpse.gui.Guis;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.protocol.PacketFlow;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
-import net.neoforged.neoforge.network.handling.PlayPayloadContext;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 import java.util.UUID;
 
-public class MessageShowCorpseInventory implements Message {
+public class MessageShowCorpseInventory implements Message<MessageShowCorpseInventory> {
 
-    public static ResourceLocation ID = new ResourceLocation(Main.MODID, "show_corpse_inventory");
+    public static final CustomPacketPayload.Type<MessageShowCorpseInventory> TYPE = new CustomPacketPayload.Type<>(new ResourceLocation(Main.MODID, "show_corpse_inventory"));
 
     private UUID playerUUID;
     private UUID deathID;
@@ -33,22 +34,22 @@ public class MessageShowCorpseInventory implements Message {
     }
 
     @Override
-    public void executeServerSide(PlayPayloadContext context) {
-        if (!(context.player().orElse(null) instanceof ServerPlayer sender)) {
+    public void executeServerSide(IPayloadContext context) {
+        if (!(context.player() instanceof ServerPlayer sender)) {
             return;
         }
         Guis.openCorpseGUI(sender, playerUUID, deathID);
     }
 
     @Override
-    public MessageShowCorpseInventory fromBytes(FriendlyByteBuf buf) {
+    public MessageShowCorpseInventory fromBytes(RegistryFriendlyByteBuf buf) {
         playerUUID = new UUID(buf.readLong(), buf.readLong());
         deathID = new UUID(buf.readLong(), buf.readLong());
         return this;
     }
 
     @Override
-    public void toBytes(FriendlyByteBuf buf) {
+    public void toBytes(RegistryFriendlyByteBuf buf) {
         buf.writeLong(playerUUID.getMostSignificantBits());
         buf.writeLong(playerUUID.getLeastSignificantBits());
         buf.writeLong(deathID.getMostSignificantBits());
@@ -56,7 +57,7 @@ public class MessageShowCorpseInventory implements Message {
     }
 
     @Override
-    public ResourceLocation id() {
-        return ID;
+    public Type<MessageShowCorpseInventory> type() {
+        return TYPE;
     }
 }

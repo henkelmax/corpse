@@ -2,22 +2,24 @@ package de.maxhenkel.corpse.gui;
 
 import de.maxhenkel.corelib.death.Death;
 import de.maxhenkel.corpse.entities.CorpseEntity;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.phys.AABB;
 import net.neoforged.neoforge.network.IContainerFactory;
+
 import java.util.Optional;
 import java.util.UUID;
 
 public abstract class CorpseContainerFactory<T extends CorpseContainerBase> implements IContainerFactory<T> {
+
     @Override
-    public T create(int windowId, Inventory inv, FriendlyByteBuf buffer) {
+    public T create(int windowId, Inventory inv, RegistryFriendlyByteBuf buffer) {
         boolean isHistory = buffer.readBoolean();
         boolean additionalItemsEmpty = buffer.readBoolean();
         if (isHistory) {
-            Death death = Death.fromNBT(buffer.readNbt());
+            Death death = Death.fromNBT(buffer.registryAccess(), buffer.readNbt());
             if (!additionalItemsEmpty) {
                 // That the client knows if the additional items slot isn't empty
                 death.getAdditionalItems().add(new ItemStack(Items.STONE));

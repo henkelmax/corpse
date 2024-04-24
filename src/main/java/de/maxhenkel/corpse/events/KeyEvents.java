@@ -14,7 +14,7 @@ public class KeyEvents {
     @SubscribeEvent
     public void onInput(InputEvent.Key event) {
         if (Main.KEY_DEATH_HISTORY.consumeClick()) {
-            PacketDistributor.SERVER.noArg().send(new MessageRequestDeathHistory());
+            PacketDistributor.sendToServer(new MessageRequestDeathHistory());
         }
     }
 

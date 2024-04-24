@@ -4,15 +4,16 @@ import de.maxhenkel.corelib.net.Message;
 import de.maxhenkel.corpse.Main;
 import de.maxhenkel.corpse.gui.CorpseInventoryContainer;
 import de.maxhenkel.corpse.gui.Guis;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.protocol.PacketFlow;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
-import net.neoforged.neoforge.network.handling.PlayPayloadContext;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
 
-public class MessageOpenAdditionalItems implements Message {
+public class MessageOpenAdditionalItems implements Message<MessageOpenAdditionalItems> {
 
-    public static ResourceLocation ID = new ResourceLocation(Main.MODID, "open_additional_items");
+    public static final CustomPacketPayload.Type<MessageOpenAdditionalItems> TYPE = new CustomPacketPayload.Type<>(new ResourceLocation(Main.MODID, "open_additional_items"));
 
     public MessageOpenAdditionalItems() {
 
@@ -24,8 +25,8 @@ public class MessageOpenAdditionalItems implements Message {
     }
 
     @Override
-    public void executeServerSide(PlayPayloadContext context) {
-        if (!(context.player().orElse(null) instanceof ServerPlayer sender)) {
+    public void executeServerSide(IPayloadContext context) {
+        if (!(context.player() instanceof ServerPlayer sender)) {
             return;
         }
         if (!(sender.containerMenu instanceof CorpseInventoryContainer)) {
@@ -35,17 +36,17 @@ public class MessageOpenAdditionalItems implements Message {
     }
 
     @Override
-    public MessageOpenAdditionalItems fromBytes(FriendlyByteBuf buf) {
+    public MessageOpenAdditionalItems fromBytes(RegistryFriendlyByteBuf buf) {
         return this;
     }
 
     @Override
-    public void toBytes(FriendlyByteBuf buf) {
+    public void toBytes(RegistryFriendlyByteBuf buf) {
 
     }
 
     @Override
-    public ResourceLocation id() {
-        return ID;
+    public Type<MessageOpenAdditionalItems> type() {
+        return TYPE;
     }
 }

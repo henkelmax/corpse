@@ -33,8 +33,8 @@ import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
-import net.neoforged.neoforge.network.event.RegisterPayloadHandlerEvent;
-import net.neoforged.neoforge.network.registration.IPayloadRegistrar;
+import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
+import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
@@ -67,7 +67,7 @@ public class Main {
     public Main(IEventBus eventBus) {
         eventBus.addListener(this::commonSetup);
         eventBus.addListener(this::onRegisterPayloadHandler);
-        SERVER_CONFIG = CommonRegistry.registerConfig(ModConfig.Type.SERVER, ServerConfig.class);
+        SERVER_CONFIG = CommonRegistry.registerConfig(MODID, ModConfig.Type.SERVER, ServerConfig.class);
         if (FMLEnvironment.dist.isClient()) {
             eventBus.addListener(Main.this::clientSetup);
             eventBus.addListener(Main.this::onRegisterKeyBinds);
@@ -100,8 +100,8 @@ public class Main {
         EntityRenderers.register(CORPSE_ENTITY_TYPE.get(), CorpseRenderer::new);
     }
 
-    public void onRegisterPayloadHandler(RegisterPayloadHandlerEvent event) {
-        IPayloadRegistrar registrar = event.registrar(MODID).versioned("0");
+    public void onRegisterPayloadHandler(RegisterPayloadHandlersEvent event) {
+        PayloadRegistrar registrar = event.registrar(MODID).versioned("0");
         CommonRegistry.registerMessage(registrar, MessageSwitchInventoryPage.class);
         CommonRegistry.registerMessage(registrar, MessageOpenHistory.class);
         CommonRegistry.registerMessage(registrar, MessageShowCorpseInventory.class);
@@ -123,7 +123,8 @@ public class Main {
                     .setTrackingRange(128)
                     .setUpdateInterval(1)
                     .setShouldReceiveVelocityUpdates(true)
-                    .sized(2F, 0.5F);
+                    .sized(2F, 0.5F)
+                    .eyeHeight(0.25F);
         });
     }
 

@@ -5,19 +5,20 @@ import de.maxhenkel.corpse.Main;
 import de.maxhenkel.corpse.entities.CorpseEntity;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.protocol.PacketFlow;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
-import net.neoforged.neoforge.network.handling.PlayPayloadContext;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 import java.util.Optional;
 import java.util.UUID;
 
-public class MessageSpawnDeathParticles implements Message {
+public class MessageSpawnDeathParticles implements Message<MessageSpawnDeathParticles> {
 
-    public static ResourceLocation ID = new ResourceLocation(Main.MODID, "spawn_death_particles");
+    public static final CustomPacketPayload.Type<MessageSpawnDeathParticles> TYPE = new CustomPacketPayload.Type<>(new ResourceLocation(Main.MODID, "spawn_death_particles"));
 
     private UUID corpseUUID;
 
@@ -35,7 +36,7 @@ public class MessageSpawnDeathParticles implements Message {
     }
 
     @Override
-    public void executeClientSide(PlayPayloadContext context) {
+    public void executeClientSide(IPayloadContext context) {
         spawnParticles();
     }
 
@@ -47,18 +48,18 @@ public class MessageSpawnDeathParticles implements Message {
     }
 
     @Override
-    public MessageSpawnDeathParticles fromBytes(FriendlyByteBuf buf) {
+    public MessageSpawnDeathParticles fromBytes(RegistryFriendlyByteBuf buf) {
         corpseUUID = buf.readUUID();
         return this;
     }
 
     @Override
-    public void toBytes(FriendlyByteBuf buf) {
+    public void toBytes(RegistryFriendlyByteBuf buf) {
         buf.writeUUID(corpseUUID);
     }
 
     @Override
-    public ResourceLocation id() {
-        return ID;
+    public Type<MessageSpawnDeathParticles> type() {
+        return TYPE;
     }
 }

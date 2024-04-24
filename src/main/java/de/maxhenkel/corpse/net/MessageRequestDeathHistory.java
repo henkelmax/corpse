@@ -4,19 +4,20 @@ import de.maxhenkel.corelib.death.Death;
 import de.maxhenkel.corelib.death.DeathManager;
 import de.maxhenkel.corelib.net.Message;
 import de.maxhenkel.corpse.Main;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.protocol.PacketFlow;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.neoforge.network.PacketDistributor;
-import net.neoforged.neoforge.network.handling.PlayPayloadContext;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 import java.util.List;
 import java.util.UUID;
 
-public class MessageRequestDeathHistory implements Message {
+public class MessageRequestDeathHistory implements Message<MessageRequestDeathHistory> {
 
-    public static ResourceLocation ID = new ResourceLocation(Main.MODID, "request_death_history");
+    public static final CustomPacketPayload.Type<MessageRequestDeathHistory> TYPE = new CustomPacketPayload.Type<>(new ResourceLocation(Main.MODID, "request_death_history"));
 
     public MessageRequestDeathHistory() {
 
@@ -28,26 +29,26 @@ public class MessageRequestDeathHistory implements Message {
     }
 
     @Override
-    public void executeServerSide(PlayPayloadContext context) {
-        if (!(context.player().orElse(null) instanceof ServerPlayer sender)) {
+    public void executeServerSide(IPayloadContext context) {
+        if (!(context.player() instanceof ServerPlayer sender)) {
             return;
         }
         sendDeathHistory(sender);
     }
 
     @Override
-    public MessageRequestDeathHistory fromBytes(FriendlyByteBuf buf) {
+    public MessageRequestDeathHistory fromBytes(RegistryFriendlyByteBuf buf) {
         return this;
     }
 
     @Override
-    public void toBytes(FriendlyByteBuf buf) {
+    public void toBytes(RegistryFriendlyByteBuf buf) {
 
     }
 
     @Override
-    public ResourceLocation id() {
-        return ID;
+    public Type<MessageRequestDeathHistory> type() {
+        return TYPE;
     }
 
     public static boolean sendDeathHistory(ServerPlayer player) {
@@ -59,7 +60,7 @@ public class MessageRequestDeathHistory implements Message {
         if (deaths == null) {
             return false;
         }
-        PacketDistributor.PLAYER.with(playerToSend).send(new MessageOpenHistory(deaths));
+        PacketDistributor.sendToPlayer(playerToSend, new MessageOpenHistory(deaths));
         return true;
     }
 }
