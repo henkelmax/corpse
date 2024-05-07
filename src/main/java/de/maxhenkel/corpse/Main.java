@@ -31,6 +31,7 @@ import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
+import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
@@ -71,6 +72,7 @@ public class Main {
         if (FMLEnvironment.dist.isClient()) {
             eventBus.addListener(Main.this::clientSetup);
             eventBus.addListener(Main.this::onRegisterKeyBinds);
+            eventBus.addListener(Main.this::onRegisterScreens);
         }
 
         ITEM_REGISTER.register(eventBus);
@@ -90,14 +92,17 @@ public class Main {
 
     @OnlyIn(Dist.CLIENT)
     public void clientSetup(FMLClientSetupEvent event) {
-        ClientRegistry.<CorpseAdditionalContainer, CorpseAdditionalScreen>registerScreen(Main.CONTAINER_TYPE_CORPSE_ADDITIONAL_ITEMS.get(), (container, inv, title) -> new CorpseAdditionalScreen(container.getCorpse(), inv, container, title));
-        ClientRegistry.<CorpseInventoryContainer, CorpseInventoryScreen>registerScreen(Main.CONTAINER_TYPE_CORPSE_INVENTORY.get(), (container, inv, title) -> new CorpseInventoryScreen(container.getCorpse(), inv, container, title));
-
         NeoForge.EVENT_BUS.register(new KeyEvents());
 
         // TODO Fix
         // RenderingRegistry.registerEntityRenderingHandler(CORPSE_ENTITY_TYPE, CorpseRenderer::new);
         EntityRenderers.register(CORPSE_ENTITY_TYPE.get(), CorpseRenderer::new);
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public void onRegisterScreens(RegisterMenuScreensEvent containers) {
+        containers.<CorpseAdditionalContainer, CorpseAdditionalScreen>register(Main.CONTAINER_TYPE_CORPSE_ADDITIONAL_ITEMS.get(), (container, inv, title) -> new CorpseAdditionalScreen(container.getCorpse(), inv, container, title));
+        containers.<CorpseInventoryContainer, CorpseInventoryScreen>register(Main.CONTAINER_TYPE_CORPSE_INVENTORY.get(), (container, inv, title) -> new CorpseInventoryScreen(container.getCorpse(), inv, container, title));
     }
 
     public void onRegisterPayloadHandler(RegisterPayloadHandlersEvent event) {
