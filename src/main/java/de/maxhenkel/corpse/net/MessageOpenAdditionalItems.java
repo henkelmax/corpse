@@ -13,7 +13,7 @@ import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 public class MessageOpenAdditionalItems implements Message<MessageOpenAdditionalItems> {
 
-    public static final CustomPacketPayload.Type<MessageOpenAdditionalItems> TYPE = new CustomPacketPayload.Type<>(new ResourceLocation(Main.MODID, "open_additional_items"));
+    public static final CustomPacketPayload.Type<MessageOpenAdditionalItems> TYPE = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(Main.MODID, "open_additional_items"));
 
     public MessageOpenAdditionalItems() {
 

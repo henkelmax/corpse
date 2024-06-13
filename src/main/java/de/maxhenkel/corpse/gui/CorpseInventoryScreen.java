@@ -15,7 +15,7 @@ import net.neoforged.neoforge.network.PacketDistributor;
 
 public class CorpseInventoryScreen extends ScreenBase<CorpseInventoryContainer> {
 
-    public static final ResourceLocation CORPSE_GUI_TEXTURE = new ResourceLocation(Main.MODID, "textures/gui/inventory_corpse.png");
+    public static final ResourceLocation CORPSE_GUI_TEXTURE = ResourceLocation.fromNamespaceAndPath(Main.MODID, "textures/gui/inventory_corpse.png");
 
     public static final MutableComponent TRANSFER_ITEMS = Component.translatable("button.corpse.transfer_items");
     public static final MutableComponent ADDITIONAL_ITEMS = Component.translatable("button.corpse.additional_items");

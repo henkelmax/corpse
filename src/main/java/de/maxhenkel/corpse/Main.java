@@ -1,6 +1,5 @@
 package de.maxhenkel.corpse;
 
-import de.maxhenkel.corelib.ClientRegistry;
 import de.maxhenkel.corelib.CommonRegistry;
 import de.maxhenkel.corelib.dataserializers.DataSerializerItemList;
 import de.maxhenkel.corpse.commands.HistoryCommand;

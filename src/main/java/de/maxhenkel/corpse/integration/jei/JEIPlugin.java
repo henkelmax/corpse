@@ -12,7 +12,7 @@ public class JEIPlugin implements IModPlugin {
 
     @Override
     public ResourceLocation getPluginUid() {
-        return new ResourceLocation(Main.MODID, "corpse");
+        return ResourceLocation.fromNamespaceAndPath(Main.MODID, "corpse");
     }
 
     @Override

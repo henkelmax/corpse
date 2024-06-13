@@ -14,7 +14,7 @@ import java.util.UUID;
 
 public class MessageShowCorpseInventory implements Message<MessageShowCorpseInventory> {
 
-    public static final CustomPacketPayload.Type<MessageShowCorpseInventory> TYPE = new CustomPacketPayload.Type<>(new ResourceLocation(Main.MODID, "show_corpse_inventory"));
+    public static final CustomPacketPayload.Type<MessageShowCorpseInventory> TYPE = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(Main.MODID, "show_corpse_inventory"));
 
     private UUID playerUUID;
     private UUID deathID;

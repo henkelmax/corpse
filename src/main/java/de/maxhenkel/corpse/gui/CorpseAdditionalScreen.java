@@ -17,7 +17,7 @@ import java.util.Collections;
 
 public class CorpseAdditionalScreen extends ScreenBase<CorpseAdditionalContainer> {
 
-    public static final ResourceLocation CORPSE_GUI_TEXTURE = new ResourceLocation(Main.MODID, "textures/gui/gui_corpse.png");
+    public static final ResourceLocation CORPSE_GUI_TEXTURE = ResourceLocation.fromNamespaceAndPath(Main.MODID, "textures/gui/gui_corpse.png");
 
     private static final int PADDING = 7;
 

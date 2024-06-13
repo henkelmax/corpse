@@ -12,7 +12,7 @@ import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 public class MessageTransferItems implements Message<MessageTransferItems> {
 
-    public static final CustomPacketPayload.Type<MessageTransferItems> TYPE = new CustomPacketPayload.Type<>(new ResourceLocation(Main.MODID, "transfer_items"));
+    public static final CustomPacketPayload.Type<MessageTransferItems> TYPE = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(Main.MODID, "transfer_items"));
 
     public MessageTransferItems() {
 

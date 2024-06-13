@@ -29,7 +29,7 @@ import java.util.List;
 
 public class DeathHistoryScreen extends ScreenBase<AbstractContainerMenu> {
 
-    private static final ResourceLocation DEATH_HISTORY_GUI_TEXTURE = new ResourceLocation(Main.MODID, "textures/gui/gui_death_history.png");
+    private static final ResourceLocation DEATH_HISTORY_GUI_TEXTURE = ResourceLocation.fromNamespaceAndPath(Main.MODID, "textures/gui/gui_death_history.png");
 
     private final CachedMap<Death, DummyPlayer> players;
 

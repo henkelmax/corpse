@@ -18,7 +18,7 @@ import java.util.UUID;
 
 public class MessageSpawnDeathParticles implements Message<MessageSpawnDeathParticles> {
 
-    public static final CustomPacketPayload.Type<MessageSpawnDeathParticles> TYPE = new CustomPacketPayload.Type<>(new ResourceLocation(Main.MODID, "spawn_death_particles"));
+    public static final CustomPacketPayload.Type<MessageSpawnDeathParticles> TYPE = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(Main.MODID, "spawn_death_particles"));
 
     private UUID corpseUUID;
 

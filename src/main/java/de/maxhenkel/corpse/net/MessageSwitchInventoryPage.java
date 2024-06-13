@@ -12,7 +12,7 @@ import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 public class MessageSwitchInventoryPage implements Message<MessageSwitchInventoryPage> {
 
-    public static final CustomPacketPayload.Type<MessageSwitchInventoryPage> TYPE = new CustomPacketPayload.Type<>(new ResourceLocation(Main.MODID, "switch_inventory_page"));
+    public static final CustomPacketPayload.Type<MessageSwitchInventoryPage> TYPE = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(Main.MODID, "switch_inventory_page"));
 
     private int page;
 

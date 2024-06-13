@@ -21,7 +21,7 @@ import java.util.List;
 
 public class MessageOpenHistory implements Message<MessageOpenHistory> {
 
-    public static final CustomPacketPayload.Type<MessageOpenHistory> TYPE = new CustomPacketPayload.Type<>(new ResourceLocation(Main.MODID, "open_history"));
+    public static final CustomPacketPayload.Type<MessageOpenHistory> TYPE = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(Main.MODID, "open_history"));
 
     private List<Death> deaths;
 

@@ -17,7 +17,7 @@ import java.util.UUID;
 
 public class MessageRequestDeathHistory implements Message<MessageRequestDeathHistory> {
 
-    public static final CustomPacketPayload.Type<MessageRequestDeathHistory> TYPE = new CustomPacketPayload.Type<>(new ResourceLocation(Main.MODID, "request_death_history"));
+    public static final CustomPacketPayload.Type<MessageRequestDeathHistory> TYPE = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(Main.MODID, "request_death_history"));
 
     public MessageRequestDeathHistory() {
 
