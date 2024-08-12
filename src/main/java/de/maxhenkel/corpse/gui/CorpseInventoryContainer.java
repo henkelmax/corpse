@@ -10,12 +10,19 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.common.util.LazyOptional;
+import top.theillusivec4.curios.api.CuriosApi;
+import top.theillusivec4.curios.api.SlotResult;
+import top.theillusivec4.curios.api.type.capability.ICuriosItemHandler;
+import top.theillusivec4.curios.api.type.inventory.IDynamicStackHandler;
 
 import java.util.List;
+import java.util.Optional;
 
 public class CorpseInventoryContainer extends CorpseContainerBase implements ITransferrable {
 
@@ -83,6 +90,10 @@ public class CorpseInventoryContainer extends CorpseContainerBase implements ITr
         fill(additionalItems, offHandInventory, playerInventory.offhand);
 
         additionalItems.addAll(corpse.getDeath().getAdditionalItems());
+
+        // Equip what can be equipped from the additional items to curios slots and remove them from the corpse inventory
+        equipCuriosItems(additionalItems);
+
         NonNullList<ItemStack> restItems = NonNullList.create();
         for (ItemStack stack : additionalItems) {
             if (!player.getInventory().add(stack)) {
@@ -109,6 +120,47 @@ public class CorpseInventoryContainer extends CorpseContainerBase implements ITr
             }
             inventory.setItem(i, ItemStack.EMPTY);
             playerInv.set(i, stack);
+        }
+    }
+
+    private void equipCuriosItems(List<ItemStack> itemStacks) {
+        Player player = playerInventory.player;
+        for (ItemStack itemStack : itemStacks) {
+
+            if (itemStack.isEmpty()) {
+                continue;
+            }
+
+            LazyOptional<ICuriosItemHandler> maybeCuriosInventory = CuriosApi.getCuriosInventory(player);
+            if (!maybeCuriosInventory.isPresent()) {
+                continue;
+            }
+
+            ICuriosItemHandler curiosInventory = maybeCuriosInventory.resolve().get();
+            Optional<SlotResult> existingSlotResult = curiosInventory.findFirstCurio(itemStack.getItem());
+            if (existingSlotResult.isPresent()) {
+                // Curio item is already equipped
+                continue;
+            }
+
+            // Item is not already equipped
+
+            curiosInventory.getCurios().forEach((id, stacksHandler) -> {
+                IDynamicStackHandler stackHandler = stacksHandler.getStacks();
+
+                for (int i = 0; i < stackHandler.getSlots(); i++) {
+                    if (stackHandler.isItemValid(i, itemStack)) {
+                        ItemStack present = stackHandler.getStackInSlot(i);
+
+                        if (present.isEmpty()) {
+                            stackHandler.setStackInSlot(i, itemStack.copy());
+
+                            int count = itemStack.getCount();
+                            itemStack.shrink(count);
+                        }
+                    }
+                }
+            });
         }
     }
 
