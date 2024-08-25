@@ -1,1 +1,1 @@
-- Updated dependencies
+- Added Traditional Chinese translation
