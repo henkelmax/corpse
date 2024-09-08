@@ -16,7 +16,7 @@
   "tooltip.corpse.teleport": "Teleportuj",
   "tooltip.corpse.death_date": "Gracz zmarł %s",
   "tooltip.corpse.item_count": "Zawiera stacków: %s",
-  "button.corpse.transfer_items": "Przenieś przedm.",
-  "button.corpse.additional_items": "Dodatkowe rzeczy",
+  "button.corpse.transfer_items": "Przenieś",
+  "button.corpse.additional_items": "Dodatkowe",
   "config.jade.plugin_corpse.corpse": "Zwłoki"
 }
