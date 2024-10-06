@@ -11,6 +11,8 @@ import de.maxhenkel.corpse.net.MessageShowCorpseInventory;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.layouts.FrameLayout;
+import net.minecraft.client.gui.layouts.LinearLayout;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.core.BlockPos;
@@ -33,6 +35,7 @@ public class DeathHistoryScreen extends ScreenBase {
     private final CachedMap<Death, DummyPlayer> players;
 
     private Button previous;
+    private Button showItems;
     private Button next;
 
     private final List<Death> deaths;
@@ -57,28 +60,39 @@ public class DeathHistoryScreen extends ScreenBase {
     protected void init() {
         super.init();
 
-        int padding = 7;
-        int buttonWidth = 50;
-        int buttonHeight = 20;
-        previous = addRenderableWidget(Button.builder(Component.translatable("button.corpse.previous"), button -> {
+        previous = Button.builder(Component.translatable("button.corpse.previous"), button -> {
             index--;
             if (index < 0) {
                 index = 0;
             }
             checkButtons();
-        }).bounds(guiLeft + padding, guiTop + ySize - buttonHeight - padding, buttonWidth, buttonHeight).build());
+        }).build();
 
-        addRenderableWidget(Button.builder(Component.translatable("button.corpse.show_items"), button -> {
+        showItems = Button.builder(Component.translatable("button.corpse.show_items"), button -> {
             PacketDistributor.sendToServer(new MessageShowCorpseInventory(getCurrentDeath().getPlayerUUID(), getCurrentDeath().getId()));
-        }).bounds(guiLeft + (xSize - buttonWidth) / 2, guiTop + ySize - buttonHeight - padding, buttonWidth, buttonHeight).build());
+        }).build();
 
-        next = addRenderableWidget(Button.builder(Component.translatable("button.corpse.next"), button -> {
+        next = Button.builder(Component.translatable("button.corpse.next"), button -> {
             index++;
             if (index >= deaths.size()) {
                 index = deaths.size() - 1;
             }
             checkButtons();
-        }).bounds(guiLeft + xSize - buttonWidth - padding, guiTop + ySize - buttonHeight - padding, buttonWidth, buttonHeight).build());
+        }).build();
+
+        int padding = 7;
+        int buttonLayoutWidth = xSize - padding * 2;
+
+        LinearLayout buttonLayout = LinearLayout.horizontal().spacing(2);
+        previous.setWidth(buttonLayoutWidth / 3 - 1);
+        buttonLayout.addChild(previous);
+        showItems.setWidth(buttonLayoutWidth / 3 - 1);
+        buttonLayout.addChild(showItems);
+        next.setWidth(buttonLayoutWidth / 3 - 1);
+        buttonLayout.addChild(next);
+        buttonLayout.visitWidgets(this::addRenderableWidget);
+        buttonLayout.arrangeElements();
+        FrameLayout.alignInRectangle(buttonLayout, guiLeft + padding, guiTop + ySize - padding - 20, buttonLayoutWidth, 20, 0F, 0F);
 
         checkButtons();
     }
@@ -145,8 +159,8 @@ public class DeathHistoryScreen extends ScreenBase {
         drawLeft(guiGraphics,
                 Component.translatable("gui.corpse.death_history.location")
                         .append(Component.literal(":"))
-                        .withStyle(ChatFormatting.DARK_GRAY)
-                , guiTop + 70);
+                        .withStyle(ChatFormatting.DARK_GRAY),
+                guiTop + 70);
 
 
         drawRight(guiGraphics, Component.literal(Math.round(death.getPosX()) + " X").withStyle(ChatFormatting.GRAY), guiTop + 70);
