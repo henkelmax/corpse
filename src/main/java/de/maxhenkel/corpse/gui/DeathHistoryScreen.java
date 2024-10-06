@@ -65,6 +65,7 @@ public class DeathHistoryScreen extends ScreenBase {
             if (index < 0) {
                 index = 0;
             }
+            checkButtons();
         }).bounds(guiLeft + padding, guiTop + ySize - buttonHeight - padding, buttonWidth, buttonHeight).build());
 
         addRenderableWidget(Button.builder(Component.translatable("button.corpse.show_items"), button -> {
@@ -76,8 +77,10 @@ public class DeathHistoryScreen extends ScreenBase {
             if (index >= deaths.size()) {
                 index = deaths.size() - 1;
             }
-
+            checkButtons();
         }).bounds(guiLeft + xSize - buttonWidth - padding, guiTop + ySize - buttonHeight - padding, buttonWidth, buttonHeight).build());
+
+        checkButtons();
     }
 
     @Override
@@ -180,9 +183,7 @@ public class DeathHistoryScreen extends ScreenBase {
         return Component.literal(dateFormat.format(new Date(timestamp)));
     }
 
-    @Override
-    public void tick() {
-        super.tick();
+    private void checkButtons() {
         previous.active = index > 0;
         next.active = index < deaths.size() - 1;
     }
