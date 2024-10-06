@@ -1,1 +1,2 @@
-- Added Traditional Chinese translation
+- Added OpenHUD integration
+- Fixed player not rendering in death history screen

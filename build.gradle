@@ -16,16 +16,24 @@ dependencies {
 
     implementation "maven.modrinth:jei:${jei_version}"
     implementation "maven.modrinth:jade:${jade_version}"
+    implementation "maven.modrinth:openhud:neoforge-${openhud_version}"
 }
 
 processResources {
     filesMatching('**/*.toml') {
         expand 'mod_version': mod_version,
                 'neoforge_dependency': neoforge_dependency,
+                'openhud_dependency': openhud_dependency,
                 'minecraft_version': minecraft_version
     }
 }
 
 shadowJar {
     relocate 'de.maxhenkel.corelib', 'de.maxhenkel.corpse.corelib'
+}
+
+runs {
+    client {
+        arguments = ['--username', 'henkelmax']
+    }
 }
