@@ -27,12 +27,6 @@ versionRange = "[1.21,1.21.1]"
 ordering = "NONE"
 side = "BOTH"
 [[dependencies.corpse]]
-modId = "jei"
-type = "optional"
-versionRange = "*"
-ordering = "NONE"
-side = "BOTH"
-[[dependencies.corpse]]
 modId = "jade"
 type = "optional"
 versionRange = "*"
