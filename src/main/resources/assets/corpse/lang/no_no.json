@@ -1,8 +1,6 @@
 {
   "entity.corpse.corpse": "Lik",
   "entity.corpse.corpse_of": "Liket til %s",
-  "button.corpse.previous": "Tilbake",
-  "button.corpse.next": "Neste",
   "gui.corpse.page": "%s av %s",
   "gui.corpse.death_history.title": "Spillers dødshistorikk",
   "gui.corpse.death_history.name": "Navn",

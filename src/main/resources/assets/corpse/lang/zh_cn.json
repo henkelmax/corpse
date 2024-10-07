@@ -1,8 +1,6 @@
 {
   "entity.corpse.corpse": "遗体",
   "entity.corpse.corpse_of": "%s 的遗体",
-  "button.corpse.previous": "上一页",
-  "button.corpse.next": "下一页",
   "gui.corpse.page": "%s of %s",
   "gui.corpse.death_history.title": "死亡历史",
   "gui.corpse.death_history.name": "名字",

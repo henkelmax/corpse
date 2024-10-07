@@ -1,8 +1,6 @@
 {
   "entity.corpse.corpse": "시체",
   "entity.corpse.corpse_of": "%s의 시체",
-  "button.corpse.previous": "이전",
-  "button.corpse.next": "다음",
   "gui.corpse.page": "%s / %s",
   "gui.corpse.death_history.title": "플레이어 사망 기록",
   "gui.corpse.death_history.name": "이름",

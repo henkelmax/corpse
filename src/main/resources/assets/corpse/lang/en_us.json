@@ -1,8 +1,6 @@
 {
   "entity.corpse.corpse": "Corpse",
   "entity.corpse.corpse_of": "Corpse of %s",
-  "button.corpse.previous": "Previous",
-  "button.corpse.next": "Next",
   "gui.corpse.page": "%s of %s",
   "gui.corpse.death_history.title": "Player Death History",
   "gui.corpse.death_history.name": "Name",

@@ -1,8 +1,6 @@
 {
   "entity.corpse.corpse": "屍體",
   "entity.corpse.corpse_of": "%s 的屍體",
-  "button.corpse.previous": "上一頁",
-  "button.corpse.next": "下一頁",
   "gui.corpse.page": "%s / %s",
   "gui.corpse.death_history.title": "玩家死亡記錄",
   "gui.corpse.death_history.name": "名稱",

@@ -1,8 +1,6 @@
 {
   "entity.corpse.corpse": "Tělo",
   "entity.corpse.corpse_of": "Tělo %s",
-  "button.corpse.previous": "Zpět",
-  "button.corpse.next": "Další",
   "gui.corpse.page": "%s z %s",
   "gui.corpse.death_history.title": "Hráčova historie úmrtí",
   "gui.corpse.death_history.name": "Jméno",

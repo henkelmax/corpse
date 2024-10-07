@@ -25,6 +25,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.network.PacketDistributor;
 
+import javax.annotation.Nullable;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -39,6 +40,8 @@ public class DeathHistoryScreen extends ScreenBase {
     private final CachedMap<Death, DummyPlayer> players;
 
     private Button previous;
+    @Nullable
+    private Button waypoint;
     private Button showItems;
     private Button next;
 
@@ -66,17 +69,8 @@ public class DeathHistoryScreen extends ScreenBase {
 
         int padding = 7;
         int buttonLayoutWidth = xSize - padding * 2;
-        int buttonWidth = buttonLayoutWidth / 3 - 1;
 
-        if (OpenHudIntegration.isLoaded()) {
-            addRenderableWidget(Button.builder(Component.translatable("button.corpse.add_waypoint"), button -> {
-                ResourceLocation dim = ResourceLocation.tryParse(getCurrentDeath().getDimension());
-                ResourceKey<Level> dimension = dim != null ? ResourceKey.create(Registries.DIMENSION, dim) : null;
-                OpenHudIntegration.openWaypointScreen(this, dimension, getCurrentDeath().getBlockPos());
-            }).bounds(guiLeft + padding, guiTop + ySize - padding - 20 - 2 - 20, buttonWidth, 20).build());
-        }
-
-        previous = Button.builder(Component.translatable("button.corpse.previous"), button -> {
+        previous = Button.builder(Component.literal("←"), button -> {
             index--;
             if (index < 0) {
                 index = 0;
@@ -84,11 +78,19 @@ public class DeathHistoryScreen extends ScreenBase {
             checkButtons();
         }).build();
 
+        if (OpenHudIntegration.isLoaded()) {
+            waypoint = Button.builder(Component.translatable("button.corpse.add_waypoint"), button -> {
+                ResourceLocation dim = ResourceLocation.tryParse(getCurrentDeath().getDimension());
+                ResourceKey<Level> dimension = dim != null ? ResourceKey.create(Registries.DIMENSION, dim) : null;
+                OpenHudIntegration.openWaypointScreen(this, dimension, getCurrentDeath().getBlockPos());
+            }).build();
+        }
+
         showItems = Button.builder(Component.translatable("button.corpse.show_items"), button -> {
             PacketDistributor.sendToServer(new MessageShowCorpseInventory(getCurrentDeath().getPlayerUUID(), getCurrentDeath().getId()));
         }).build();
 
-        next = Button.builder(Component.translatable("button.corpse.next"), button -> {
+        next = Button.builder(Component.literal("→"), button -> {
             index++;
             if (index >= deaths.size()) {
                 index = deaths.size() - 1;
@@ -97,11 +99,17 @@ public class DeathHistoryScreen extends ScreenBase {
         }).build();
 
         LinearLayout buttonLayout = LinearLayout.horizontal().spacing(2);
-        previous.setWidth(buttonWidth);
+        previous.setWidth(20);
         buttonLayout.addChild(previous);
+        int buttonWidth = buttonLayoutWidth - 20 * 2 - 2 * 2;
+        if (waypoint != null) {
+            buttonWidth = buttonWidth / 2 - 1;
+            waypoint.setWidth(buttonWidth);
+            buttonLayout.addChild(waypoint);
+        }
         showItems.setWidth(buttonWidth);
         buttonLayout.addChild(showItems);
-        next.setWidth(buttonWidth);
+        next.setWidth(20);
         buttonLayout.addChild(next);
         buttonLayout.visitWidgets(this::addRenderableWidget);
         buttonLayout.arrangeElements();

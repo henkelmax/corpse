@@ -1,8 +1,6 @@
 {
   "entity.corpse.corpse": "Труп",
   "entity.corpse.corpse_of": "Труп %s",
-  "button.corpse.previous": "Обратно",
-  "button.corpse.next": "След.",
   "gui.corpse.page": "%s из %s",
   "gui.corpse.death_history.title": "История смерти игрока",
   "gui.corpse.death_history.name": "Имя",
