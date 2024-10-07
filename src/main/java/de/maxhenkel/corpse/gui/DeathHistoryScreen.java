@@ -7,6 +7,7 @@ import de.maxhenkel.corelib.CachedMap;
 import de.maxhenkel.corelib.death.Death;
 import de.maxhenkel.corpse.Main;
 import de.maxhenkel.corpse.entities.DummyPlayer;
+import de.maxhenkel.corpse.integration.openhud.OpenHudIntegration;
 import de.maxhenkel.corpse.net.MessageShowCorpseInventory;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphics;
@@ -16,9 +17,12 @@ import net.minecraft.client.gui.layouts.LinearLayout;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.*;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.network.PacketDistributor;
 
 import java.text.SimpleDateFormat;
@@ -60,6 +64,18 @@ public class DeathHistoryScreen extends ScreenBase {
     protected void init() {
         super.init();
 
+        int padding = 7;
+        int buttonLayoutWidth = xSize - padding * 2;
+        int buttonWidth = buttonLayoutWidth / 3 - 1;
+
+        if (OpenHudIntegration.isLoaded()) {
+            addRenderableWidget(Button.builder(Component.translatable("button.corpse.add_waypoint"), button -> {
+                ResourceLocation dim = ResourceLocation.tryParse(getCurrentDeath().getDimension());
+                ResourceKey<Level> dimension = dim != null ? ResourceKey.create(Registries.DIMENSION, dim) : null;
+                OpenHudIntegration.openWaypointScreen(this, dimension, getCurrentDeath().getBlockPos());
+            }).bounds(guiLeft + padding, guiTop + ySize - padding - 20 - 2 - 20, buttonWidth, 20).build());
+        }
+
         previous = Button.builder(Component.translatable("button.corpse.previous"), button -> {
             index--;
             if (index < 0) {
@@ -80,15 +96,12 @@ public class DeathHistoryScreen extends ScreenBase {
             checkButtons();
         }).build();
 
-        int padding = 7;
-        int buttonLayoutWidth = xSize - padding * 2;
-
         LinearLayout buttonLayout = LinearLayout.horizontal().spacing(2);
-        previous.setWidth(buttonLayoutWidth / 3 - 1);
+        previous.setWidth(buttonWidth);
         buttonLayout.addChild(previous);
-        showItems.setWidth(buttonLayoutWidth / 3 - 1);
+        showItems.setWidth(buttonWidth);
         buttonLayout.addChild(showItems);
-        next.setWidth(buttonLayoutWidth / 3 - 1);
+        next.setWidth(buttonWidth);
         buttonLayout.addChild(next);
         buttonLayout.visitWidgets(this::addRenderableWidget);
         buttonLayout.arrangeElements();
@@ -100,18 +113,22 @@ public class DeathHistoryScreen extends ScreenBase {
     @Override
     public boolean mouseClicked(double x, double y, int clickType) {
         if (x >= guiLeft + 7 && x <= guiLeft + hSplit && y >= guiTop + 70 && y <= guiTop + 100 + font.lineHeight) {
-            BlockPos pos = getCurrentDeath().getBlockPos();
-            Component teleport = ComponentUtils.wrapInSquareBrackets(Component.translatable("chat.coordinates", pos.getX(), pos.getY(), pos.getZ()))
-                    .withStyle((style) -> style
-                            .applyFormat(ChatFormatting.GREEN)
-                            .withClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/execute in " + getCurrentDeath().getDimension() + " run tp @s " + pos.getX() + " " + pos.getY() + " " + pos.getZ()))
-                            .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Component.translatable("chat.coordinates.tooltip")))
-                    );
-            minecraft.player.sendSystemMessage(Component.translatable("chat.corpse.teleport_death_location", teleport));
-            minecraft.getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1F));
-            minecraft.setScreen(null);
+            onTeleportClick();
         }
         return super.mouseClicked(x, y, clickType);
+    }
+
+    private void onTeleportClick() {
+        BlockPos pos = getCurrentDeath().getBlockPos();
+        Component teleport = ComponentUtils.wrapInSquareBrackets(Component.translatable("chat.coordinates", pos.getX(), pos.getY(), pos.getZ()))
+                .withStyle((style) -> style
+                        .applyFormat(ChatFormatting.GREEN)
+                        .withClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/execute in " + getCurrentDeath().getDimension() + " run tp @s " + pos.getX() + " " + pos.getY() + " " + pos.getZ()))
+                        .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Component.translatable("chat.coordinates.tooltip")))
+                );
+        minecraft.player.sendSystemMessage(Component.translatable("chat.corpse.teleport_death_location", teleport));
+        minecraft.getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1F));
+        minecraft.setScreen(null);
     }
 
     @Override
@@ -163,9 +180,9 @@ public class DeathHistoryScreen extends ScreenBase {
                 guiTop + 70);
 
 
-        drawRight(guiGraphics, Component.literal(Math.round(death.getPosX()) + " X").withStyle(ChatFormatting.GRAY), guiTop + 70);
-        drawRight(guiGraphics, Component.literal(Math.round(death.getPosY()) + " Y").withStyle(ChatFormatting.GRAY), guiTop + 85);
-        drawRight(guiGraphics, Component.literal(Math.round(death.getPosZ()) + " Z").withStyle(ChatFormatting.GRAY), guiTop + 100);
+        drawRight(guiGraphics, Component.literal(death.getBlockPos().getX() + " X").withStyle(ChatFormatting.GRAY), guiTop + 70);
+        drawRight(guiGraphics, Component.literal(death.getBlockPos().getY() + " Y").withStyle(ChatFormatting.GRAY), guiTop + 85);
+        drawRight(guiGraphics, Component.literal(death.getBlockPos().getZ() + " Z").withStyle(ChatFormatting.GRAY), guiTop + 100);
 
         // Player
         RenderSystem.setShaderColor(1F, 1F, 1F, 1F);

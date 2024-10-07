@@ -1,7 +1,7 @@
 {
   "entity.corpse.corpse": "Corpse",
   "entity.corpse.corpse_of": "Corpse of %s",
-  "button.corpse.previous": "Back",
+  "button.corpse.previous": "Previous",
   "button.corpse.next": "Next",
   "gui.corpse.page": "%s of %s",
   "gui.corpse.death_history.title": "Player Death History",
@@ -13,10 +13,12 @@
   "key.corpse.death_history": "Open Player Death History",
   "message.corpse.no_death_history": "No player death history",
   "chat.corpse.teleport_death_location": "Teleport to death location %s",
-  "tooltip.corpse.teleport": "Teleport",
+  "tooltip.corpse.teleport": "Click to teleport",
   "tooltip.corpse.death_date": "Died on %s",
   "tooltip.corpse.item_count": "Contains %s stack(s)",
   "button.corpse.transfer_items": "Transfer Items",
   "button.corpse.additional_items": "Additional Items",
+  "button.corpse.add_waypoint": "Add Waypoint",
+  "waypoint.death.name": "Death Location",
   "config.jade.plugin_corpse.corpse": "Corpse"
 }
