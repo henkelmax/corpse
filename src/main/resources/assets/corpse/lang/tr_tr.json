@@ -1,8 +1,6 @@
 {
   "entity.corpse.corpse": "Ceset",
   "entity.corpse.corpse_of": "%s cesedi",
-  "button.corpse.previous": "Geri",
-  "button.corpse.next": "Sonraki",
   "gui.corpse.page": "%s / %s",
   "gui.corpse.death_history.title": "Oyuncu Ölüm Geçmişi",
   "gui.corpse.death_history.name": "Ad",
