@@ -1,0 +1,22 @@
+{
+  "entity.corpse.corpse": "Ceset",
+  "entity.corpse.corpse_of": "%s cesedi",
+  "button.corpse.previous": "Geri",
+  "button.corpse.next": "Sonraki",
+  "gui.corpse.page": "%s / %s",
+  "gui.corpse.death_history.title": "Oyuncu Ölüm Geçmişi",
+  "gui.corpse.death_history.name": "Ad",
+  "gui.corpse.death_history.date_format": "yyyy/MM/dd HH:mm:ss",
+  "gui.corpse.death_history.dimension": "Boyut",
+  "gui.corpse.death_history.location": "Konum",
+  "button.corpse.show_items": "Eşyalar",
+  "key.corpse.death_history": "Oyuncu Ölüm Geçmişini Aç",
+  "message.corpse.no_death_history": "Oyuncu ölüm geçmişi yok",
+  "chat.corpse.teleport_death_location": "Ölüm konumuna ışınlanmak için tıkla %s",
+  "tooltip.corpse.teleport": "Işınlan",
+  "tooltip.corpse.death_date": "%s tarihinde öldü",
+  "tooltip.corpse.item_count": "%s istif(ler) içeriyor",
+  "button.corpse.transfer_items": "Eşyaları Aktar",
+  "button.corpse.additional_items": "İlave Eşyalar",
+  "config.jade.plugin_corpse.corpse": "Ceset"
+}
