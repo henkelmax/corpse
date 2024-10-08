@@ -1,3 +1,1 @@
-- Added OpenHUD integration
-- Fixed player not rendering in death history screen
-- Added "Add Waypoint" button in death history screen if OpenHUD is installed
+- Added Turkish translation
