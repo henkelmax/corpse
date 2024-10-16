@@ -13,10 +13,12 @@
   "key.corpse.death_history": "Otwórz historię śmierci gracza",
   "message.corpse.no_death_history": "Brak historii śmierci gracza",
   "chat.corpse.teleport_death_location": "Teleportuj do miejsca śmierci %s",
-  "tooltip.corpse.teleport": "Teleportuj",
+  "tooltip.corpse.teleport": "Kliknij, aby się teleportować",
   "tooltip.corpse.death_date": "Gracz zmarł %s",
   "tooltip.corpse.item_count": "Zawiera stacków: %s",
   "button.corpse.transfer_items": "Przenieś",
   "button.corpse.additional_items": "Dodatkowe",
+  "button.corpse.add_waypoint": "Dodaj waypoint",
+  "waypoint.death.name": "Miejsce śmierci",
   "config.jade.plugin_corpse.corpse": "Zwłoki"
 }
