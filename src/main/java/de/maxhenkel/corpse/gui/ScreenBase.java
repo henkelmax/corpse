@@ -1,9 +1,8 @@
 package de.maxhenkel.corpse.gui;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
@@ -33,10 +32,7 @@ public class ScreenBase extends Screen {
     @Override
     public void renderBackground(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
         super.renderBackground(guiGraphics, mouseX, mouseY, partialTick);
-
-        RenderSystem.setShader(GameRenderer::getPositionTexShader);
-        RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
-        guiGraphics.blit(texture, guiLeft, guiTop, 0, 0, xSize, ySize);
+        guiGraphics.blit(RenderType::guiTextured, texture, guiLeft, guiTop, 0, 0, xSize, ySize, 256, 256);
     }
 
     @Override

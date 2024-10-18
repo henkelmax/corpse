@@ -24,7 +24,6 @@ import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
@@ -63,7 +62,7 @@ public class CorpseEntity extends CorpseBoundingBoxBase {
         corpse.setCorpseUUID(death.getPlayerUUID());
         corpse.setCorpseName(death.getPlayerName());
         corpse.setEquipment(death.getEquipment());
-        corpse.setPos(death.getPosX(), Math.max(death.getPosY(), player.level().getMinBuildHeight()), death.getPosZ());
+        corpse.setPos(death.getPosX(), Math.max(death.getPosY(), player.level().getMinY()), death.getPosZ());
         corpse.setYRot(player.getYRot());
         corpse.setCorpseModel(death.getModel());
         return corpse;
@@ -81,13 +80,13 @@ public class CorpseEntity extends CorpseBoundingBoxBase {
                 } else {
                     yMotion = motion.y + (motion.y < 0.03D ? 5E-4D : 0D);
                 }
-            } else if (Main.SERVER_CONFIG.fallIntoVoid.get() || getY() > level().getMinBuildHeight()) {
+            } else if (Main.SERVER_CONFIG.fallIntoVoid.get() || getY() > level().getMinY()) {
                 yMotion = Math.max(-2D, motion.y - 0.0625D);
             }
             setDeltaMovement(getDeltaMovement().x * 0.75D, yMotion, getDeltaMovement().z * 0.75D);
 
-            if (!Main.SERVER_CONFIG.fallIntoVoid.get() && getY() < level().getMinBuildHeight()) {
-                teleportTo(getX(), level().getMinBuildHeight(), getZ());
+            if (!Main.SERVER_CONFIG.fallIntoVoid.get() && getY() < level().getMinY()) {
+                teleportTo(getX(), level().getMinY(), getZ());
             }
 
             move(MoverType.SELF, getDeltaMovement());
@@ -127,11 +126,12 @@ public class CorpseEntity extends CorpseBoundingBoxBase {
     }
 
     @Override
-    public boolean hurt(DamageSource source, float amount) {
+    public boolean hurtServer(ServerLevel level, DamageSource source, float amount) {
         if (Main.SERVER_CONFIG.lavaDamage.get() && source.is(DamageTypeTags.IS_FIRE) && amount >= 2F) {
             discard();
+            return true;
         }
-        return super.hurt(source, amount);
+        return false;
     }
 
     @Override
@@ -165,13 +165,6 @@ public class CorpseEntity extends CorpseBoundingBoxBase {
     @Override
     public boolean displayFireAnimation() {
         return false;
-    }
-
-
-    @OnlyIn(Dist.CLIENT)
-    @Override
-    public AABB getBoundingBoxForCulling() {
-        return getBoundingBox();
     }
 
     @Override

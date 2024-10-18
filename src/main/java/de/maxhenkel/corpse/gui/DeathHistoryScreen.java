@@ -134,7 +134,7 @@ public class DeathHistoryScreen extends ScreenBase {
                         .withClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/execute in " + getCurrentDeath().getDimension() + " run tp @s " + pos.getX() + " " + pos.getY() + " " + pos.getZ()))
                         .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Component.translatable("chat.coordinates.tooltip")))
                 );
-        minecraft.player.sendSystemMessage(Component.translatable("chat.corpse.teleport_death_location", teleport));
+        minecraft.gui.getChat().addMessage(Component.translatable("chat.corpse.teleport_death_location", teleport));
         minecraft.getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1F));
         minecraft.setScreen(null);
     }

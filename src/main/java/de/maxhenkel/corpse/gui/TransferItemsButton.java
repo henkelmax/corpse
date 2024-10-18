@@ -1,10 +1,9 @@
 package de.maxhenkel.corpse.gui;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractButton;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
-import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
 
 import java.util.function.Consumer;
@@ -23,12 +22,10 @@ public class TransferItemsButton extends AbstractButton {
 
     @Override
     public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
-        RenderSystem.setShader(GameRenderer::getPositionTexShader);
-        RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
         if (isHovered) {
-            guiGraphics.blit(CorpseAdditionalScreen.CORPSE_GUI_TEXTURE, getX(), getY(), 176, 10, WIDTH, HEIGHT);
+            guiGraphics.blit(RenderType::guiTextured, CorpseAdditionalScreen.CORPSE_GUI_TEXTURE, getX(), getY(), 176, 10, WIDTH, HEIGHT, 256, 256);
         } else {
-            guiGraphics.blit(CorpseAdditionalScreen.CORPSE_GUI_TEXTURE, getX(), getY(), 176, 0, WIDTH, HEIGHT);
+            guiGraphics.blit(RenderType::guiTextured, CorpseAdditionalScreen.CORPSE_GUI_TEXTURE, getX(), getY(), 176, 0, WIDTH, HEIGHT, 256, 256);
         }
     }
 

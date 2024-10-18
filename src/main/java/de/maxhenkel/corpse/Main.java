@@ -93,8 +93,6 @@ public class Main {
     public void clientSetup(FMLClientSetupEvent event) {
         NeoForge.EVENT_BUS.register(new KeyEvents());
 
-        // TODO Fix
-        // RenderingRegistry.registerEntityRenderingHandler(CORPSE_ENTITY_TYPE, CorpseRenderer::new);
         EntityRenderers.register(CORPSE_ENTITY_TYPE.get(), CorpseRenderer::new);
     }
 
