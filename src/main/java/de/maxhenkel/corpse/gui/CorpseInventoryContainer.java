@@ -1,6 +1,5 @@
 package de.maxhenkel.corpse.gui;
 
-import com.mojang.datafixers.util.Pair;
 import de.maxhenkel.corelib.inventory.ItemListInventory;
 import de.maxhenkel.corelib.inventory.LockedSlot;
 import de.maxhenkel.corpse.Main;
@@ -36,8 +35,8 @@ public class CorpseInventoryContainer extends CorpseContainerBase implements ITr
             addSlot(new LockedSlot(armorInventory, slotIndex, 8 + i * 18, 18, true, !editable) {
                 @OnlyIn(Dist.CLIENT)
                 @Override
-                public Pair<ResourceLocation, ResourceLocation> getNoItemIcon() {
-                    return Pair.of(InventoryMenu.BLOCK_ATLAS, ARMOR_SLOT_TEXTURES[slotIndex]);
+                public ResourceLocation getNoItemIcon() {
+                    return ARMOR_SLOT_TEXTURES[slotIndex];
                 }
             });
         }
@@ -45,8 +44,8 @@ public class CorpseInventoryContainer extends CorpseContainerBase implements ITr
         addSlot(new LockedSlot(offHandInventory, 0, 98, 18, true, !editable) {
             @OnlyIn(Dist.CLIENT)
             @Override
-            public Pair<ResourceLocation, ResourceLocation> getNoItemIcon() {
-                return Pair.of(InventoryMenu.BLOCK_ATLAS, InventoryMenu.EMPTY_ARMOR_SLOT_SHIELD);
+            public ResourceLocation getNoItemIcon() {
+                return InventoryMenu.EMPTY_ARMOR_SLOT_SHIELD;
             }
         });
 
