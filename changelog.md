@@ -1,1 +1,1 @@
-- Reverted translation
+- Updated Traditional Chinese translation
