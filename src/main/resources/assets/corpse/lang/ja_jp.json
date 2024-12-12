@@ -1,0 +1,22 @@
+{
+  "entity.corpse.corpse": "死体",
+  "entity.corpse.corpse_of": "%sの死体",
+  "button.corpse.previous": "戻る",
+  "button.corpse.next": "次へ",
+  "gui.corpse.page": "%s / %s",
+  "gui.corpse.death_history.title": "プレイヤーの死亡履歴",
+  "gui.corpse.death_history.name": "名前",
+  "gui.corpse.death_history.date_format": "yyyy/MM/dd HH:mm:ss",
+  "gui.corpse.death_history.dimension": "ディメンション",
+  "gui.corpse.death_history.location": "場所",
+  "button.corpse.show_items": "アイテム",
+  "key.corpse.death_history": "プレイヤーの死亡履歴を開く",
+  "message.corpse.no_death_history": "プレイヤーの死亡履歴はありません",
+  "chat.corpse.teleport_death_location": "死亡場所%sにテレポートする",
+  "tooltip.corpse.teleport": "テレポート",
+  "tooltip.corpse.death_date": "%sに死亡",
+  "tooltip.corpse.item_count": "%sスタック保持",
+  "button.corpse.transfer_items": "アイテムを移動する",
+  "button.corpse.additional_items": "追加のアイテム",
+  "config.jade.plugin_corpse.corpse": "Corpse"
+}
