@@ -30,9 +30,3 @@ processResources {
 shadowJar {
     relocate 'de.maxhenkel.corelib', 'de.maxhenkel.corpse.corelib'
 }
-
-runs {
-    client {
-        arguments = ['--username', 'henkelmax']
-    }
-}
