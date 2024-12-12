@@ -1,6 +1,8 @@
 {
   "entity.corpse.corpse": "Cadáver",
   "entity.corpse.corpse_of": "Cadáver de %s",
+  "button.corpse.previous": "Atrás",
+  "button.corpse.next": "Siguiente",
   "gui.corpse.page": "%s de %s",
   "gui.corpse.death_history.title": "Historial de muertes del jugador",
   "gui.corpse.death_history.name": "Nombre",

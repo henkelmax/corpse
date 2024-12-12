@@ -1,6 +1,8 @@
 {
   "entity.corpse.corpse": "死体",
   "entity.corpse.corpse_of": "%sの死体",
+  "button.corpse.previous": "戻る",
+  "button.corpse.next": "次へ",
   "gui.corpse.page": "%s / %s",
   "gui.corpse.death_history.title": "プレイヤーの死亡履歴",
   "gui.corpse.death_history.name": "名前",
