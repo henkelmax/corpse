@@ -1,1 +1,1 @@
-- Fixed missing translations
+- Fixed malformed JSON in Russian language

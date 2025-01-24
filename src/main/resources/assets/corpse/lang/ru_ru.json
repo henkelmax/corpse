@@ -17,6 +17,6 @@
   "tooltip.corpse.death_date": "Умер в %s",
   "tooltip.corpse.item_count": "Содержит %s стэк(ов)",
   "button.corpse.transfer_items": "Переместить предметы",
-  "button.corpse.additional_items": "Дополнительные предметы"
+  "button.corpse.additional_items": "Дополнительные предметы",
   "config.jade.plugin_corpse.corpse": "Corpse"
 }
