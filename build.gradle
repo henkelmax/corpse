@@ -16,6 +16,23 @@ dependencies {
 
     implementation fg.deobf("maven.modrinth:jei:${jei_version}")
     implementation fg.deobf("maven.modrinth:jade:${jade_version}")
+
+    // Curios API dependencies (https://docs.illusivesoulworks.com/curios/getting-started)
+
+    def curios_version = "5.9.1+1.20.1"
+
+    // Compile against only the API artifact
+    compileOnly(fg.deobf("top.theillusivec4.curios:curios-forge:${curios_version}:api"))
+    // Use the full Curios API jar at runtime
+    runtimeOnly(fg.deobf("top.theillusivec4.curios:curios-forge:${curios_version}"))
+}
+
+repositories {
+    // For Curios API (https://docs.illusivesoulworks.com/curios/getting-started)
+    maven {
+        name = "Illusive Soulworks maven"
+        url = "https://maven.theillusivec4.top/"
+    }
 }
 
 processResources {
