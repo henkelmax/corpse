@@ -51,11 +51,13 @@ public class MessageOpenHistory implements Message<MessageOpenHistory> {
     @Override
     public MessageOpenHistory fromBytes(RegistryFriendlyByteBuf buf) {
         CompoundTag compound = buf.readNbt();
-        ListTag list = compound.getList("Deaths", 10);
+        ListTag list = compound.getListOrEmpty("Deaths");
 
         deaths = new ArrayList<>();
         for (int i = 0; i < list.size(); i++) {
-            deaths.add(Death.fromNBT(buf.registryAccess(), list.getCompound(i)));
+            list.getCompound(i).ifPresent(e -> {
+                deaths.add(Death.fromNBT(buf.registryAccess(), e));
+            });
         }
 
         return this;

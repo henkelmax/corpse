@@ -1,1 +1,1 @@
-- Fixed malformed JSON in Russian language
+- Updated to 1.21.5

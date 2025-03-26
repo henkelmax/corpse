@@ -8,11 +8,14 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Container;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
+
 import java.util.List;
 
 public class CorpseInventoryContainer extends CorpseContainerBase implements ITransferrable {
@@ -76,9 +79,14 @@ public class CorpseInventoryContainer extends CorpseContainerBase implements ITr
         ServerPlayer player = (ServerPlayer) playerInventory.player;
 
         NonNullList<ItemStack> additionalItems = NonNullList.create();
-        fill(additionalItems, mainInventory, playerInventory.items);
-        fill(additionalItems, armorInventory, playerInventory.armor);
-        fill(additionalItems, offHandInventory, playerInventory.offhand);
+        fillInventory(additionalItems, mainInventory, playerInventory.getNonEquipmentItems());
+
+        fillInventoryEquipment(player, additionalItems, armorInventory.getItem(EquipmentSlot.FEET.getIndex()), EquipmentSlot.FEET);
+        fillInventoryEquipment(player, additionalItems, armorInventory.getItem(EquipmentSlot.LEGS.getIndex()), EquipmentSlot.LEGS);
+        fillInventoryEquipment(player, additionalItems, armorInventory.getItem(EquipmentSlot.CHEST.getIndex()), EquipmentSlot.CHEST);
+        fillInventoryEquipment(player, additionalItems, armorInventory.getItem(EquipmentSlot.HEAD.getIndex()), EquipmentSlot.HEAD);
+
+        fillInventoryEquipment(player, additionalItems, offHandInventory.getItem(0), EquipmentSlot.OFFHAND);
 
         additionalItems.addAll(corpse.getDeath().getAdditionalItems());
         NonNullList<ItemStack> restItems = NonNullList.create();
@@ -95,7 +103,18 @@ public class CorpseInventoryContainer extends CorpseContainerBase implements ITr
         }
     }
 
-    private void fill(List<ItemStack> additionalItems, Container inventory, NonNullList<ItemStack> playerInv) {
+    public void fillInventoryEquipment(Player player, List<ItemStack> additionalItems, ItemStack item, EquipmentSlot slot) {
+        if (item.isEmpty()) {
+            return;
+        }
+        ItemStack oldPlayerItem = player.getItemBySlot(slot);
+        if (!oldPlayerItem.isEmpty()) {
+            additionalItems.add(oldPlayerItem);
+        }
+        player.setItemSlot(slot, item);
+    }
+
+    private void fillInventory(List<ItemStack> additionalItems, Container inventory, NonNullList<ItemStack> playerInv) {
         for (int i = 0; i < inventory.getContainerSize(); i++) {
             ItemStack stack = inventory.getItem(i);
             if (stack.isEmpty()) {

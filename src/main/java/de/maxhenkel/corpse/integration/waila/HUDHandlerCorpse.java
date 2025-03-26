@@ -29,13 +29,13 @@ public class HUDHandlerCorpse implements IEntityComponentProvider, IServerDataPr
             iTooltip.add(corpse.getDisplayName().copy().withStyle(ChatFormatting.WHITE));
 
             CompoundTag data = entityAccessor.getServerData();
-            if (data.contains("Death")) {
-                Death death = Death.fromNBT(corpse.registryAccess(), data.getCompound("Death"));
+            data.getCompound("Death").ifPresent(deathTag -> {
+                Death death = Death.fromNBT(corpse.registryAccess(), deathTag);
                 long timestamp = death.getTimestamp();
                 if (timestamp > 0L) {
                     iTooltip.add(Component.translatable("tooltip.corpse.death_date", DeathHistoryScreen.getDate(timestamp)));
                 }
-            }
+            });
 
             if (data.contains("ItemCount")) {
                 iTooltip.add(Component.translatable("tooltip.corpse.item_count", data.getInt("ItemCount")));
