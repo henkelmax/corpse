@@ -30,6 +30,7 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.network.PacketDistributor;
 
+import java.util.EnumMap;
 import java.util.UUID;
 
 public class CorpseEntity extends CorpseBoundingBoxBase {
@@ -38,7 +39,7 @@ public class CorpseEntity extends CorpseBoundingBoxBase {
     private static final EntityDataAccessor<String> NAME = SynchedEntityData.defineId(CorpseEntity.class, EntityDataSerializers.STRING);
     private static final EntityDataAccessor<Boolean> SKELETON = SynchedEntityData.defineId(CorpseEntity.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Byte> MODEL = SynchedEntityData.defineId(CorpseEntity.class, EntityDataSerializers.BYTE);
-    private static final EntityDataAccessor<NonNullList<ItemStack>> EQUIPMENT = SynchedEntityData.defineId(CorpseEntity.class, Main.ITEM_LIST_SERIALIZER.get());
+    private static final EntityDataAccessor<EnumMap<EquipmentSlot, ItemStack>> EQUIPMENT = SynchedEntityData.defineId(CorpseEntity.class, Main.EQUIPMENT_SERIALIZER.get());
 
     private int age;
     private int emptyAge;
@@ -213,11 +214,11 @@ public class CorpseEntity extends CorpseBoundingBoxBase {
         entityData.set(MODEL, model);
     }
 
-    public void setEquipment(NonNullList<ItemStack> equipment) {
+    public void setEquipment(EnumMap<EquipmentSlot, ItemStack> equipment) {
         entityData.set(EQUIPMENT, equipment);
     }
 
-    public NonNullList<ItemStack> getEquipment() {
+    public EnumMap<EquipmentSlot, ItemStack> getEquipment() {
         return entityData.get(EQUIPMENT);
     }
 
@@ -227,7 +228,7 @@ public class CorpseEntity extends CorpseBoundingBoxBase {
         builder.define(NAME, "");
         builder.define(SKELETON, false);
         builder.define(MODEL, (byte) 0);
-        builder.define(EQUIPMENT, NonNullList.withSize(EquipmentSlot.values().length, ItemStack.EMPTY));
+        builder.define(EQUIPMENT, new EnumMap<>(EquipmentSlot.class));
     }
 
     @Override
@@ -266,9 +267,10 @@ public class CorpseEntity extends CorpseBoundingBoxBase {
             NonNullList<ItemStack> additionalItems = NonNullList.withSize(size, ItemStack.EMPTY);
             ItemUtils.readInventory(registryAccess(), compound, "Inventory", additionalItems);
             builder.additionalItems(additionalItems);
-            NonNullList<ItemStack> equipment = NonNullList.withSize(EquipmentSlot.values().length, ItemStack.EMPTY);
-            ItemUtils.readItemList(registryAccess(), compound, "Equipment", equipment);
-            builder.equipment(equipment);
+            // We just don't apply legacy equipment
+            //NonNullList<ItemStack> equipment = NonNullList.withSize(EquipmentSlot.values().length, ItemStack.EMPTY);
+            //ItemUtils.readItemList(registryAccess(), compound, "Equipment", equipment);
+            //builder.equipment(equipment);
             builder.playerName(compound.getStringOr("Name", ""));
             death = builder.build();
         }
