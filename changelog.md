@@ -1,1 +1,1 @@
-- Updated to 1.21.5
+- Fixed off-hand and armor items being duplicated when pressing the transfer items button

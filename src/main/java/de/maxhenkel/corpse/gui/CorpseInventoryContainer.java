@@ -81,12 +81,12 @@ public class CorpseInventoryContainer extends CorpseContainerBase implements ITr
         NonNullList<ItemStack> additionalItems = NonNullList.create();
         fillInventory(additionalItems, mainInventory, playerInventory.getNonEquipmentItems());
 
-        fillInventoryEquipment(player, additionalItems, armorInventory.getItem(EquipmentSlot.FEET.getIndex()), EquipmentSlot.FEET);
-        fillInventoryEquipment(player, additionalItems, armorInventory.getItem(EquipmentSlot.LEGS.getIndex()), EquipmentSlot.LEGS);
-        fillInventoryEquipment(player, additionalItems, armorInventory.getItem(EquipmentSlot.CHEST.getIndex()), EquipmentSlot.CHEST);
-        fillInventoryEquipment(player, additionalItems, armorInventory.getItem(EquipmentSlot.HEAD.getIndex()), EquipmentSlot.HEAD);
+        fillInventoryEquipment(player, additionalItems, armorInventory, EquipmentSlot.FEET);
+        fillInventoryEquipment(player, additionalItems, armorInventory, EquipmentSlot.LEGS);
+        fillInventoryEquipment(player, additionalItems, armorInventory, EquipmentSlot.CHEST);
+        fillInventoryEquipment(player, additionalItems, armorInventory, EquipmentSlot.HEAD);
 
-        fillInventoryEquipment(player, additionalItems, offHandInventory.getItem(0), EquipmentSlot.OFFHAND);
+        fillInventoryEquipment(player, additionalItems, offHandInventory, EquipmentSlot.OFFHAND, 0);
 
         additionalItems.addAll(corpse.getDeath().getAdditionalItems());
         NonNullList<ItemStack> restItems = NonNullList.create();
@@ -103,7 +103,12 @@ public class CorpseInventoryContainer extends CorpseContainerBase implements ITr
         }
     }
 
-    public void fillInventoryEquipment(Player player, List<ItemStack> additionalItems, ItemStack item, EquipmentSlot slot) {
+    public void fillInventoryEquipment(Player player, List<ItemStack> additionalItems, ItemListInventory inventory, EquipmentSlot slot) {
+        fillInventoryEquipment(player, additionalItems, inventory, slot, -1);
+    }
+
+    public void fillInventoryEquipment(Player player, List<ItemStack> additionalItems, ItemListInventory inventory, EquipmentSlot slot, int overrideIndex) {
+        ItemStack item = inventory.getItem(overrideIndex < 0 ? slot.getIndex() : overrideIndex);
         if (item.isEmpty()) {
             return;
         }
@@ -111,6 +116,7 @@ public class CorpseInventoryContainer extends CorpseContainerBase implements ITr
         if (!oldPlayerItem.isEmpty()) {
             additionalItems.add(oldPlayerItem);
         }
+        inventory.setItem(overrideIndex < 0 ? slot.getIndex() : overrideIndex, ItemStack.EMPTY);
         player.setItemSlot(slot, item);
     }
 
