@@ -1,1 +1,1 @@
-- Fixed off-hand and armor items being duplicated when pressing the transfer items button
+- Added Hungarian translation
