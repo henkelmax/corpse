@@ -1,12 +1,11 @@
 package de.maxhenkel.corpse.entities;
 
+import de.maxhenkel.corelib.codec.ValueInputOutputUtils;
 import de.maxhenkel.corelib.death.Death;
-import de.maxhenkel.corelib.item.ItemUtils;
 import de.maxhenkel.corpse.Main;
 import de.maxhenkel.corpse.gui.Guis;
 import de.maxhenkel.corpse.net.MessageSpawnDeathParticles;
 import net.minecraft.Util;
-import net.minecraft.core.NonNullList;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -25,6 +24,8 @@ import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
@@ -140,7 +141,7 @@ public class CorpseEntity extends CorpseBoundingBoxBase {
         if (!level().isClientSide && player instanceof ServerPlayer) {
             ServerPlayer playerMP = (ServerPlayer) player;
             if (Main.SERVER_CONFIG.onlyOwnerAccess.get()) {
-                boolean isOp = playerMP.hasPermissions(playerMP.server.getOperatorUserPermissionLevel());
+                boolean isOp = playerMP.hasPermissions(playerMP.getServer().getOperatorUserPermissionLevel());
                 if (isOp || playerMP.getUUID().equals(getPlayerUuid())) {
                     Guis.openCorpseGUI((ServerPlayer) player, this);
                 } else if (Main.SERVER_CONFIG.skeletonAccess.get() && isSkeleton()) {
@@ -254,41 +255,25 @@ public class CorpseEntity extends CorpseBoundingBoxBase {
     }
 
     @Override
-    protected void readAdditionalSaveData(CompoundTag compound) {
-        if (compound.contains("Death")) {
-            death = Death.fromNBT(registryAccess(), compound.getCompoundOrEmpty("Death"));
-        } else { // Compatibility
-            UUID playerUUID = new UUID(compound.getLongOr("IDMost", 0L), compound.getLongOr("IDLeast", 0L));
-            UUID deathID = new UUID(compound.getLongOr("DeathIDMost", 0L), compound.getLongOr("DeathIDLeast", 0L));
-
-            Death.Builder builder = new Death.Builder(playerUUID, deathID);
-
-            int size = compound.getIntOr("InventorySize", 0);
-            NonNullList<ItemStack> additionalItems = NonNullList.withSize(size, ItemStack.EMPTY);
-            ItemUtils.readInventory(registryAccess(), compound, "Inventory", additionalItems);
-            builder.additionalItems(additionalItems);
-            // We just don't apply legacy equipment
-            //NonNullList<ItemStack> equipment = NonNullList.withSize(EquipmentSlot.values().length, ItemStack.EMPTY);
-            //ItemUtils.readItemList(registryAccess(), compound, "Equipment", equipment);
-            //builder.equipment(equipment);
-            builder.playerName(compound.getStringOr("Name", ""));
-            death = builder.build();
-        }
+    protected void readAdditionalSaveData(ValueInput valueInput) {
+        death = ValueInputOutputUtils.getTag(valueInput, "Death").map(Death::fromNBT).orElseGet(() -> new Death.Builder(Util.NIL_UUID, UUID.randomUUID()).build());
         setEquipment(death.getEquipment());
         setPlayerUuid(death.getPlayerUUID());
         setCorpseName(death.getPlayerName());
         setCorpseModel(death.getModel());
-        age = compound.getIntOr("Age", 0);
-        emptyAge = compound.getIntOr("EmptyAge", -1);
+        age = valueInput.getIntOr("Age", 0);
+        emptyAge = valueInput.getIntOr("EmptyAge", -1);
     }
 
     @Override
-    protected void addAdditionalSaveData(CompoundTag compound) {
-        compound.put("Death", death.toNBT(registryAccess()));
-        compound.putInt("Age", age);
+    protected void addAdditionalSaveData(ValueOutput valueOutput) {
+        CompoundTag tag = new CompoundTag();
+        tag.put("Death", death.toNBT());
+        valueOutput.store(tag);
+
+        valueOutput.putInt("Age", age);
         if (emptyAge >= 0) {
-            compound.putInt("EmptyAge", emptyAge);
+            valueOutput.putInt("EmptyAge", emptyAge);
         }
     }
-
 }

@@ -18,7 +18,7 @@ public class Guis {
             packetBuffer.writeBoolean(history);
             packetBuffer.writeBoolean(corpse.isAdditionalInventoryEmpty());
             if (history) {
-                packetBuffer.writeNbt(corpse.getDeath().toNBT(corpse.registryAccess(), false));
+                packetBuffer.writeNbt(corpse.getDeath().toNBT(false));
             } else {
                 packetBuffer.writeUUID(corpse.getUUID());
             }
@@ -33,7 +33,7 @@ public class Guis {
                 packetBuffer.writeBoolean(history);
                 packetBuffer.writeBoolean(corpse.isAdditionalInventoryEmpty());
                 if (history) {
-                    packetBuffer.writeNbt(corpse.getDeath().toNBT(corpse.registryAccess(), false));
+                    packetBuffer.writeNbt(corpse.getDeath().toNBT(false));
                 } else {
                     packetBuffer.writeUUID(corpse.getUUID());
                 }
@@ -59,7 +59,7 @@ public class Guis {
      * @param uuid         the death id
      */
     public static void openCorpseGUI(ServerPlayer playerToShow, UUID player, UUID uuid) {
-        Death death = DeathManager.getDeath(playerToShow.serverLevel(), player, uuid);
+        Death death = DeathManager.getDeath(playerToShow.level(), player, uuid);
         if (death == null) {
             return;
         }

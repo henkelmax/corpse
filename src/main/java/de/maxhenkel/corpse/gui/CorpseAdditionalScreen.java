@@ -95,7 +95,7 @@ public class CorpseAdditionalScreen extends ScreenBase<CorpseAdditionalContainer
         super.renderLabels(guiGraphics, mouseX, mouseY);
 
         if (mouseX >= leftPos + imageWidth - TransferItemsButton.WIDTH - 9 && mouseX < leftPos + imageWidth - 9 && mouseY >= topPos + 5 && mouseY < topPos + 5 + TransferItemsButton.HEIGHT) {
-            guiGraphics.renderTooltip(font, Collections.singletonList(Component.translatable("button.corpse.transfer_items").getVisualOrderText()), mouseX - leftPos, mouseY - topPos);
+            guiGraphics.setTooltipForNextFrame(font, Collections.singletonList(Component.translatable("button.corpse.transfer_items").getVisualOrderText()), mouseX - leftPos, mouseY - topPos);
         }
     }
 }

@@ -56,7 +56,7 @@ public class MessageRequestDeathHistory implements Message<MessageRequestDeathHi
     }
 
     public static boolean sendDeathHistory(ServerPlayer playerToSend, UUID playerUUID) {
-        List<Death> deaths = DeathManager.getDeaths(playerToSend.serverLevel(), playerUUID);
+        List<Death> deaths = DeathManager.getDeaths(playerToSend.level(), playerUUID);
         if (deaths == null) {
             return false;
         }
