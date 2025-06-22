@@ -1,1 +1,2 @@
 - Fixed Jade integration
+- Fixed corpse items not being saved
