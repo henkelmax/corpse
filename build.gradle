@@ -14,7 +14,7 @@ dependencies {
     runtimeOnly "de.maxhenkel.corelib:corelib:${minecraft_version}-${corelib_version}"
     compileOnly "de.maxhenkel.corelib:corelib:${minecraft_version}-${corelib_version}:javadoc"
 
-    compileOnly "maven.modrinth:jade:${jade_version}"
+    implementation "maven.modrinth:jade:${jade_version}"
     compileOnly "maven.modrinth:openhud:neoforge-${openhud_version}"
 }
 

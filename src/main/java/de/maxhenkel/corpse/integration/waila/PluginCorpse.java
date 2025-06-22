@@ -16,7 +16,7 @@ public class PluginCorpse implements IWailaPlugin {
 
     @Override
     public void register(IWailaCommonRegistration registration) {
-        registration.registerEntityDataProvider(HUDHandlerCorpse.INSTANCE, CorpseEntity.class);
+        registration.registerEntityDataProvider(DataProviderCorpse.INSTANCE, CorpseEntity.class);
     }
 
 }

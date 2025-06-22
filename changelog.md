@@ -1,1 +1,1 @@
-- Fixed some items getting lost when storing death items
+- Fixed Jade integration
