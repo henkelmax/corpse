@@ -30,7 +30,7 @@ public class HUDHandlerCorpse implements IEntityComponentProvider, IServerDataPr
 
             CompoundTag data = entityAccessor.getServerData();
             data.getCompound("Death").ifPresent(deathTag -> {
-                Death death = Death.fromNBT(deathTag);
+                Death death = Death.read(corpse.registryAccess(), deathTag);
                 long timestamp = death.getTimestamp();
                 if (timestamp > 0L) {
                     iTooltip.add(Component.translatable("tooltip.corpse.death_date", DeathHistoryScreen.getDate(timestamp)));
@@ -47,7 +47,7 @@ public class HUDHandlerCorpse implements IEntityComponentProvider, IServerDataPr
     public void appendServerData(CompoundTag compoundTag, EntityAccessor entityAccessor) {
         if (entityAccessor.getEntity() instanceof CorpseEntity corpse) {
             Death death = corpse.getDeath();
-            compoundTag.put("Death", death.toNBT(false));
+            compoundTag.put("Death", death.write(corpse.registryAccess(), false));
             compoundTag.putInt("ItemCount", (int) death.getAllItems().stream().filter(itemStack -> !itemStack.isEmpty()).count());
         }
     }

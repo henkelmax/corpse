@@ -19,7 +19,7 @@ public abstract class CorpseContainerFactory<T extends CorpseContainerBase> impl
         boolean isHistory = buffer.readBoolean();
         boolean additionalItemsEmpty = buffer.readBoolean();
         if (isHistory) {
-            Death death = Death.fromNBT(buffer.readNbt());
+            Death death = Death.read(buffer.registryAccess(), buffer.readNbt());
             if (!additionalItemsEmpty) {
                 // That the client knows if the additional items slot isn't empty
                 death.getAdditionalItems().add(new ItemStack(Items.STONE));

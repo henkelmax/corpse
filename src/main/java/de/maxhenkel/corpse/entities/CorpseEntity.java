@@ -1,13 +1,11 @@
 package de.maxhenkel.corpse.entities;
 
-import de.maxhenkel.corelib.codec.ValueInputOutputUtils;
 import de.maxhenkel.corelib.death.Death;
 import de.maxhenkel.corpse.Main;
 import de.maxhenkel.corpse.gui.Guis;
 import de.maxhenkel.corpse.net.MessageSpawnDeathParticles;
 import net.minecraft.Util;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -256,7 +254,7 @@ public class CorpseEntity extends CorpseBoundingBoxBase {
 
     @Override
     protected void readAdditionalSaveData(ValueInput valueInput) {
-        death = ValueInputOutputUtils.getTag(valueInput, "Death").map(Death::fromNBT).orElseGet(() -> new Death.Builder(Util.NIL_UUID, UUID.randomUUID()).build());
+        death = Death.read(valueInput, "Death");
         setEquipment(death.getEquipment());
         setPlayerUuid(death.getPlayerUUID());
         setCorpseName(death.getPlayerName());
@@ -267,9 +265,7 @@ public class CorpseEntity extends CorpseBoundingBoxBase {
 
     @Override
     protected void addAdditionalSaveData(ValueOutput valueOutput) {
-        CompoundTag tag = new CompoundTag();
-        tag.put("Death", death.toNBT());
-        valueOutput.store(tag);
+        death.write(valueOutput, "Death");
 
         valueOutput.putInt("Age", age);
         if (emptyAge >= 0) {

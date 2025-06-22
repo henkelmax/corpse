@@ -1,1 +1,1 @@
-- Updated to 1.21.6
+- Fixed some items getting lost when storing death items

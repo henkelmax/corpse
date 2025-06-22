@@ -56,7 +56,7 @@ public class MessageOpenHistory implements Message<MessageOpenHistory> {
         deaths = new ArrayList<>();
         for (int i = 0; i < list.size(); i++) {
             list.getCompound(i).ifPresent(e -> {
-                deaths.add(Death.fromNBT(e));
+                deaths.add(Death.read(buf.registryAccess(), e));
             });
         }
 
@@ -69,7 +69,7 @@ public class MessageOpenHistory implements Message<MessageOpenHistory> {
 
         ListTag list = new ListTag();
         for (Death d : deaths) {
-            CompoundTag c = d.toNBT(false);
+            CompoundTag c = d.write(buf.registryAccess(), false);
             list.add(c);
         }
 
