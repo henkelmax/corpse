@@ -2,8 +2,8 @@ package de.maxhenkel.corpse.gui;
 
 import com.google.common.collect.Lists;
 import com.mojang.authlib.GameProfile;
-import com.mojang.blaze3d.systems.RenderSystem;
 import de.maxhenkel.corelib.CachedMap;
+import de.maxhenkel.corelib.FontColorUtils;
 import de.maxhenkel.corelib.death.Death;
 import de.maxhenkel.corpse.Main;
 import de.maxhenkel.corpse.entities.DummyPlayer;
@@ -29,6 +29,7 @@ import javax.annotation.Nullable;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 public class DeathHistoryScreen extends ScreenBase {
 
@@ -131,8 +132,8 @@ public class DeathHistoryScreen extends ScreenBase {
         Component teleport = ComponentUtils.wrapInSquareBrackets(Component.translatable("chat.coordinates", pos.getX(), pos.getY(), pos.getZ()))
                 .withStyle((style) -> style
                         .applyFormat(ChatFormatting.GREEN)
-                        .withClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/execute in " + getCurrentDeath().getDimension() + " run tp @s " + pos.getX() + " " + pos.getY() + " " + pos.getZ()))
-                        .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Component.translatable("chat.coordinates.tooltip")))
+                        .withClickEvent(new ClickEvent.SuggestCommand("/execute in " + getCurrentDeath().getDimension() + " run tp @s " + pos.getX() + " " + pos.getY() + " " + pos.getZ()))
+                        .withHoverEvent(new HoverEvent.ShowText(Component.translatable("chat.coordinates.tooltip")))
                 );
         minecraft.gui.getChat().addMessage(Component.translatable("chat.corpse.teleport_death_location", teleport));
         minecraft.getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1F));
@@ -146,11 +147,11 @@ public class DeathHistoryScreen extends ScreenBase {
         Death death = getCurrentDeath();
 
         // Title
-        drawCenteredString(guiGraphics, title, guiLeft + xSize / 2, guiTop + 7, 0);
+        drawCenteredString(guiGraphics, title, guiLeft + xSize / 2, guiTop + 7, FontColorUtils.getFontColor(ChatFormatting.BLACK));
 
         // Date
         MutableComponent date = Component.literal(getDate(death.getTimestamp()).getString()).withStyle(ChatFormatting.DARK_GRAY);
-        drawCenteredString(guiGraphics, date, guiLeft + xSize / 2, guiTop + 20, 0);
+        drawCenteredString(guiGraphics, date, guiLeft + xSize / 2, guiTop + 20, FontColorUtils.getFontColor(ChatFormatting.BLACK));
 
         // Name
         drawLeft(guiGraphics,
@@ -193,16 +194,14 @@ public class DeathHistoryScreen extends ScreenBase {
         drawRight(guiGraphics, Component.literal(death.getBlockPos().getZ() + " Z").withStyle(ChatFormatting.GRAY), guiTop + 100);
 
         // Player
-        RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
-
         DummyPlayer dummyPlayer = players.get(death, () -> new DummyPlayer(minecraft.level, new GameProfile(death.getPlayerUUID(), death.getPlayerName()), death.getEquipment(), death.getModel()));
 
         InventoryScreen.renderEntityInInventoryFollowsMouse(guiGraphics, (int) (guiLeft + xSize * 0.75F - 45), guiTop + 25, (int) (guiLeft + xSize * 0.75F + 45), guiTop + 140, 50, 0.0625F, mouseX, mouseY, dummyPlayer);
 
         if (mouseX >= guiLeft + 7 && mouseX <= guiLeft + hSplit && mouseY >= guiTop + 70 && mouseY <= guiTop + 100 + font.lineHeight) {
-            guiGraphics.renderTooltip(font, TELEPORT, mouseX, mouseY);
+            guiGraphics.setTooltipForNextFrame(font, TELEPORT, mouseX, mouseY);
         } else if (mouseX >= guiLeft + 7 && mouseX <= guiLeft + hSplit && mouseY >= guiTop + 55 && mouseY <= guiTop + 55 + font.lineHeight) {
-            guiGraphics.renderComponentTooltip(font, Lists.newArrayList(DIMENSION, Component.literal(death.getDimension()).withStyle(ChatFormatting.GRAY)), mouseX, mouseY);
+            guiGraphics.setTooltipForNextFrame(font, Lists.newArrayList(DIMENSION, Component.literal(death.getDimension()).withStyle(ChatFormatting.GRAY)), Optional.empty(), mouseX, mouseY);
         }
     }
 
@@ -228,11 +227,11 @@ public class DeathHistoryScreen extends ScreenBase {
     }
 
     public void drawLeft(GuiGraphics guiGraphics, MutableComponent text, int height) {
-        guiGraphics.drawString(font, text, guiLeft + 7, height, 0, false);
+        guiGraphics.drawString(font, text, guiLeft + 7, height, FontColorUtils.getFontColor(ChatFormatting.BLACK), false);
     }
 
     public void drawRight(GuiGraphics guiGraphics, MutableComponent text, int height) {
-        guiGraphics.drawString(font, text, guiLeft + hSplit - font.width(text), height, 0, false);
+        guiGraphics.drawString(font, text, guiLeft + hSplit - font.width(text), height, FontColorUtils.getFontColor(ChatFormatting.BLACK), false);
     }
 
     public Death getCurrentDeath() {

@@ -1,6 +1,5 @@
 package de.maxhenkel.corpse.gui;
 
-import com.mojang.datafixers.util.Pair;
 import de.maxhenkel.corelib.inventory.ItemListInventory;
 import de.maxhenkel.corelib.inventory.LockedSlot;
 import de.maxhenkel.corpse.Main;
@@ -9,11 +8,14 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Container;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
+
 import java.util.List;
 
 public class CorpseInventoryContainer extends CorpseContainerBase implements ITransferrable {
@@ -36,8 +38,8 @@ public class CorpseInventoryContainer extends CorpseContainerBase implements ITr
             addSlot(new LockedSlot(armorInventory, slotIndex, 8 + i * 18, 18, true, !editable) {
                 @OnlyIn(Dist.CLIENT)
                 @Override
-                public Pair<ResourceLocation, ResourceLocation> getNoItemIcon() {
-                    return Pair.of(InventoryMenu.BLOCK_ATLAS, ARMOR_SLOT_TEXTURES[slotIndex]);
+                public ResourceLocation getNoItemIcon() {
+                    return ARMOR_SLOT_TEXTURES[slotIndex];
                 }
             });
         }
@@ -45,8 +47,8 @@ public class CorpseInventoryContainer extends CorpseContainerBase implements ITr
         addSlot(new LockedSlot(offHandInventory, 0, 98, 18, true, !editable) {
             @OnlyIn(Dist.CLIENT)
             @Override
-            public Pair<ResourceLocation, ResourceLocation> getNoItemIcon() {
-                return Pair.of(InventoryMenu.BLOCK_ATLAS, InventoryMenu.EMPTY_ARMOR_SLOT_SHIELD);
+            public ResourceLocation getNoItemIcon() {
+                return InventoryMenu.EMPTY_ARMOR_SLOT_SHIELD;
             }
         });
 
@@ -77,9 +79,14 @@ public class CorpseInventoryContainer extends CorpseContainerBase implements ITr
         ServerPlayer player = (ServerPlayer) playerInventory.player;
 
         NonNullList<ItemStack> additionalItems = NonNullList.create();
-        fill(additionalItems, mainInventory, playerInventory.items);
-        fill(additionalItems, armorInventory, playerInventory.armor);
-        fill(additionalItems, offHandInventory, playerInventory.offhand);
+        fillInventory(additionalItems, mainInventory, playerInventory.getNonEquipmentItems());
+
+        fillInventoryEquipment(player, additionalItems, armorInventory, EquipmentSlot.FEET);
+        fillInventoryEquipment(player, additionalItems, armorInventory, EquipmentSlot.LEGS);
+        fillInventoryEquipment(player, additionalItems, armorInventory, EquipmentSlot.CHEST);
+        fillInventoryEquipment(player, additionalItems, armorInventory, EquipmentSlot.HEAD);
+
+        fillInventoryEquipment(player, additionalItems, offHandInventory, EquipmentSlot.OFFHAND, 0);
 
         additionalItems.addAll(corpse.getDeath().getAdditionalItems());
         NonNullList<ItemStack> restItems = NonNullList.create();
@@ -96,7 +103,24 @@ public class CorpseInventoryContainer extends CorpseContainerBase implements ITr
         }
     }
 
-    private void fill(List<ItemStack> additionalItems, Container inventory, NonNullList<ItemStack> playerInv) {
+    public void fillInventoryEquipment(Player player, List<ItemStack> additionalItems, ItemListInventory inventory, EquipmentSlot slot) {
+        fillInventoryEquipment(player, additionalItems, inventory, slot, -1);
+    }
+
+    public void fillInventoryEquipment(Player player, List<ItemStack> additionalItems, ItemListInventory inventory, EquipmentSlot slot, int overrideIndex) {
+        ItemStack item = inventory.getItem(overrideIndex < 0 ? slot.getIndex() : overrideIndex);
+        if (item.isEmpty()) {
+            return;
+        }
+        ItemStack oldPlayerItem = player.getItemBySlot(slot);
+        if (!oldPlayerItem.isEmpty()) {
+            additionalItems.add(oldPlayerItem);
+        }
+        inventory.setItem(overrideIndex < 0 ? slot.getIndex() : overrideIndex, ItemStack.EMPTY);
+        player.setItemSlot(slot, item);
+    }
+
+    private void fillInventory(List<ItemStack> additionalItems, Container inventory, NonNullList<ItemStack> playerInv) {
         for (int i = 0; i < inventory.getContainerSize(); i++) {
             ItemStack stack = inventory.getItem(i);
             if (stack.isEmpty()) {

@@ -10,11 +10,10 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import snownee.jade.api.EntityAccessor;
 import snownee.jade.api.IEntityComponentProvider;
-import snownee.jade.api.IServerDataProvider;
 import snownee.jade.api.ITooltip;
 import snownee.jade.api.config.IPluginConfig;
 
-public class HUDHandlerCorpse implements IEntityComponentProvider, IServerDataProvider<EntityAccessor> {
+public class HUDHandlerCorpse implements IEntityComponentProvider {
 
     public static final ResourceLocation OBJECT_NAME_TAG = ResourceLocation.fromNamespaceAndPath("jade", "object_name");
 
@@ -29,26 +28,17 @@ public class HUDHandlerCorpse implements IEntityComponentProvider, IServerDataPr
             iTooltip.add(corpse.getDisplayName().copy().withStyle(ChatFormatting.WHITE));
 
             CompoundTag data = entityAccessor.getServerData();
-            if (data.contains("Death")) {
-                Death death = Death.fromNBT(corpse.registryAccess(), data.getCompound("Death"));
+            data.getCompound("Death").ifPresent(deathTag -> {
+                Death death = Death.read(corpse.registryAccess(), deathTag);
                 long timestamp = death.getTimestamp();
                 if (timestamp > 0L) {
                     iTooltip.add(Component.translatable("tooltip.corpse.death_date", DeathHistoryScreen.getDate(timestamp)));
                 }
-            }
+            });
 
             if (data.contains("ItemCount")) {
-                iTooltip.add(Component.translatable("tooltip.corpse.item_count", data.getInt("ItemCount")));
+                iTooltip.add(Component.translatable("tooltip.corpse.item_count", data.getIntOr("ItemCount", 0)));
             }
-        }
-    }
-
-    @Override
-    public void appendServerData(CompoundTag compoundTag, EntityAccessor entityAccessor) {
-        if (entityAccessor.getEntity() instanceof CorpseEntity corpse) {
-            Death death = corpse.getDeath();
-            compoundTag.put("Death", death.toNBT(corpse.registryAccess(), false));
-            compoundTag.putInt("ItemCount", (int) death.getAllItems().stream().filter(itemStack -> !itemStack.isEmpty()).count());
         }
     }
 

@@ -2,13 +2,11 @@ package de.maxhenkel.corpse.gui;
 
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
 public class ScreenBase extends Screen {
-
-    public static final int FONT_COLOR = 4210752;
 
     protected ResourceLocation texture;
 
@@ -32,7 +30,7 @@ public class ScreenBase extends Screen {
     @Override
     public void renderBackground(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
         super.renderBackground(guiGraphics, mouseX, mouseY, partialTick);
-        guiGraphics.blit(RenderType::guiTextured, texture, guiLeft, guiTop, 0, 0, xSize, ySize, 256, 256);
+        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, texture, guiLeft, guiTop, 0, 0, xSize, ySize, 256, 256);
     }
 
     @Override

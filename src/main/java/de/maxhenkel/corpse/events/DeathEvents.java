@@ -21,7 +21,7 @@ public class DeathEvents {
         event.removeDrops();
         event.getPlayer().level().addFreshEntity(CorpseEntity.createFromDeath(event.getPlayer(), event.getDeath()));
 
-        new Thread(() -> deleteOldDeaths(event.getPlayer().serverLevel())).start();
+        new Thread(() -> deleteOldDeaths(event.getPlayer().level())).start();
     }
 
     public static void deleteOldDeaths(ServerLevel serverWorld) {

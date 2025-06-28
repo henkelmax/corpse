@@ -1,1 +1,2 @@
-- Updated to 1.21.3
+- Fixed Jade integration
+- Fixed corpse items not being saved

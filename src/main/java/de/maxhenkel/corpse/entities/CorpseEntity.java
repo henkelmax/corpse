@@ -1,13 +1,11 @@
 package de.maxhenkel.corpse.entities;
 
 import de.maxhenkel.corelib.death.Death;
-import de.maxhenkel.corelib.item.ItemUtils;
 import de.maxhenkel.corpse.Main;
 import de.maxhenkel.corpse.gui.Guis;
 import de.maxhenkel.corpse.net.MessageSpawnDeathParticles;
-import net.minecraft.core.NonNullList;
+import net.minecraft.Util;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -24,21 +22,23 @@ import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.network.PacketDistributor;
 
-import java.util.Optional;
+import java.util.EnumMap;
 import java.util.UUID;
 
 public class CorpseEntity extends CorpseBoundingBoxBase {
 
-    private static final EntityDataAccessor<Optional<UUID>> ID = SynchedEntityData.defineId(CorpseEntity.class, EntityDataSerializers.OPTIONAL_UUID);
+    private static final EntityDataAccessor<UUID> ID = SynchedEntityData.defineId(CorpseEntity.class, Main.UUID_SERIALIZER.get());
     private static final EntityDataAccessor<String> NAME = SynchedEntityData.defineId(CorpseEntity.class, EntityDataSerializers.STRING);
     private static final EntityDataAccessor<Boolean> SKELETON = SynchedEntityData.defineId(CorpseEntity.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Byte> MODEL = SynchedEntityData.defineId(CorpseEntity.class, EntityDataSerializers.BYTE);
-    private static final EntityDataAccessor<NonNullList<ItemStack>> EQUIPMENT = SynchedEntityData.defineId(CorpseEntity.class, Main.ITEM_LIST_SERIALIZER.get());
+    private static final EntityDataAccessor<EnumMap<EquipmentSlot, ItemStack>> EQUIPMENT = SynchedEntityData.defineId(CorpseEntity.class, Main.EQUIPMENT_SERIALIZER.get());
 
     private int age;
     private int emptyAge;
@@ -59,7 +59,7 @@ public class CorpseEntity extends CorpseBoundingBoxBase {
     public static CorpseEntity createFromDeath(Player player, Death death) {
         CorpseEntity corpse = new CorpseEntity(player.level());
         corpse.death = death;
-        corpse.setCorpseUUID(death.getPlayerUUID());
+        corpse.setPlayerUuid(death.getPlayerUUID());
         corpse.setCorpseName(death.getPlayerName());
         corpse.setEquipment(death.getEquipment());
         corpse.setPos(death.getPosX(), Math.max(death.getPosY(), player.level().getMinY()), death.getPosZ());
@@ -139,8 +139,8 @@ public class CorpseEntity extends CorpseBoundingBoxBase {
         if (!level().isClientSide && player instanceof ServerPlayer) {
             ServerPlayer playerMP = (ServerPlayer) player;
             if (Main.SERVER_CONFIG.onlyOwnerAccess.get()) {
-                boolean isOp = playerMP.hasPermissions(playerMP.server.getOperatorUserPermissionLevel());
-                if (isOp || !getCorpseUUID().isPresent() || playerMP.getUUID().equals(getCorpseUUID().get())) {
+                boolean isOp = playerMP.hasPermissions(playerMP.getServer().getOperatorUserPermissionLevel());
+                if (isOp || playerMP.getUUID().equals(getPlayerUuid())) {
                     Guis.openCorpseGUI((ServerPlayer) player, this);
                 } else if (Main.SERVER_CONFIG.skeletonAccess.get() && isSkeleton()) {
                     Guis.openCorpseGUI((ServerPlayer) player, this);
@@ -172,16 +172,12 @@ public class CorpseEntity extends CorpseBoundingBoxBase {
         return isAlive();
     }
 
-    public Optional<UUID> getCorpseUUID() {
+    public UUID getPlayerUuid() {
         return entityData.get(ID);
     }
 
-    public void setCorpseUUID(UUID uuid) {
-        if (uuid == null) {
-            entityData.set(ID, Optional.empty());
-        } else {
-            entityData.set(ID, Optional.of(uuid));
-        }
+    public void setPlayerUuid(UUID uuid) {
+        entityData.set(ID, uuid);
     }
 
     public Death getDeath() {
@@ -217,21 +213,21 @@ public class CorpseEntity extends CorpseBoundingBoxBase {
         entityData.set(MODEL, model);
     }
 
-    public void setEquipment(NonNullList<ItemStack> equipment) {
+    public void setEquipment(EnumMap<EquipmentSlot, ItemStack> equipment) {
         entityData.set(EQUIPMENT, equipment);
     }
 
-    public NonNullList<ItemStack> getEquipment() {
+    public EnumMap<EquipmentSlot, ItemStack> getEquipment() {
         return entityData.get(EQUIPMENT);
     }
 
     @Override
     protected void defineSynchedData(SynchedEntityData.Builder builder) {
-        builder.define(ID, Optional.empty());
+        builder.define(ID, Util.NIL_UUID);
         builder.define(NAME, "");
         builder.define(SKELETON, false);
         builder.define(MODEL, (byte) 0);
-        builder.define(EQUIPMENT, NonNullList.withSize(EquipmentSlot.values().length, ItemStack.EMPTY));
+        builder.define(EQUIPMENT, new EnumMap<>(EquipmentSlot.class));
     }
 
     @Override
@@ -257,42 +253,23 @@ public class CorpseEntity extends CorpseBoundingBoxBase {
     }
 
     @Override
-    protected void readAdditionalSaveData(CompoundTag compound) {
-        if (compound.contains("Death")) {
-            death = Death.fromNBT(registryAccess(), compound.getCompound("Death"));
-        } else { // Compatibility
-            UUID playerUUID = new UUID(compound.getLong("IDMost"), compound.getLong("IDLeast"));
-            UUID deathID = new UUID(compound.getLong("DeathIDMost"), compound.getLong("DeathIDLeast"));
-
-            Death.Builder builder = new Death.Builder(playerUUID, deathID);
-
-            int size = compound.getInt("InventorySize");
-            NonNullList<ItemStack> additionalItems = NonNullList.withSize(size, ItemStack.EMPTY);
-            ItemUtils.readInventory(registryAccess(), compound, "Inventory", additionalItems);
-            builder.additionalItems(additionalItems);
-            NonNullList<ItemStack> equipment = NonNullList.withSize(EquipmentSlot.values().length, ItemStack.EMPTY);
-            ItemUtils.readItemList(registryAccess(), compound, "Equipment", equipment);
-            builder.equipment(equipment);
-            builder.playerName(compound.getString("Name"));
-            death = builder.build();
-        }
+    protected void readAdditionalSaveData(ValueInput valueInput) {
+        death = Death.read(valueInput, "Death");
         setEquipment(death.getEquipment());
-        setCorpseUUID(death.getPlayerUUID());
+        setPlayerUuid(death.getPlayerUUID());
         setCorpseName(death.getPlayerName());
         setCorpseModel(death.getModel());
-        age = compound.getInt("Age");
-        if (compound.contains("EmptyAge")) {
-            emptyAge = compound.getInt("EmptyAge");
-        }
+        age = valueInput.getIntOr("Age", 0);
+        emptyAge = valueInput.getIntOr("EmptyAge", -1);
     }
 
     @Override
-    protected void addAdditionalSaveData(CompoundTag compound) {
-        compound.put("Death", death.toNBT(registryAccess()));
-        compound.putInt("Age", age);
+    protected void addAdditionalSaveData(ValueOutput valueOutput) {
+        death.write(valueOutput, "Death");
+
+        valueOutput.putInt("Age", age);
         if (emptyAge >= 0) {
-            compound.putInt("EmptyAge", emptyAge);
+            valueOutput.putInt("EmptyAge", emptyAge);
         }
     }
-
 }

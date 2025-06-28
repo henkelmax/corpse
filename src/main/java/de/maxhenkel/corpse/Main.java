@@ -1,7 +1,7 @@
 package de.maxhenkel.corpse;
 
 import de.maxhenkel.corelib.CommonRegistry;
-import de.maxhenkel.corelib.dataserializers.DataSerializerItemList;
+import de.maxhenkel.corelib.dataserializers.DataSerializerEquipment;
 import de.maxhenkel.corpse.commands.HistoryCommand;
 import de.maxhenkel.corpse.entities.CorpseEntity;
 import de.maxhenkel.corpse.entities.CorpseRenderer;
@@ -11,10 +11,11 @@ import de.maxhenkel.corpse.gui.*;
 import de.maxhenkel.corpse.net.*;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.renderer.entity.EntityRenderers;
-import net.minecraft.core.NonNullList;
+import net.minecraft.core.UUIDUtil;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.syncher.EntityDataSerializer;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.flag.FeatureFlags;
@@ -42,6 +43,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.lwjgl.glfw.GLFW;
 
+import java.util.EnumMap;
+import java.util.UUID;
+
 @Mod(Main.MODID)
 public class Main {
 
@@ -60,7 +64,9 @@ public class Main {
     public static final DeferredHolder<MenuType<?>, MenuType<CorpseInventoryContainer>> CONTAINER_TYPE_CORPSE_INVENTORY = MENU_REGISTER.register("corpse_inventory", Main::createCorpseInventoryMenuType);
 
     private static final DeferredRegister<EntityDataSerializer<?>> DATA_SERIALIZER_REGISTER = DeferredRegister.create(NeoForgeRegistries.Keys.ENTITY_DATA_SERIALIZERS, Main.MODID);
-    public static final DeferredHolder<EntityDataSerializer<?>, EntityDataSerializer<NonNullList<ItemStack>>> ITEM_LIST_SERIALIZER = DATA_SERIALIZER_REGISTER.register("item_list", () -> DataSerializerItemList.create());
+    public static final DeferredHolder<EntityDataSerializer<?>, EntityDataSerializer<EnumMap<EquipmentSlot, ItemStack>>> EQUIPMENT_SERIALIZER = DATA_SERIALIZER_REGISTER.register("equipment", DataSerializerEquipment::create);
+    public static final DeferredHolder<EntityDataSerializer<?>, EntityDataSerializer<UUID>> UUID_SERIALIZER = DATA_SERIALIZER_REGISTER.register("uuid", () -> EntityDataSerializer.forValueType(UUIDUtil.STREAM_CODEC));
+
 
     public static ServerConfig SERVER_CONFIG;
 

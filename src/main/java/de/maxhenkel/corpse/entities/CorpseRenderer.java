@@ -77,7 +77,7 @@ public class CorpseRenderer extends EntityRenderer<CorpseEntity, CorpseRenderSta
             }
             state.skeletonRenderer.extractRenderState(skeleton, state.skeletonRenderState, 0F);
         } else {
-            DummyPlayer dummyPlayer = players.get(corpse.getUUID(), () -> new DummyPlayer((ClientLevel) corpse.level(), new GameProfile(corpse.getCorpseUUID().orElse(new UUID(0L, 0L)), corpse.getCorpseName()), corpse.getEquipment(), corpse.getCorpseModel()));//;
+            DummyPlayer dummyPlayer = players.get(corpse.getUUID(), () -> new DummyPlayer((ClientLevel) corpse.level(), new GameProfile(corpse.getPlayerUuid(), corpse.getCorpseName()), corpse.getEquipment(), corpse.getCorpseModel()));//;
             if (state.playerRenderer == null) {
                 state.playerRenderer = (PlayerRenderer) MC.getEntityRenderDispatcher().getRenderer(dummyPlayer);
             }
