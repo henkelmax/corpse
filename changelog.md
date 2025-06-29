@@ -1,2 +1,1 @@
-- Fixed Jade integration
-- Fixed corpse items not being saved
+- Fixed player reach distance not respected when opening corpses
