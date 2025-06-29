@@ -1,1 +1,1 @@
-- Added Hungarian translation
+- Fixed player reach distance not respected when opening corpses

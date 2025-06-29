@@ -2,6 +2,7 @@ package de.maxhenkel.corpse.gui;
 
 import de.maxhenkel.corelib.inventory.ContainerBase;
 import de.maxhenkel.corpse.entities.CorpseEntity;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
@@ -37,7 +38,8 @@ public class CorpseContainerBase extends ContainerBase {
         if (history) {
             return true;
         }
-        return corpse.distanceTo(player) < 8F && corpse.isAlive();
+        double maxDistance = player.getAttributeValue(Attributes.ENTITY_INTERACTION_RANGE) + 2D;
+        return corpse.distanceTo(player) < maxDistance && corpse.isAlive();
     }
 
 }
