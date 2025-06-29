@@ -43,6 +43,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.lwjgl.glfw.GLFW;
 
+import javax.annotation.Nullable;
 import java.util.EnumMap;
 import java.util.UUID;
 
@@ -139,7 +140,7 @@ public class Main {
     private static MenuType<CorpseAdditionalContainer> createCorpseAdditionalItemsMenuType() {
         return new MenuType<>(new CorpseContainerFactory<CorpseAdditionalContainer>() {
             @Override
-            public CorpseAdditionalContainer create(int id, Inventory playerInventory, CorpseEntity corpse, boolean editable, boolean history) {
+            public CorpseAdditionalContainer create(int id, Inventory playerInventory, @Nullable CorpseEntity corpse, boolean editable, boolean history) {
                 return new CorpseAdditionalContainer(id, playerInventory, corpse, editable, history);
             }
         }, FeatureFlags.VANILLA_SET);
@@ -148,7 +149,7 @@ public class Main {
     private static MenuType<CorpseInventoryContainer> createCorpseInventoryMenuType() {
         return new MenuType<>(new CorpseContainerFactory<CorpseInventoryContainer>() {
             @Override
-            public CorpseInventoryContainer create(int id, Inventory playerInventory, CorpseEntity corpse, boolean editable, boolean history) {
+            public CorpseInventoryContainer create(int id, Inventory playerInventory, @Nullable CorpseEntity corpse, boolean editable, boolean history) {
                 return new CorpseInventoryContainer(id, playerInventory, corpse, editable, history);
             }
         }, FeatureFlags.VANILLA_SET);
