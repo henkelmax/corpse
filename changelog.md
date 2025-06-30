@@ -1,1 +1,1 @@
-- Fixed player reach distance not respected when opening corpses
+- Updated to 1.21.7

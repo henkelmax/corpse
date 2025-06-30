@@ -11,7 +11,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
-import net.neoforged.neoforge.network.PacketDistributor;
+import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 
 import java.util.Collections;
 
@@ -51,18 +51,18 @@ public class CorpseAdditionalScreen extends ScreenBase<CorpseAdditionalContainer
             if (page < 0) {
                 page = 0;
             }
-            PacketDistributor.sendToServer(new MessageSwitchInventoryPage(page));
+            ClientPacketDistributor.sendToServer(new MessageSwitchInventoryPage(page));
         }).bounds(left + PADDING, topPos + 149 - buttonHeight, buttonWidth, buttonHeight).build());
         next = addRenderableWidget(Button.builder(Component.translatable("button.corpse.next"), button -> {
             page++;
             if (page >= getPages()) {
                 page = getPages() - 1;
             }
-            PacketDistributor.sendToServer(new MessageSwitchInventoryPage());
+            ClientPacketDistributor.sendToServer(new MessageSwitchInventoryPage());
         }).bounds(left + imageWidth - buttonWidth - PADDING, topPos + 149 - buttonHeight, buttonWidth, buttonHeight).build());
 
         addRenderableWidget(new TransferItemsButton(left + imageWidth - TransferItemsButton.WIDTH - 9, topPos + 5, button -> {
-            PacketDistributor.sendToServer(new MessageTransferItems());
+            ClientPacketDistributor.sendToServer(new MessageTransferItems());
         }));
     }
 

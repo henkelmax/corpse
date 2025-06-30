@@ -23,7 +23,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.network.PacketDistributor;
+import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 
 import javax.annotation.Nullable;
 import java.text.SimpleDateFormat;
@@ -88,7 +88,7 @@ public class DeathHistoryScreen extends ScreenBase {
         }
 
         showItems = Button.builder(Component.translatable("button.corpse.show_items"), button -> {
-            PacketDistributor.sendToServer(new MessageShowCorpseInventory(getCurrentDeath().getPlayerUUID(), getCurrentDeath().getId()));
+            ClientPacketDistributor.sendToServer(new MessageShowCorpseInventory(getCurrentDeath().getPlayerUUID(), getCurrentDeath().getId()));
         }).build();
 
         next = Button.builder(Component.literal("→"), button -> {
