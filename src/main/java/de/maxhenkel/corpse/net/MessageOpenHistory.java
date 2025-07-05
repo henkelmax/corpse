@@ -2,18 +2,13 @@ package de.maxhenkel.corpse.net;
 
 import de.maxhenkel.corelib.death.Death;
 import de.maxhenkel.corelib.net.Message;
-import de.maxhenkel.corpse.Main;
-import de.maxhenkel.corpse.gui.DeathHistoryScreen;
-import net.minecraft.client.Minecraft;
+import de.maxhenkel.corpse.CorpseMod;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.PacketFlow;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 import java.util.ArrayList;
@@ -21,7 +16,7 @@ import java.util.List;
 
 public class MessageOpenHistory implements Message<MessageOpenHistory> {
 
-    public static final CustomPacketPayload.Type<MessageOpenHistory> TYPE = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(Main.MODID, "open_history"));
+    public static final CustomPacketPayload.Type<MessageOpenHistory> TYPE = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(CorpseMod.MODID, "open_history"));
 
     private List<Death> deaths;
 
@@ -38,14 +33,9 @@ public class MessageOpenHistory implements Message<MessageOpenHistory> {
         return PacketFlow.CLIENTBOUND;
     }
 
-    @OnlyIn(Dist.CLIENT)
     @Override
     public void executeClientSide(IPayloadContext context) {
-        if (deaths.size() > 0) {
-            Minecraft.getInstance().setScreen(new DeathHistoryScreen(deaths));
-        } else {
-            Minecraft.getInstance().player.displayClientMessage(Component.translatable("message.corpse.no_death_history"), true);
-        }
+        ClientNetworking.openCorpseHistory(deaths);
     }
 
     @Override

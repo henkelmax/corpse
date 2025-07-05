@@ -4,7 +4,7 @@ import com.mojang.authlib.GameProfile;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import de.maxhenkel.corelib.CachedMap;
-import de.maxhenkel.corpse.Main;
+import de.maxhenkel.corpse.CorpseMod;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -40,7 +40,7 @@ public class CorpseRenderer extends EntityRenderer<CorpseEntity, CorpseRenderSta
 
         stack.mulPose(Axis.YP.rotationDegrees(-state.yRot));
 
-        if (Main.SERVER_CONFIG.spawnCorpseOnFace.get()) {
+        if (CorpseMod.SERVER_CONFIG.spawnCorpseOnFace.get()) {
             stack.mulPose(Axis.XP.rotationDegrees(90F));
             stack.translate(0D, -1D, -2.01D / 16D);
         } else {

@@ -1,7 +1,7 @@
 package de.maxhenkel.corpse.net;
 
 import de.maxhenkel.corelib.net.Message;
-import de.maxhenkel.corpse.Main;
+import de.maxhenkel.corpse.CorpseMod;
 import de.maxhenkel.corpse.gui.Guis;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.protocol.PacketFlow;
@@ -14,7 +14,7 @@ import java.util.UUID;
 
 public class MessageShowCorpseInventory implements Message<MessageShowCorpseInventory> {
 
-    public static final CustomPacketPayload.Type<MessageShowCorpseInventory> TYPE = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(Main.MODID, "show_corpse_inventory"));
+    public static final CustomPacketPayload.Type<MessageShowCorpseInventory> TYPE = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(CorpseMod.MODID, "show_corpse_inventory"));
 
     private UUID playerUUID;
     private UUID deathID;

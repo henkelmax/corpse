@@ -2,7 +2,7 @@ package de.maxhenkel.corpse.gui;
 
 import de.maxhenkel.corelib.inventory.ItemListInventory;
 import de.maxhenkel.corelib.inventory.LockedSlot;
-import de.maxhenkel.corpse.Main;
+import de.maxhenkel.corpse.CorpseMod;
 import de.maxhenkel.corpse.entities.CorpseEntity;
 import net.minecraft.core.NonNullList;
 import net.minecraft.resources.ResourceLocation;
@@ -13,8 +13,6 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 
 import java.util.List;
 
@@ -27,7 +25,7 @@ public class CorpseInventoryContainer extends CorpseContainerBase implements ITr
     private ItemListInventory offHandInventory;
 
     public CorpseInventoryContainer(int id, Inventory playerInventory, CorpseEntity corpse, boolean editable, boolean history) {
-        super(Main.CONTAINER_TYPE_CORPSE_INVENTORY.get(), id, playerInventory, corpse, editable, history);
+        super(CorpseMod.CONTAINER_TYPE_CORPSE_INVENTORY.get(), id, playerInventory, corpse, editable, history);
 
         mainInventory = new ItemListInventory(corpse.getDeath().getMainInventory());
         armorInventory = new ItemListInventory(corpse.getDeath().getArmorInventory());
@@ -36,7 +34,6 @@ public class CorpseInventoryContainer extends CorpseContainerBase implements ITr
         for (int i = 0; i < 4; i++) {
             int slotIndex = 3 - i;
             addSlot(new LockedSlot(armorInventory, slotIndex, 8 + i * 18, 18, true, !editable) {
-                @OnlyIn(Dist.CLIENT)
                 @Override
                 public ResourceLocation getNoItemIcon() {
                     return ARMOR_SLOT_TEXTURES[slotIndex];
@@ -45,7 +42,6 @@ public class CorpseInventoryContainer extends CorpseContainerBase implements ITr
         }
 
         addSlot(new LockedSlot(offHandInventory, 0, 98, 18, true, !editable) {
-            @OnlyIn(Dist.CLIENT)
             @Override
             public ResourceLocation getNoItemIcon() {
                 return InventoryMenu.EMPTY_ARMOR_SLOT_SHIELD;

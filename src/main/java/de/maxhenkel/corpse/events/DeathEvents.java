@@ -2,7 +2,7 @@ package de.maxhenkel.corpse.events;
 
 import de.maxhenkel.corelib.death.DeathManager;
 import de.maxhenkel.corelib.death.PlayerDeathEvent;
-import de.maxhenkel.corpse.Main;
+import de.maxhenkel.corpse.CorpseMod;
 import de.maxhenkel.corpse.entities.CorpseEntity;
 import net.minecraft.server.level.ServerLevel;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -15,7 +15,7 @@ public class DeathEvents {
 
     @SubscribeEvent()
     public void playerDeath(PlayerDeathEvent event) {
-        if (Main.SERVER_CONFIG.maxDeathAge.get() != 0) {
+        if (CorpseMod.SERVER_CONFIG.maxDeathAge.get() != 0) {
             event.storeDeath();
         }
         event.removeDrops();
@@ -25,7 +25,7 @@ public class DeathEvents {
     }
 
     public static void deleteOldDeaths(ServerLevel serverWorld) {
-        int ageInDays = Main.SERVER_CONFIG.maxDeathAge.get();
+        int ageInDays = CorpseMod.SERVER_CONFIG.maxDeathAge.get();
         if (ageInDays < 0) {
             return;
         }

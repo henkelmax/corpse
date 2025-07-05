@@ -1,7 +1,7 @@
 package de.maxhenkel.corpse.net;
 
 import de.maxhenkel.corelib.net.Message;
-import de.maxhenkel.corpse.Main;
+import de.maxhenkel.corpse.CorpseMod;
 import de.maxhenkel.corpse.gui.CorpseAdditionalContainer;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.protocol.PacketFlow;
@@ -12,7 +12,7 @@ import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 public class MessageSwitchInventoryPage implements Message<MessageSwitchInventoryPage> {
 
-    public static final CustomPacketPayload.Type<MessageSwitchInventoryPage> TYPE = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(Main.MODID, "switch_inventory_page"));
+    public static final CustomPacketPayload.Type<MessageSwitchInventoryPage> TYPE = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(CorpseMod.MODID, "switch_inventory_page"));
 
     private int page;
 

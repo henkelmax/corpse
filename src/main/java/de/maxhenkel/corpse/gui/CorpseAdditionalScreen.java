@@ -1,7 +1,7 @@
 package de.maxhenkel.corpse.gui;
 
 import de.maxhenkel.corelib.inventory.ScreenBase;
-import de.maxhenkel.corpse.Main;
+import de.maxhenkel.corpse.CorpseMod;
 import de.maxhenkel.corpse.entities.CorpseEntity;
 import de.maxhenkel.corpse.net.MessageSwitchInventoryPage;
 import de.maxhenkel.corpse.net.MessageTransferItems;
@@ -17,7 +17,7 @@ import java.util.Collections;
 
 public class CorpseAdditionalScreen extends ScreenBase<CorpseAdditionalContainer> {
 
-    public static final ResourceLocation CORPSE_GUI_TEXTURE = ResourceLocation.fromNamespaceAndPath(Main.MODID, "textures/gui/gui_corpse.png");
+    public static final ResourceLocation CORPSE_GUI_TEXTURE = ResourceLocation.fromNamespaceAndPath(CorpseMod.MODID, "textures/gui/gui_corpse.png");
 
     private static final int PADDING = 7;
 

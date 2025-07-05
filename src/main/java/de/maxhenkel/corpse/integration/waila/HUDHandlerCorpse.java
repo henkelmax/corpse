@@ -1,7 +1,7 @@
 package de.maxhenkel.corpse.integration.waila;
 
 import de.maxhenkel.corelib.death.Death;
-import de.maxhenkel.corpse.Main;
+import de.maxhenkel.corpse.CorpseMod;
 import de.maxhenkel.corpse.entities.CorpseEntity;
 import de.maxhenkel.corpse.gui.DeathHistoryScreen;
 import net.minecraft.ChatFormatting;
@@ -19,7 +19,7 @@ public class HUDHandlerCorpse implements IEntityComponentProvider {
 
     public static final HUDHandlerCorpse INSTANCE = new HUDHandlerCorpse();
 
-    private static final ResourceLocation UID = ResourceLocation.fromNamespaceAndPath(Main.MODID, "corpse");
+    private static final ResourceLocation UID = ResourceLocation.fromNamespaceAndPath(CorpseMod.MODID, "corpse");
 
     @Override
     public void appendTooltip(ITooltip iTooltip, EntityAccessor entityAccessor, IPluginConfig iPluginConfig) {

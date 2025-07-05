@@ -5,7 +5,7 @@ import com.mojang.authlib.GameProfile;
 import de.maxhenkel.corelib.CachedMap;
 import de.maxhenkel.corelib.FontColorUtils;
 import de.maxhenkel.corelib.death.Death;
-import de.maxhenkel.corpse.Main;
+import de.maxhenkel.corpse.CorpseMod;
 import de.maxhenkel.corpse.entities.DummyPlayer;
 import de.maxhenkel.corpse.integration.openhud.OpenHudIntegration;
 import de.maxhenkel.corpse.net.MessageShowCorpseInventory;
@@ -33,7 +33,7 @@ import java.util.Optional;
 
 public class DeathHistoryScreen extends ScreenBase {
 
-    private static final ResourceLocation DEATH_HISTORY_GUI_TEXTURE = ResourceLocation.fromNamespaceAndPath(Main.MODID, "textures/gui/gui_death_history.png");
+    private static final ResourceLocation DEATH_HISTORY_GUI_TEXTURE = ResourceLocation.fromNamespaceAndPath(CorpseMod.MODID, "textures/gui/gui_death_history.png");
     private static final Component TITLE = Component.translatable("gui.corpse.death_history.title").withStyle(ChatFormatting.BLACK);
     private static final Component TELEPORT = Component.translatable("tooltip.corpse.teleport");
     private static final Component DIMENSION = Component.translatable("gui.corpse.death_history.dimension");
@@ -213,7 +213,7 @@ public class DeathHistoryScreen extends ScreenBase {
             dateFormat = new SimpleDateFormat(Component.translatable("gui.corpse.death_history.date_format").getString());
         } catch (Exception e) {
             if (!errorShown) {
-                Main.LOGGER.error("Failed to create date format. This indicates a broken translation: 'gui.corpse.death_history.date_format' translated to {}", Component.translatable("gui.corpse.death_history.date_format").getString());
+                CorpseMod.LOGGER.error("Failed to create date format. This indicates a broken translation: 'gui.corpse.death_history.date_format' translated to {}", Component.translatable("gui.corpse.death_history.date_format").getString());
                 errorShown = true;
             }
             dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");

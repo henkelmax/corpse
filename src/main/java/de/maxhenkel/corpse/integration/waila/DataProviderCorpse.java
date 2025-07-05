@@ -1,7 +1,7 @@
 package de.maxhenkel.corpse.integration.waila;
 
 import de.maxhenkel.corelib.death.Death;
-import de.maxhenkel.corpse.Main;
+import de.maxhenkel.corpse.CorpseMod;
 import de.maxhenkel.corpse.entities.CorpseEntity;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
@@ -12,7 +12,7 @@ public class DataProviderCorpse implements IServerDataProvider<EntityAccessor> {
 
     public static final DataProviderCorpse INSTANCE = new DataProviderCorpse();
 
-    private static final ResourceLocation UID = ResourceLocation.fromNamespaceAndPath(Main.MODID, "corpse_data");
+    private static final ResourceLocation UID = ResourceLocation.fromNamespaceAndPath(CorpseMod.MODID, "corpse_data");
 
     @Override
     public void appendServerData(CompoundTag compoundTag, EntityAccessor entityAccessor) {

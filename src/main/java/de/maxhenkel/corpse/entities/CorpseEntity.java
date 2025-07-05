@@ -1,7 +1,7 @@
 package de.maxhenkel.corpse.entities;
 
 import de.maxhenkel.corelib.death.Death;
-import de.maxhenkel.corpse.Main;
+import de.maxhenkel.corpse.CorpseMod;
 import de.maxhenkel.corpse.gui.Guis;
 import de.maxhenkel.corpse.net.MessageSpawnDeathParticles;
 import net.minecraft.Util;
@@ -25,8 +25,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.network.PacketDistributor;
 
 import java.util.EnumMap;
@@ -34,11 +32,11 @@ import java.util.UUID;
 
 public class CorpseEntity extends CorpseBoundingBoxBase {
 
-    private static final EntityDataAccessor<UUID> ID = SynchedEntityData.defineId(CorpseEntity.class, Main.UUID_SERIALIZER.get());
+    private static final EntityDataAccessor<UUID> ID = SynchedEntityData.defineId(CorpseEntity.class, CorpseMod.UUID_SERIALIZER.get());
     private static final EntityDataAccessor<String> NAME = SynchedEntityData.defineId(CorpseEntity.class, EntityDataSerializers.STRING);
     private static final EntityDataAccessor<Boolean> SKELETON = SynchedEntityData.defineId(CorpseEntity.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Byte> MODEL = SynchedEntityData.defineId(CorpseEntity.class, EntityDataSerializers.BYTE);
-    private static final EntityDataAccessor<EnumMap<EquipmentSlot, ItemStack>> EQUIPMENT = SynchedEntityData.defineId(CorpseEntity.class, Main.EQUIPMENT_SERIALIZER.get());
+    private static final EntityDataAccessor<EnumMap<EquipmentSlot, ItemStack>> EQUIPMENT = SynchedEntityData.defineId(CorpseEntity.class, CorpseMod.EQUIPMENT_SERIALIZER.get());
 
     private int age;
     private int emptyAge;
@@ -53,7 +51,7 @@ public class CorpseEntity extends CorpseBoundingBoxBase {
     }
 
     public CorpseEntity(Level world) {
-        this(Main.CORPSE_ENTITY_TYPE.get(), world);
+        this(CorpseMod.CORPSE_ENTITY_TYPE.get(), world);
     }
 
     public static CorpseEntity createFromDeath(Player player, Death death) {
@@ -80,12 +78,12 @@ public class CorpseEntity extends CorpseBoundingBoxBase {
                 } else {
                     yMotion = motion.y + (motion.y < 0.03D ? 5E-4D : 0D);
                 }
-            } else if (Main.SERVER_CONFIG.fallIntoVoid.get() || getY() > level().getMinY()) {
+            } else if (CorpseMod.SERVER_CONFIG.fallIntoVoid.get() || getY() > level().getMinY()) {
                 yMotion = Math.max(-2D, motion.y - 0.0625D);
             }
             setDeltaMovement(getDeltaMovement().x * 0.75D, yMotion, getDeltaMovement().z * 0.75D);
 
-            if (!Main.SERVER_CONFIG.fallIntoVoid.get() && getY() < level().getMinY()) {
+            if (!CorpseMod.SERVER_CONFIG.fallIntoVoid.get() && getY() < level().getMinY()) {
                 teleportTo(getX(), level().getMinY(), getZ());
             }
 
@@ -97,16 +95,16 @@ public class CorpseEntity extends CorpseBoundingBoxBase {
         }
 
         age++;
-        setIsSkeleton(age >= Main.SERVER_CONFIG.corpseSkeletonTime.get());
+        setIsSkeleton(age >= CorpseMod.SERVER_CONFIG.corpseSkeletonTime.get());
 
-        if (Main.SERVER_CONFIG.corpseForceDespawnTime.get() > 0 && age > Main.SERVER_CONFIG.corpseForceDespawnTime.get()) {
+        if (CorpseMod.SERVER_CONFIG.corpseForceDespawnTime.get() > 0 && age > CorpseMod.SERVER_CONFIG.corpseForceDespawnTime.get()) {
             discard();
             return;
         }
         boolean empty = isEmpty();
         if (empty && emptyAge < 0) {
             emptyAge = age;
-        } else if (empty && age - emptyAge >= Main.SERVER_CONFIG.corpseDespawnTime.get()) {
+        } else if (empty && age - emptyAge >= CorpseMod.SERVER_CONFIG.corpseDespawnTime.get()) {
             discard();
         }
     }
@@ -127,7 +125,7 @@ public class CorpseEntity extends CorpseBoundingBoxBase {
 
     @Override
     public boolean hurtServer(ServerLevel level, DamageSource source, float amount) {
-        if (Main.SERVER_CONFIG.lavaDamage.get() && source.is(DamageTypeTags.IS_FIRE) && amount >= 2F) {
+        if (CorpseMod.SERVER_CONFIG.lavaDamage.get() && source.is(DamageTypeTags.IS_FIRE) && amount >= 2F) {
             discard();
             return true;
         }
@@ -138,11 +136,11 @@ public class CorpseEntity extends CorpseBoundingBoxBase {
     public InteractionResult interact(Player player, InteractionHand hand) {
         if (!level().isClientSide && player instanceof ServerPlayer) {
             ServerPlayer playerMP = (ServerPlayer) player;
-            if (Main.SERVER_CONFIG.onlyOwnerAccess.get()) {
+            if (CorpseMod.SERVER_CONFIG.onlyOwnerAccess.get()) {
                 boolean isOp = playerMP.hasPermissions(playerMP.getServer().getOperatorUserPermissionLevel());
                 if (isOp || playerMP.getUUID().equals(getPlayerUuid())) {
                     Guis.openCorpseGUI((ServerPlayer) player, this);
-                } else if (Main.SERVER_CONFIG.skeletonAccess.get() && isSkeleton()) {
+                } else if (CorpseMod.SERVER_CONFIG.skeletonAccess.get() && isSkeleton()) {
                     Guis.openCorpseGUI((ServerPlayer) player, this);
                 }
             } else {
@@ -184,7 +182,6 @@ public class CorpseEntity extends CorpseBoundingBoxBase {
         return death;
     }
 
-    @OnlyIn(Dist.CLIENT)
     public void setDeath(Death death) {
         this.death = death;
     }

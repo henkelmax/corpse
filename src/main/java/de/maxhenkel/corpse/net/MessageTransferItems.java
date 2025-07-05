@@ -1,7 +1,7 @@
 package de.maxhenkel.corpse.net;
 
 import de.maxhenkel.corelib.net.Message;
-import de.maxhenkel.corpse.Main;
+import de.maxhenkel.corpse.CorpseMod;
 import de.maxhenkel.corpse.gui.ITransferrable;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.protocol.PacketFlow;
@@ -12,7 +12,7 @@ import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 public class MessageTransferItems implements Message<MessageTransferItems> {
 
-    public static final CustomPacketPayload.Type<MessageTransferItems> TYPE = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(Main.MODID, "transfer_items"));
+    public static final CustomPacketPayload.Type<MessageTransferItems> TYPE = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(CorpseMod.MODID, "transfer_items"));
 
     public MessageTransferItems() {
 

@@ -1,7 +1,7 @@
 package de.maxhenkel.corpse.net;
 
 import de.maxhenkel.corelib.net.Message;
-import de.maxhenkel.corpse.Main;
+import de.maxhenkel.corpse.CorpseMod;
 import de.maxhenkel.corpse.gui.CorpseInventoryContainer;
 import de.maxhenkel.corpse.gui.Guis;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -13,7 +13,7 @@ import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 public class MessageOpenAdditionalItems implements Message<MessageOpenAdditionalItems> {
 
-    public static final CustomPacketPayload.Type<MessageOpenAdditionalItems> TYPE = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(Main.MODID, "open_additional_items"));
+    public static final CustomPacketPayload.Type<MessageOpenAdditionalItems> TYPE = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(CorpseMod.MODID, "open_additional_items"));
 
     public MessageOpenAdditionalItems() {
 

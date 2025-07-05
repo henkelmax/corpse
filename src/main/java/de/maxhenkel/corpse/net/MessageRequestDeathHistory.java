@@ -3,7 +3,7 @@ package de.maxhenkel.corpse.net;
 import de.maxhenkel.corelib.death.Death;
 import de.maxhenkel.corelib.death.DeathManager;
 import de.maxhenkel.corelib.net.Message;
-import de.maxhenkel.corpse.Main;
+import de.maxhenkel.corpse.CorpseMod;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.protocol.PacketFlow;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
@@ -17,7 +17,7 @@ import java.util.UUID;
 
 public class MessageRequestDeathHistory implements Message<MessageRequestDeathHistory> {
 
-    public static final CustomPacketPayload.Type<MessageRequestDeathHistory> TYPE = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(Main.MODID, "request_death_history"));
+    public static final CustomPacketPayload.Type<MessageRequestDeathHistory> TYPE = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(CorpseMod.MODID, "request_death_history"));
 
     public MessageRequestDeathHistory() {
 

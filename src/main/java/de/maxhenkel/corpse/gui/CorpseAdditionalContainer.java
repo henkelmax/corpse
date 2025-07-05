@@ -2,7 +2,7 @@ package de.maxhenkel.corpse.gui;
 
 import de.maxhenkel.corelib.inventory.ItemListInventory;
 import de.maxhenkel.corelib.inventory.LockedSlot;
-import de.maxhenkel.corpse.Main;
+import de.maxhenkel.corpse.CorpseMod;
 import de.maxhenkel.corpse.entities.CorpseEntity;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
@@ -14,7 +14,7 @@ public class CorpseAdditionalContainer extends CorpseContainerBase implements IT
     private PlayerMainInvWrapper playerWrapper;
 
     public CorpseAdditionalContainer(int id, Inventory playerInventory, CorpseEntity corpse, boolean editable, boolean history) {
-        super(Main.CONTAINER_TYPE_CORPSE_ADDITIONAL_ITEMS.get(), id, playerInventory, corpse, editable, history);
+        super(CorpseMod.CONTAINER_TYPE_CORPSE_ADDITIONAL_ITEMS.get(), id, playerInventory, corpse, editable, history);
         this.inventory = new ItemListInventory(corpse.getDeath().getAdditionalItems());
         this.playerWrapper = new PlayerMainInvWrapper(playerInventory);
 

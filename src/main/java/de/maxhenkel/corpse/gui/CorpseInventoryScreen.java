@@ -1,7 +1,7 @@
 package de.maxhenkel.corpse.gui;
 
 import de.maxhenkel.corelib.inventory.ScreenBase;
-import de.maxhenkel.corpse.Main;
+import de.maxhenkel.corpse.CorpseMod;
 import de.maxhenkel.corpse.entities.CorpseEntity;
 import de.maxhenkel.corpse.net.MessageOpenAdditionalItems;
 import de.maxhenkel.corpse.net.MessageTransferItems;
@@ -15,7 +15,7 @@ import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 
 public class CorpseInventoryScreen extends ScreenBase<CorpseInventoryContainer> {
 
-    public static final ResourceLocation CORPSE_GUI_TEXTURE = ResourceLocation.fromNamespaceAndPath(Main.MODID, "textures/gui/inventory_corpse.png");
+    public static final ResourceLocation CORPSE_GUI_TEXTURE = ResourceLocation.fromNamespaceAndPath(CorpseMod.MODID, "textures/gui/inventory_corpse.png");
 
     public static final MutableComponent TRANSFER_ITEMS = Component.translatable("button.corpse.transfer_items");
     public static final MutableComponent ADDITIONAL_ITEMS = Component.translatable("button.corpse.additional_items");
