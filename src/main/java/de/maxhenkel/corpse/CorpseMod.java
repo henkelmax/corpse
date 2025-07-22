@@ -71,6 +71,7 @@ public class CorpseMod {
         HistoryCommand.register(event.getDispatcher());
     }
 
+    @SubscribeEvent
     static void commonSetup(FMLCommonSetupEvent event) {
         NeoForge.EVENT_BUS.register(new DeathEvents());
     }

@@ -1,1 +1,1 @@
-- Updated to 1.21.8
+- Fixed corpses not spawning
