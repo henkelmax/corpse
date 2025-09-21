@@ -61,13 +61,13 @@ public class CorpseEntity extends CorpseBoundingBoxBase {
         this(Main.CORPSE_ENTITY_TYPE.get(), world);
     }
 
-    public static CorpseEntity createFromDeath(Player player, Death death) {
-        CorpseEntity corpse = new CorpseEntity(player.level());
+    public static CorpseEntity createFromDeath(Level level, Player player, Death death) {
+        CorpseEntity corpse = new CorpseEntity(level);
         corpse.death = death;
         corpse.setCorpseUUID(death.getPlayerUUID());
         corpse.setCorpseName(death.getPlayerName());
         corpse.setEquipment(death.getEquipment());
-        corpse.setPos(death.getPosX(), Math.max(death.getPosY(), player.level().getMinBuildHeight()), death.getPosZ());
+        corpse.setPos(death.getPosX(), Math.max(death.getPosY(), level.getMinBuildHeight()), death.getPosZ());
         corpse.setYRot(player.getYRot());
         corpse.setCorpseModel(death.getModel());
         return corpse;

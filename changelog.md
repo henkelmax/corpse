@@ -1,1 +1,1 @@
-- Added Hungarian translation
+- Fixed corpse not spawning when player is riding an entity

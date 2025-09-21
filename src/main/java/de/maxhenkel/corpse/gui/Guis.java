@@ -64,7 +64,7 @@ public class Guis {
         if (death == null) {
             return;
         }
-        CorpseEntity corpse = CorpseEntity.createFromDeath(playerToShow, death);
+        CorpseEntity corpse = CorpseEntity.createFromDeath(playerToShow.serverLevel(), playerToShow, death);
         openCorpseGUI(playerToShow, corpse, playerToShow.getAbilities().instabuild, true);
     }
 

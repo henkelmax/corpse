@@ -13,15 +13,22 @@ public class DeathEvents {
         de.maxhenkel.corelib.death.DeathEvents.register();
     }
 
-    @SubscribeEvent()
+    @SubscribeEvent
     public void playerDeath(PlayerDeathEvent event) {
         if (Main.SERVER_CONFIG.maxDeathAge.get() != 0) {
             event.storeDeath();
         }
         event.removeDrops();
-        event.getPlayer().level().addFreshEntity(CorpseEntity.createFromDeath(event.getPlayer(), event.getDeath()));
+        // Get the level from the players dimension instead of using the players level directly
+        // as this somehow causes the corpse to not spawn when the player is riding an entity
+        ServerLevel level = event.getPlayer().server.getLevel(event.getPlayer().serverLevel().dimension());
+        if (level == null) {
+            // Fallback to the players level
+            level = event.getPlayer().serverLevel();
+        }
+        level.addFreshEntity(CorpseEntity.createFromDeath(level, event.getPlayer(), event.getDeath()));
 
-        new Thread(() -> deleteOldDeaths(event.getPlayer().serverLevel())).start();
+        deleteOldDeaths(event.getPlayer().serverLevel());
     }
 
     public static void deleteOldDeaths(ServerLevel serverWorld) {
@@ -30,8 +37,8 @@ public class DeathEvents {
             return;
         }
         long ageInMillis = ((long) ageInDays) * 24L * 60L * 60L * 1000L;
-
-        DeathManager.removeDeathsOlderThan(serverWorld, ageInMillis);
+        //TODO Use an executor
+        new Thread(() -> DeathManager.removeDeathsOlderThan(serverWorld, ageInMillis)).start();
     }
 
 }
