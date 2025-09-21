@@ -1,1 +1,1 @@
-- Fixed player reach distance not respected when opening corpses
+- Improved corpse spawn position
