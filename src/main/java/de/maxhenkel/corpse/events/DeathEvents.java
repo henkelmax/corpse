@@ -5,6 +5,7 @@ import de.maxhenkel.corelib.death.PlayerDeathEvent;
 import de.maxhenkel.corpse.Main;
 import de.maxhenkel.corpse.entities.CorpseEntity;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 public class DeathEvents {
@@ -19,16 +20,12 @@ public class DeathEvents {
             event.storeDeath();
         }
         event.removeDrops();
-        // Get the level from the players dimension instead of using the players level directly
-        // as this somehow causes the corpse to not spawn when the player is riding an entity
-        ServerLevel level = event.getPlayer().server.getLevel(event.getPlayer().serverLevel().dimension());
-        if (level == null) {
-            // Fallback to the players level
-            level = event.getPlayer().serverLevel();
-        }
-        level.addFreshEntity(CorpseEntity.createFromDeath(level, event.getPlayer(), event.getDeath()));
 
-        deleteOldDeaths(event.getPlayer().serverLevel());
+        ServerPlayer player = event.getPlayer();
+
+        player.serverLevel().addFreshEntity(CorpseEntity.createFromDeath(player, event.getDeath()));
+
+        deleteOldDeaths(player.serverLevel());
     }
 
     public static void deleteOldDeaths(ServerLevel serverWorld) {

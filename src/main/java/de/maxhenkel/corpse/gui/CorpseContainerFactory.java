@@ -23,7 +23,7 @@ public abstract class CorpseContainerFactory<T extends CorpseContainerBase> impl
                 // That the client knows if the additional items slot isn't empty
                 death.getAdditionalItems().add(new ItemStack(Items.STONE));
             }
-            return create(windowId, inv, CorpseEntity.createFromDeath(inv.player.level(), inv.player, death), inv.player.getAbilities().instabuild, isHistory);
+            return create(windowId, inv, CorpseEntity.createFromDeath(inv.player, death), inv.player.getAbilities().instabuild, isHistory);
         } else {
             UUID uuid = buffer.readUUID();
 

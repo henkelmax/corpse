@@ -1,1 +1,1 @@
-- Fixed corpse not spawning when player is riding an entity
+- Improved corpse spawn position
