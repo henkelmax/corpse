@@ -5,6 +5,7 @@ import de.maxhenkel.corelib.death.PlayerDeathEvent;
 import de.maxhenkel.corpse.Main;
 import de.maxhenkel.corpse.entities.CorpseEntity;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.bus.api.SubscribeEvent;
 
 public class DeathEvents {
@@ -13,15 +14,18 @@ public class DeathEvents {
         de.maxhenkel.corelib.death.DeathEvents.register();
     }
 
-    @SubscribeEvent()
+    @SubscribeEvent
     public void playerDeath(PlayerDeathEvent event) {
         if (Main.SERVER_CONFIG.maxDeathAge.get() != 0) {
             event.storeDeath();
         }
         event.removeDrops();
-        event.getPlayer().level().addFreshEntity(CorpseEntity.createFromDeath(event.getPlayer(), event.getDeath()));
 
-        new Thread(() -> deleteOldDeaths(event.getPlayer().serverLevel())).start();
+        ServerPlayer player = event.getPlayer();
+
+        player.serverLevel().addFreshEntity(CorpseEntity.createFromDeath(player, event.getDeath()));
+
+        deleteOldDeaths(player.serverLevel());
     }
 
     public static void deleteOldDeaths(ServerLevel serverWorld) {
@@ -30,8 +34,8 @@ public class DeathEvents {
             return;
         }
         long ageInMillis = ((long) ageInDays) * 24L * 60L * 60L * 1000L;
-
-        DeathManager.removeDeathsOlderThan(serverWorld, ageInMillis);
+        //TODO Use an executor
+        new Thread(() -> DeathManager.removeDeathsOlderThan(serverWorld, ageInMillis)).start();
     }
 
 }
