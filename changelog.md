@@ -1,1 +1,1 @@
-- Fixed corpses not spawning
+- Improved corpse spawn position
