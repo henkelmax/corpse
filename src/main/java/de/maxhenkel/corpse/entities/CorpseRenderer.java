@@ -5,13 +5,13 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import de.maxhenkel.corelib.CachedMap;
 import de.maxhenkel.corpse.CorpseMod;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.SkeletonRenderer;
-import net.minecraft.client.renderer.entity.player.PlayerRenderer;
+import net.minecraft.client.renderer.entity.player.AvatarRenderer;
+import net.minecraft.client.renderer.state.CameraRenderState;
 
 import java.util.UUID;
 
@@ -19,7 +19,6 @@ public class CorpseRenderer extends EntityRenderer<CorpseEntity, CorpseRenderSta
 
     private final CachedMap<UUID, DummyPlayer> players;
     private final CachedMap<UUID, DummySkeleton> skeletons;
-    private static final Minecraft MC = Minecraft.getInstance();
 
     public CorpseRenderer(EntityRendererProvider.Context renderer) {
         super(renderer);
@@ -33,8 +32,8 @@ public class CorpseRenderer extends EntityRenderer<CorpseEntity, CorpseRenderSta
     }
 
     @Override
-    public void render(CorpseRenderState state, PoseStack stack, MultiBufferSource source, int packedLight) {
-        super.render(state, stack, source, packedLight);
+    public void submit(CorpseRenderState state, PoseStack stack, SubmitNodeCollector collector, CameraRenderState cameraRenderState) {
+        super.submit(state, stack, collector, cameraRenderState);
 
         stack.pushPose();
 
@@ -49,13 +48,9 @@ public class CorpseRenderer extends EntityRenderer<CorpseEntity, CorpseRenderSta
         }
 
         if (state.skeleton) {
-            if (state.skeletonRenderState != null && state.skeletonRenderer != null) {
-                state.skeletonRenderer.render(state.skeletonRenderState, stack, source, packedLight);
-            }
+            entityRenderDispatcher.getRenderer(state.skeletonRenderState).submit(state.skeletonRenderState, stack, collector, cameraRenderState);
         } else {
-            if (state.playerRenderState != null && state.playerRenderer != null) {
-                state.playerRenderer.render(state.playerRenderState, stack, source, packedLight);
-            }
+            entityRenderDispatcher.getRenderer(state.playerRenderState).submit(state.playerRenderState, stack, collector, cameraRenderState);
         }
 
         stack.popPose();
@@ -69,22 +64,12 @@ public class CorpseRenderer extends EntityRenderer<CorpseEntity, CorpseRenderSta
         state.skeleton = corpse.isSkeleton();
         if (corpse.isSkeleton()) {
             DummySkeleton skeleton = skeletons.get(corpse.getUUID(), () -> new DummySkeleton(corpse.level(), corpse.getEquipment()));
-            if (state.skeletonRenderer == null) {
-                state.skeletonRenderer = (SkeletonRenderer) MC.getEntityRenderDispatcher().getRenderer(skeleton);
-            }
-            if (state.skeletonRenderState == null) {
-                state.skeletonRenderState = state.skeletonRenderer.createRenderState();
-            }
-            state.skeletonRenderer.extractRenderState(skeleton, state.skeletonRenderState, 0F);
+            ((SkeletonRenderer) entityRenderDispatcher.getRenderer(state.skeletonRenderState)).extractRenderState(skeleton, state.skeletonRenderState, 0F);
+            state.skeletonRenderState.lightCoords = state.lightCoords;
         } else {
-            DummyPlayer dummyPlayer = players.get(corpse.getUUID(), () -> new DummyPlayer((ClientLevel) corpse.level(), new GameProfile(corpse.getPlayerUuid(), corpse.getCorpseName()), corpse.getEquipment(), corpse.getCorpseModel()));//;
-            if (state.playerRenderer == null) {
-                state.playerRenderer = (PlayerRenderer) MC.getEntityRenderDispatcher().getRenderer(dummyPlayer);
-            }
-            if (state.playerRenderState == null) {
-                state.playerRenderState = state.playerRenderer.createRenderState();
-            }
-            state.playerRenderer.extractRenderState(dummyPlayer, state.playerRenderState, 0F);
+            DummyPlayer dummyPlayer = players.get(corpse.getUUID(), () -> new DummyPlayer((ClientLevel) corpse.level(), new GameProfile(corpse.getPlayerUuid(), corpse.getCorpseName()), corpse.getEquipment(), corpse.getCorpseModel()));
+            ((AvatarRenderer) entityRenderDispatcher.getRenderer(state.playerRenderState)).extractRenderState(dummyPlayer, state.playerRenderState, 0F);
+            state.playerRenderState.lightCoords = state.lightCoords;
         }
     }
 

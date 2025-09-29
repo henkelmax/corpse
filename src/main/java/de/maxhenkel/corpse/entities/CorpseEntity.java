@@ -90,7 +90,7 @@ public class CorpseEntity extends CorpseBoundingBoxBase {
             move(MoverType.SELF, getDeltaMovement());
         }
 
-        if (level().isClientSide) {
+        if (level().isClientSide()) {
             return;
         }
 
@@ -134,10 +134,10 @@ public class CorpseEntity extends CorpseBoundingBoxBase {
 
     @Override
     public InteractionResult interact(Player player, InteractionHand hand) {
-        if (!level().isClientSide && player instanceof ServerPlayer) {
+        if (!level().isClientSide() && player instanceof ServerPlayer) {
             ServerPlayer playerMP = (ServerPlayer) player;
             if (CorpseMod.SERVER_CONFIG.onlyOwnerAccess.get()) {
-                boolean isOp = playerMP.hasPermissions(playerMP.getServer().getOperatorUserPermissionLevel());
+                boolean isOp = playerMP.hasPermissions(playerMP.level().getServer().operatorUserPermissionLevel());
                 if (isOp || playerMP.getUUID().equals(getPlayerUuid())) {
                     Guis.openCorpseGUI((ServerPlayer) player, this);
                 } else if (CorpseMod.SERVER_CONFIG.skeletonAccess.get() && isSkeleton()) {

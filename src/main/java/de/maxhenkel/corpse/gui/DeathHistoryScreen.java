@@ -15,6 +15,7 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.layouts.FrameLayout;
 import net.minecraft.client.gui.layouts.LinearLayout;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
@@ -120,11 +121,11 @@ public class DeathHistoryScreen extends ScreenBase {
     }
 
     @Override
-    public boolean mouseClicked(double x, double y, int clickType) {
-        if (x >= guiLeft + 7 && x <= guiLeft + hSplit && y >= guiTop + 70 && y <= guiTop + 100 + font.lineHeight) {
+    public boolean mouseClicked(MouseButtonEvent event, boolean b) {
+        if (event.x() >= guiLeft + 7 && event.x() <= guiLeft + hSplit && event.y() >= guiTop + 70 && event.y() <= guiTop + 100 + font.lineHeight) {
             onTeleportClick();
         }
-        return super.mouseClicked(x, y, clickType);
+        return super.mouseClicked(event, b);
     }
 
     private void onTeleportClick() {

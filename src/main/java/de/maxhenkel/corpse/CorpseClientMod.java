@@ -39,7 +39,7 @@ public class CorpseClientMod {
 
     @SubscribeEvent
     static void onRegisterKeyBinds(RegisterKeyMappingsEvent event) {
-        KEY_DEATH_HISTORY = new KeyMapping("key.corpse.death_history", GLFW.GLFW_KEY_U, "key.categories.misc");
+        KEY_DEATH_HISTORY = new KeyMapping("key.corpse.death_history", GLFW.GLFW_KEY_U, KeyMapping.Category.MISC);
         event.register(KEY_DEATH_HISTORY);
     }
 
