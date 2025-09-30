@@ -41,7 +41,6 @@ public abstract class CorpseContainerFactory<T extends CorpseContainerBase> impl
                 corpseEntity.getDeath().getAdditionalItems().add(new ItemStack(Items.STONE));
             }
             return create(windowId, inv.player.getInventory(), corpseEntity, true, isHistory);
-
         }
     }
 

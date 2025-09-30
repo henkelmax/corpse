@@ -20,9 +20,9 @@ public class CorpseInventoryContainer extends CorpseContainerBase implements ITr
 
     private static final ResourceLocation[] ARMOR_SLOT_TEXTURES = new ResourceLocation[]{InventoryMenu.EMPTY_ARMOR_SLOT_BOOTS, InventoryMenu.EMPTY_ARMOR_SLOT_LEGGINGS, InventoryMenu.EMPTY_ARMOR_SLOT_CHESTPLATE, InventoryMenu.EMPTY_ARMOR_SLOT_HELMET};
 
-    private ItemListInventory mainInventory;
-    private ItemListInventory armorInventory;
-    private ItemListInventory offHandInventory;
+    private final ItemListInventory mainInventory;
+    private final ItemListInventory armorInventory;
+    private final ItemListInventory offHandInventory;
 
     public CorpseInventoryContainer(int id, Inventory playerInventory, CorpseEntity corpse, boolean editable, boolean history) {
         super(CorpseMod.CONTAINER_TYPE_CORPSE_INVENTORY.get(), id, playerInventory, corpse, editable, history);
