@@ -7,16 +7,18 @@ import de.maxhenkel.corpse.entities.CorpseEntity;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.items.wrapper.PlayerMainInvWrapper;
+import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.item.PlayerInventoryWrapper;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 
 public class CorpseAdditionalContainer extends CorpseContainerBase implements ITransferrable {
 
-    private PlayerMainInvWrapper playerWrapper;
+    private final PlayerInventoryWrapper playerWrapper;
 
     public CorpseAdditionalContainer(int id, Inventory playerInventory, CorpseEntity corpse, boolean editable, boolean history) {
         super(CorpseMod.CONTAINER_TYPE_CORPSE_ADDITIONAL_ITEMS.get(), id, playerInventory, corpse, editable, history);
         this.inventory = new ItemListInventory(corpse.getDeath().getAdditionalItems());
-        this.playerWrapper = new PlayerMainInvWrapper(playerInventory);
+        this.playerWrapper = PlayerInventoryWrapper.of(playerInventory);
 
         setSlots(0);
     }
@@ -43,13 +45,15 @@ public class CorpseAdditionalContainer extends CorpseContainerBase implements IT
         if (!isEditable()) {
             return;
         }
-        for (int i = 0; i < inventory.getContainerSize(); i++) {
-            ItemStack stack = inventory.getItem(i);
-            for (int j = 0; j < playerWrapper.getSlots(); j++) {
-                stack = playerWrapper.insertItem(j, stack, false);
-                inventory.setItem(i, stack);
-                if (stack.isEmpty()) {
-                    break;
+        try (Transaction transaction = Transaction.open(null)) {
+            for (int i = 0; i < inventory.getContainerSize(); i++) {
+                ItemStack stack = inventory.getItem(i);
+                int inserted = playerWrapper.insert(ItemResource.of(stack), stack.getCount(), transaction);
+                int invAmount = stack.getCount() - inserted;
+                if (invAmount <= 0) {
+                    inventory.setItem(i, ItemStack.EMPTY);
+                } else {
+                    inventory.setItem(i, stack.split(invAmount));
                 }
             }
         }
