@@ -1,1 +1,1 @@
-- Improved insertion of additional items
+- Fixed additional items not being inserted properly

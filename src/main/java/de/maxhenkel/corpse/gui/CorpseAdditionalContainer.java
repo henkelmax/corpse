@@ -56,6 +56,7 @@ public class CorpseAdditionalContainer extends CorpseContainerBase implements IT
                     inventory.setItem(i, stack.split(invAmount));
                 }
             }
+            transaction.commit();
         }
     }
 
