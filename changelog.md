@@ -1,1 +1,1 @@
-- Fixed additional items not being inserted properly
+- Fixed skeleton corpse causing a crash
