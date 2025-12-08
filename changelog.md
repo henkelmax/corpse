@@ -1,1 +1,1 @@
-- Fixed skeleton corpse causing a crash
+- Updated to 1.21.11

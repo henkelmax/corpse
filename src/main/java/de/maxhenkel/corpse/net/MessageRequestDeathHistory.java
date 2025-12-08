@@ -7,7 +7,7 @@ import de.maxhenkel.corpse.CorpseMod;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.protocol.PacketFlow;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
@@ -17,7 +17,7 @@ import java.util.UUID;
 
 public class MessageRequestDeathHistory implements Message<MessageRequestDeathHistory> {
 
-    public static final CustomPacketPayload.Type<MessageRequestDeathHistory> TYPE = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(CorpseMod.MODID, "request_death_history"));
+    public static final CustomPacketPayload.Type<MessageRequestDeathHistory> TYPE = new CustomPacketPayload.Type<>(Identifier.fromNamespaceAndPath(CorpseMod.MODID, "request_death_history"));
 
     public MessageRequestDeathHistory() {
 

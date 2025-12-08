@@ -15,18 +15,24 @@ dependencies {
     compileOnly "de.maxhenkel.corelib:corelib:${minecraft_version}-${corelib_version}:javadoc"
 
     compileOnly "maven.modrinth:jade:${jade_version}"
-    compileOnly "maven.modrinth:openhud:neoforge-${openhud_version}"
 }
 
 processResources {
     filesMatching('**/*.toml') {
         expand 'mod_version': mod_version,
                 'neoforge_dependency': neoforge_dependency,
-                'openhud_dependency': openhud_dependency,
                 'minecraft_version': minecraft_version
     }
 }
 
 shadowJar {
     relocate 'de.maxhenkel.corelib', 'de.maxhenkel.corpse.corelib'
+}
+
+sourceSets {
+    main {
+        java {
+            exclude 'de/maxhenkel/corpse/integration/waila/*/**'
+        }
+    }
 }

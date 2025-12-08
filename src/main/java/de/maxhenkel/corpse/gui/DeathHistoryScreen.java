@@ -7,7 +7,6 @@ import de.maxhenkel.corelib.FontColorUtils;
 import de.maxhenkel.corelib.death.Death;
 import de.maxhenkel.corpse.CorpseMod;
 import de.maxhenkel.corpse.entities.DummyPlayer;
-import de.maxhenkel.corpse.integration.openhud.OpenHudIntegration;
 import de.maxhenkel.corpse.net.MessageShowCorpseInventory;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphics;
@@ -18,12 +17,9 @@ import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.*;
-import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 
 import javax.annotation.Nullable;
@@ -34,7 +30,7 @@ import java.util.Optional;
 
 public class DeathHistoryScreen extends ScreenBase {
 
-    private static final ResourceLocation DEATH_HISTORY_GUI_TEXTURE = ResourceLocation.fromNamespaceAndPath(CorpseMod.MODID, "textures/gui/gui_death_history.png");
+    private static final Identifier DEATH_HISTORY_GUI_TEXTURE = Identifier.fromNamespaceAndPath(CorpseMod.MODID, "textures/gui/gui_death_history.png");
     private static final Component TITLE = Component.translatable("gui.corpse.death_history.title").withStyle(ChatFormatting.BLACK);
     private static final Component TELEPORT = Component.translatable("tooltip.corpse.teleport");
     private static final Component DIMENSION = Component.translatable("gui.corpse.death_history.dimension");
@@ -79,14 +75,6 @@ public class DeathHistoryScreen extends ScreenBase {
             }
             checkButtons();
         }).build();
-
-        if (OpenHudIntegration.isLoaded()) {
-            waypoint = Button.builder(Component.translatable("button.corpse.add_waypoint"), button -> {
-                ResourceLocation dim = ResourceLocation.tryParse(getCurrentDeath().getDimension());
-                ResourceKey<Level> dimension = dim != null ? ResourceKey.create(Registries.DIMENSION, dim) : null;
-                OpenHudIntegration.openWaypointScreen(this, dimension, getCurrentDeath().getBlockPos());
-            }).build();
-        }
 
         showItems = Button.builder(Component.translatable("button.corpse.show_items"), button -> {
             ClientPacketDistributor.sendToServer(new MessageShowCorpseInventory(getCurrentDeath().getPlayerUUID(), getCurrentDeath().getId()));

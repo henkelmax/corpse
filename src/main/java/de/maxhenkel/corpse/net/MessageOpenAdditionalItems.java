@@ -7,13 +7,13 @@ import de.maxhenkel.corpse.gui.Guis;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.protocol.PacketFlow;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 public class MessageOpenAdditionalItems implements Message<MessageOpenAdditionalItems> {
 
-    public static final CustomPacketPayload.Type<MessageOpenAdditionalItems> TYPE = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(CorpseMod.MODID, "open_additional_items"));
+    public static final CustomPacketPayload.Type<MessageOpenAdditionalItems> TYPE = new CustomPacketPayload.Type<>(Identifier.fromNamespaceAndPath(CorpseMod.MODID, "open_additional_items"));
 
     public MessageOpenAdditionalItems() {
 

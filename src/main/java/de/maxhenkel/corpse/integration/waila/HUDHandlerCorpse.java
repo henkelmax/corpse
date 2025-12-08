@@ -7,7 +7,7 @@ import de.maxhenkel.corpse.gui.DeathHistoryScreen;
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import snownee.jade.api.EntityAccessor;
 import snownee.jade.api.IEntityComponentProvider;
 import snownee.jade.api.ITooltip;
@@ -15,11 +15,11 @@ import snownee.jade.api.config.IPluginConfig;
 
 public class HUDHandlerCorpse implements IEntityComponentProvider {
 
-    public static final ResourceLocation OBJECT_NAME_TAG = ResourceLocation.fromNamespaceAndPath("jade", "object_name");
+    public static final Identifier OBJECT_NAME_TAG = Identifier.fromNamespaceAndPath("jade", "object_name");
 
     public static final HUDHandlerCorpse INSTANCE = new HUDHandlerCorpse();
 
-    private static final ResourceLocation UID = ResourceLocation.fromNamespaceAndPath(CorpseMod.MODID, "corpse");
+    private static final Identifier UID = Identifier.fromNamespaceAndPath(CorpseMod.MODID, "corpse");
 
     @Override
     public void appendTooltip(ITooltip iTooltip, EntityAccessor entityAccessor, IPluginConfig iPluginConfig) {
@@ -43,7 +43,7 @@ public class HUDHandlerCorpse implements IEntityComponentProvider {
     }
 
     @Override
-    public ResourceLocation getUid() {
+    public Identifier getUid() {
         return UID;
     }
 }

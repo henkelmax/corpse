@@ -9,13 +9,13 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
 import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 
 public class CorpseInventoryScreen extends ScreenBase<CorpseInventoryContainer> {
 
-    public static final ResourceLocation CORPSE_GUI_TEXTURE = ResourceLocation.fromNamespaceAndPath(CorpseMod.MODID, "textures/gui/inventory_corpse.png");
+    public static final Identifier CORPSE_GUI_TEXTURE = Identifier.fromNamespaceAndPath(CorpseMod.MODID, "textures/gui/inventory_corpse.png");
 
     public static final MutableComponent TRANSFER_ITEMS = Component.translatable("button.corpse.transfer_items");
     public static final MutableComponent ADDITIONAL_ITEMS = Component.translatable("button.corpse.additional_items");

@@ -4,7 +4,6 @@ import de.maxhenkel.corelib.death.Death;
 import de.maxhenkel.corpse.CorpseMod;
 import de.maxhenkel.corpse.gui.Guis;
 import de.maxhenkel.corpse.net.MessageSpawnDeathParticles;
-import net.minecraft.Util;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -12,8 +11,10 @@ import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.permissions.Permissions;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.tags.FluidTags;
+import net.minecraft.util.Util;
 import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -137,7 +138,7 @@ public class CorpseEntity extends CorpseBoundingBoxBase {
         if (!level().isClientSide() && player instanceof ServerPlayer) {
             ServerPlayer playerMP = (ServerPlayer) player;
             if (CorpseMod.SERVER_CONFIG.onlyOwnerAccess.get()) {
-                boolean isOp = playerMP.hasPermissions(playerMP.level().getServer().operatorUserPermissionLevel());
+                boolean isOp = playerMP.permissions().hasPermission(Permissions.COMMANDS_ADMIN);
                 if (isOp || playerMP.getUUID().equals(getPlayerUuid())) {
                     Guis.openCorpseGUI((ServerPlayer) player, this);
                 } else if (CorpseMod.SERVER_CONFIG.skeletonAccess.get() && isSkeleton()) {

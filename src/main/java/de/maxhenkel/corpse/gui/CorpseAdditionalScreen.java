@@ -9,7 +9,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
 import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 
@@ -17,7 +17,7 @@ import java.util.Collections;
 
 public class CorpseAdditionalScreen extends ScreenBase<CorpseAdditionalContainer> {
 
-    public static final ResourceLocation CORPSE_GUI_TEXTURE = ResourceLocation.fromNamespaceAndPath(CorpseMod.MODID, "textures/gui/gui_corpse.png");
+    public static final Identifier CORPSE_GUI_TEXTURE = Identifier.fromNamespaceAndPath(CorpseMod.MODID, "textures/gui/gui_corpse.png");
 
     private static final int PADDING = 7;
 

@@ -22,7 +22,8 @@ public class TransferItemsButton extends AbstractButton {
     }
 
     @Override
-    public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+    public void renderContents(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+        renderDefaultSprite(guiGraphics);
         if (isHovered) {
             guiGraphics.blit(RenderPipelines.GUI_TEXTURED, CorpseAdditionalScreen.CORPSE_GUI_TEXTURE, getX(), getY(), 176, 10, WIDTH, HEIGHT, 256, 256);
         } else {

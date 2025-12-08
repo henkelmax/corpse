@@ -5,7 +5,7 @@ import de.maxhenkel.corelib.inventory.LockedSlot;
 import de.maxhenkel.corpse.CorpseMod;
 import de.maxhenkel.corpse.entities.CorpseEntity;
 import net.minecraft.core.NonNullList;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -18,7 +18,7 @@ import java.util.List;
 
 public class CorpseInventoryContainer extends CorpseContainerBase implements ITransferrable {
 
-    private static final ResourceLocation[] ARMOR_SLOT_TEXTURES = new ResourceLocation[]{InventoryMenu.EMPTY_ARMOR_SLOT_BOOTS, InventoryMenu.EMPTY_ARMOR_SLOT_LEGGINGS, InventoryMenu.EMPTY_ARMOR_SLOT_CHESTPLATE, InventoryMenu.EMPTY_ARMOR_SLOT_HELMET};
+    private static final Identifier[] ARMOR_SLOT_TEXTURES = new Identifier[]{InventoryMenu.EMPTY_ARMOR_SLOT_BOOTS, InventoryMenu.EMPTY_ARMOR_SLOT_LEGGINGS, InventoryMenu.EMPTY_ARMOR_SLOT_CHESTPLATE, InventoryMenu.EMPTY_ARMOR_SLOT_HELMET};
 
     private final ItemListInventory mainInventory;
     private final ItemListInventory armorInventory;
@@ -35,7 +35,7 @@ public class CorpseInventoryContainer extends CorpseContainerBase implements ITr
             int slotIndex = 3 - i;
             addSlot(new LockedSlot(armorInventory, slotIndex, 8 + i * 18, 18, true, !editable) {
                 @Override
-                public ResourceLocation getNoItemIcon() {
+                public Identifier getNoItemIcon() {
                     return ARMOR_SLOT_TEXTURES[slotIndex];
                 }
             });
@@ -43,7 +43,7 @@ public class CorpseInventoryContainer extends CorpseContainerBase implements ITr
 
         addSlot(new LockedSlot(offHandInventory, 0, 98, 18, true, !editable) {
             @Override
-            public ResourceLocation getNoItemIcon() {
+            public Identifier getNoItemIcon() {
                 return InventoryMenu.EMPTY_ARMOR_SLOT_SHIELD;
             }
         });
