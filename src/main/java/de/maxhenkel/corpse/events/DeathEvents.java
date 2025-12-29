@@ -35,7 +35,7 @@ public class DeathEvents {
         }
         long ageInMillis = ((long) ageInDays) * 24L * 60L * 60L * 1000L;
         //TODO Use an executor
-        new Thread(() -> DeathManager.removeDeathsOlderThan(serverWorld, ageInMillis)).start();
+        serverWorld.getServer().execute(() -> DeathManager.removeDeathsOlderThan(serverWorld, ageInMillis));
     }
 
 }
