@@ -134,7 +134,7 @@ public class CorpseEntity extends CorpseBoundingBoxBase {
     }
 
     @Override
-    public InteractionResult interact(Player player, InteractionHand hand) {
+    public InteractionResult interact(Player player, InteractionHand hand, Vec3 location) {
         if (!level().isClientSide() && player instanceof ServerPlayer) {
             ServerPlayer playerMP = (ServerPlayer) player;
             if (CorpseMod.SERVER_CONFIG.onlyOwnerAccess.get()) {
@@ -246,7 +246,7 @@ public class CorpseEntity extends CorpseBoundingBoxBase {
         Vec3 lookVec = getLookAngle().normalize();
         for (int i = 0; i <= 10; i++) {
             double d = ((((double) i) / 10D) - 0.5D) * 2D;
-            level().addParticle(ParticleTypes.LARGE_SMOKE, x + lookVec.x * d + (level().random.nextDouble() - 0.5D), y + 0.25D, z + lookVec.z * d + (level().random.nextDouble() - 0.5D), 0D, 0D, 0D);
+            level().addParticle(ParticleTypes.LARGE_SMOKE, x + lookVec.x * d + (level().getRandom().nextDouble() - 0.5D), y + 0.25D, z + lookVec.z * d + (level().getRandom().nextDouble() - 0.5D), 0D, 0D, 0D);
         }
     }
 

@@ -5,7 +5,7 @@ import de.maxhenkel.corpse.CorpseMod;
 import de.maxhenkel.corpse.entities.CorpseEntity;
 import de.maxhenkel.corpse.net.MessageOpenAdditionalItems;
 import de.maxhenkel.corpse.net.MessageTransferItems;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -33,12 +33,9 @@ public class CorpseInventoryScreen extends ScreenBase<CorpseInventoryContainer> 
     private Button additionalItems;
 
     public CorpseInventoryScreen(CorpseEntity corpse, Inventory playerInventory, CorpseInventoryContainer container, Component title) {
-        super(CORPSE_GUI_TEXTURE, container, playerInventory, title);
+        super(CORPSE_GUI_TEXTURE, container, playerInventory, title, 176, 245);
         this.playerInventory = playerInventory;
         this.corpse = corpse;
-
-        imageWidth = 176;
-        imageHeight = 245;
     }
 
     @Override
@@ -85,11 +82,11 @@ public class CorpseInventoryScreen extends ScreenBase<CorpseInventoryContainer> 
     }
 
     @Override
-    public void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
-        super.renderLabels(guiGraphics, mouseX, mouseY);
+    public void extractLabels(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
+        super.extractLabels(guiGraphics, mouseX, mouseY);
 
-        guiGraphics.drawString(font, corpse.getDisplayName(), 7, 7, FONT_COLOR, false);
-        guiGraphics.drawString(font, playerInventory.getDisplayName(), 7, imageHeight - 96 + 2, FONT_COLOR, false);
+        guiGraphics.text(font, corpse.getDisplayName(), 7, 7, FONT_COLOR, false);
+        guiGraphics.text(font, playerInventory.getDisplayName(), 7, imageHeight - 96 + 2, FONT_COLOR, false);
     }
 
 }

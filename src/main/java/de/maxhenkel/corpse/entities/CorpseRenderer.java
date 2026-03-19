@@ -11,7 +11,7 @@ import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.SkeletonRenderer;
 import net.minecraft.client.renderer.entity.player.AvatarRenderer;
-import net.minecraft.client.renderer.state.CameraRenderState;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
 
 import java.util.UUID;
 

@@ -5,7 +5,7 @@ import de.maxhenkel.corpse.CorpseMod;
 import de.maxhenkel.corpse.entities.CorpseEntity;
 import de.maxhenkel.corpse.net.MessageSwitchInventoryPage;
 import de.maxhenkel.corpse.net.MessageTransferItems;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -30,13 +30,10 @@ public class CorpseAdditionalScreen extends ScreenBase<CorpseAdditionalContainer
     private int page;
 
     public CorpseAdditionalScreen(CorpseEntity corpse, Inventory playerInventory, CorpseAdditionalContainer container, Component title) {
-        super(CORPSE_GUI_TEXTURE, container, playerInventory, title);
+        super(CORPSE_GUI_TEXTURE, container, playerInventory, title, 176, 248);
         this.playerInventory = playerInventory;
         this.corpse = corpse;
         this.page = 0;
-
-        imageWidth = 176;
-        imageHeight = 248;
     }
 
     @Override
@@ -79,20 +76,20 @@ public class CorpseAdditionalScreen extends ScreenBase<CorpseAdditionalContainer
     }
 
     @Override
-    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
-        super.render(guiGraphics, mouseX, mouseY, partialTicks);
+    public void extractRenderState(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
+        super.extractRenderState(guiGraphics, mouseX, mouseY, partialTicks);
 
-        guiGraphics.drawString(font, corpse.getDisplayName(), leftPos + 7, topPos + 7, FONT_COLOR, false);
-        guiGraphics.drawString(font, playerInventory.getDisplayName(), leftPos + 7, topPos + imageHeight - 96 + 2, FONT_COLOR, false);
+        guiGraphics.text(font, corpse.getDisplayName(), leftPos + 7, topPos + 7, FONT_COLOR, false);
+        guiGraphics.text(font, playerInventory.getDisplayName(), leftPos + 7, topPos + imageHeight - 96 + 2, FONT_COLOR, false);
 
         MutableComponent pageName = Component.translatable("gui.corpse.page", page + 1, getPages());
         int pageWidth = font.width(pageName);
-        guiGraphics.drawString(font, pageName, leftPos + imageWidth / 2 - pageWidth / 2, topPos + imageHeight - 113, FONT_COLOR, false);
+        guiGraphics.text(font, pageName, leftPos + imageWidth / 2 - pageWidth / 2, topPos + imageHeight - 113, FONT_COLOR, false);
     }
 
     @Override
-    protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
-        super.renderLabels(guiGraphics, mouseX, mouseY);
+    protected void extractLabels(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
+        super.extractLabels(guiGraphics, mouseX, mouseY);
 
         if (mouseX >= leftPos + imageWidth - TransferItemsButton.WIDTH - 9 && mouseX < leftPos + imageWidth - 9 && mouseY >= topPos + 5 && mouseY < topPos + 5 + TransferItemsButton.HEIGHT) {
             guiGraphics.setTooltipForNextFrame(font, Collections.singletonList(Component.translatable("button.corpse.transfer_items").getVisualOrderText()), mouseX - leftPos, mouseY - topPos);

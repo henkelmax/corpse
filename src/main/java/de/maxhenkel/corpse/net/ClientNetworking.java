@@ -23,7 +23,7 @@ public class ClientNetworking {
         if (deaths.size() > 0) {
             Minecraft.getInstance().setScreen(new DeathHistoryScreen(deaths));
         } else {
-            Minecraft.getInstance().player.displayClientMessage(Component.translatable("message.corpse.no_death_history"), true);
+            Minecraft.getInstance().player.sendOverlayMessage(Component.translatable("message.corpse.no_death_history"));
         }
     }
 

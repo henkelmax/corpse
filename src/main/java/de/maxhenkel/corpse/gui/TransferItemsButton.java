@@ -1,6 +1,6 @@
 package de.maxhenkel.corpse.gui;
 
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractButton;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.input.InputWithModifiers;
@@ -22,8 +22,8 @@ public class TransferItemsButton extends AbstractButton {
     }
 
     @Override
-    public void renderContents(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
-        renderDefaultSprite(guiGraphics);
+    public void extractContents(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
+        extractDefaultSprite(guiGraphics);
         if (isHovered) {
             guiGraphics.blit(RenderPipelines.GUI_TEXTURED, CorpseAdditionalScreen.CORPSE_GUI_TEXTURE, getX(), getY(), 176, 10, WIDTH, HEIGHT, 256, 256);
         } else {

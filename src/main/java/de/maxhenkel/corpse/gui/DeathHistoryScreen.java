@@ -9,7 +9,7 @@ import de.maxhenkel.corpse.CorpseMod;
 import de.maxhenkel.corpse.entities.DummyPlayer;
 import de.maxhenkel.corpse.net.MessageShowCorpseInventory;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.layouts.FrameLayout;
 import net.minecraft.client.gui.layouts.LinearLayout;
@@ -124,14 +124,14 @@ public class DeathHistoryScreen extends ScreenBase {
                         .withClickEvent(new ClickEvent.SuggestCommand("/execute in " + getCurrentDeath().getDimension() + " run tp @s " + pos.getX() + " " + pos.getY() + " " + pos.getZ()))
                         .withHoverEvent(new HoverEvent.ShowText(Component.translatable("chat.coordinates.tooltip")))
                 );
-        minecraft.gui.getChat().addMessage(Component.translatable("chat.corpse.teleport_death_location", teleport));
+        minecraft.gui.getChat().addServerSystemMessage(Component.translatable("chat.corpse.teleport_death_location", teleport));
         minecraft.getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1F));
         minecraft.setScreen(null);
     }
 
     @Override
-    public void renderBackground(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
-        super.renderBackground(guiGraphics, mouseX, mouseY, partialTick);
+    public void extractBackground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTick) {
+        super.extractBackground(guiGraphics, mouseX, mouseY, partialTick);
 
         Death death = getCurrentDeath();
 
@@ -185,7 +185,7 @@ public class DeathHistoryScreen extends ScreenBase {
         // Player
         DummyPlayer dummyPlayer = players.get(death, () -> new DummyPlayer(minecraft.level, new GameProfile(death.getPlayerUUID(), death.getPlayerName()), death.getEquipment(), death.getModel()));
 
-        InventoryScreen.renderEntityInInventoryFollowsMouse(guiGraphics, (int) (guiLeft + xSize * 0.75F - 45), guiTop + 25, (int) (guiLeft + xSize * 0.75F + 45), guiTop + 140, 50, 0.0625F, mouseX, mouseY, dummyPlayer);
+        InventoryScreen.extractEntityInInventoryFollowsMouse(guiGraphics, (int) (guiLeft + xSize * 0.75F - 45), guiTop + 25, (int) (guiLeft + xSize * 0.75F + 45), guiTop + 140, 50, 0.0625F, mouseX, mouseY, dummyPlayer);
 
         if (mouseX >= guiLeft + 7 && mouseX <= guiLeft + hSplit && mouseY >= guiTop + 70 && mouseY <= guiTop + 100 + font.lineHeight) {
             guiGraphics.setTooltipForNextFrame(font, TELEPORT, mouseX, mouseY);
@@ -215,12 +215,12 @@ public class DeathHistoryScreen extends ScreenBase {
         next.active = index < deaths.size() - 1;
     }
 
-    public void drawLeft(GuiGraphics guiGraphics, MutableComponent text, int height) {
-        guiGraphics.drawString(font, text, guiLeft + 7, height, FontColorUtils.getFontColor(ChatFormatting.BLACK), false);
+    public void drawLeft(GuiGraphicsExtractor guiGraphics, MutableComponent text, int height) {
+        guiGraphics.text(font, text, guiLeft + 7, height, FontColorUtils.getFontColor(ChatFormatting.BLACK), false);
     }
 
-    public void drawRight(GuiGraphics guiGraphics, MutableComponent text, int height) {
-        guiGraphics.drawString(font, text, guiLeft + hSplit - font.width(text), height, FontColorUtils.getFontColor(ChatFormatting.BLACK), false);
+    public void drawRight(GuiGraphicsExtractor guiGraphics, MutableComponent text, int height) {
+        guiGraphics.text(font, text, guiLeft + hSplit - font.width(text), height, FontColorUtils.getFontColor(ChatFormatting.BLACK), false);
     }
 
     public Death getCurrentDeath() {
