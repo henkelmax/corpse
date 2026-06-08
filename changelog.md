@@ -1,1 +1,1 @@
-- Improved corpse spawn position
+- Updated Russian translation
