@@ -1,2 +1,2 @@
 - Updated to 26.2
-- - Updated Russian translation
+- Updated Russian translation
