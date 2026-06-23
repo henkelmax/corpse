@@ -126,7 +126,7 @@ public class DeathHistoryScreen extends ScreenBase {
                 );
         minecraft.gui.hud.getChat().addServerSystemMessage(Component.translatable("chat.corpse.teleport_death_location", teleport));
         minecraft.getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1F));
-        minecraft.setScreenAndShow(null);
+        minecraft.gui.setScreen(null);
     }
 
     @Override

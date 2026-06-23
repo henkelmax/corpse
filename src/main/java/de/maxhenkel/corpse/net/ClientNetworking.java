@@ -21,7 +21,7 @@ public class ClientNetworking {
 
     public static void openCorpseHistory(List<Death> deaths) {
         if (deaths.size() > 0) {
-            Minecraft.getInstance().setScreenAndShow(new DeathHistoryScreen(deaths));
+            Minecraft.getInstance().gui.setScreen(new DeathHistoryScreen(deaths));
         } else {
             Minecraft.getInstance().player.sendOverlayMessage(Component.translatable("message.corpse.no_death_history"));
         }
