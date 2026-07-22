@@ -17,7 +17,6 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
-import java.util.UUID;
 
 public class CorpseCommand extends CommandBase {
 
@@ -49,7 +48,10 @@ public class CorpseCommand extends CommandBase {
             throw new WrongUsageException(getUsage(sender));
         }
 
-        UUID id = parseUUID(args[0]);
+        String id = normalizeId(args[0]);
+        if (!CorpseRegistry.isValidId(id)) {
+            throw new CommandException("Invalid corpse id: " + args[0]);
+        }
         EntityPlayerMP recipient = getPlayer(server, sender, args[1]);
         CorpseRegistry.Entry entry = CorpseLootService.claimById(server, id, recipient);
         if (entry == null) {
@@ -80,21 +82,13 @@ public class CorpseCommand extends CommandBase {
         }
     }
 
-    private UUID parseUUID(String value) throws CommandException {
-        try {
-            return UUID.fromString(value);
-        } catch (Exception e) {
-            throw new CommandException("Invalid corpse id: " + value);
-        }
-    }
-
     @Override
     public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos targetPos) {
         if (args.length == 1) {
             List<String> suggestions = new ArrayList<>();
             suggestions.add("list");
             for (CorpseRegistry.Entry entry : CorpseRegistry.get(server.getWorld(0)).getEntries()) {
-                suggestions.add(entry.getId().toString());
+                suggestions.add(entry.getId());
             }
             return getListOfStringsMatchingLastWord(args, suggestions);
         }
@@ -102,5 +96,9 @@ public class CorpseCommand extends CommandBase {
             return getListOfStringsMatchingLastWord(args, server.getOnlinePlayerNames());
         }
         return new ArrayList<>();
+    }
+
+    private String normalizeId(String id) {
+        return CorpseRegistry.normalizeId(id);
     }
 }

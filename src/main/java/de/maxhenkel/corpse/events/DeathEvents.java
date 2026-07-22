@@ -52,9 +52,9 @@ public class DeathEvents {
 
             Death death = Death.fromPlayer(player, stacks);
             DeathManager.addDeath(player, death);
-            CorpseRegistry.get(player.world).register(death);
+            CorpseRegistry.Entry entry = CorpseRegistry.get(player.world).register(death);
 
-            player.world.spawnEntity(EntityCorpse.createFromDeath(player, death));
+            player.world.spawnEntity(EntityCorpse.createFromDeath(player, death, entry.getId()));
         } catch (Exception e) {
             e.printStackTrace();
         }

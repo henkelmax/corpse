@@ -16,13 +16,18 @@ import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.UUID;
+import java.util.Locale;
 
 public class CorpseRegistry extends WorldSavedData {
 
     private static final String DATA_NAME = "corpse_recovery_registry";
+    private static final int ID_LENGTH = 6;
+    private static final String ID_ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    private static final Random RANDOM = new Random();
 
-    private final Map<UUID, Entry> entries;
+    private final Map<String, Entry> entries;
 
     public CorpseRegistry() {
         this(DATA_NAME);
@@ -55,14 +60,17 @@ public class CorpseRegistry extends WorldSavedData {
         throw new IllegalStateException("Corpse registry can only be accessed on the server");
     }
 
-    public synchronized void register(Death death) {
-        entries.put(death.getId(), Entry.fromDeath(death));
+    public synchronized Entry register(Death death) {
+        String recoveryId = generateId();
+        Entry entry = Entry.fromDeath(recoveryId, death);
+        entries.put(recoveryId, entry);
         markDirty();
+        return entry;
     }
 
     @Nullable
-    public synchronized Entry claim(UUID id) {
-        Entry entry = entries.remove(id);
+    public synchronized Entry claim(String id) {
+        Entry entry = entries.remove(normalizeId(id));
         if (entry != null) {
             markDirty();
         }
@@ -70,8 +78,8 @@ public class CorpseRegistry extends WorldSavedData {
     }
 
     @Nullable
-    public synchronized Entry get(UUID id) {
-        return entries.get(id);
+    public synchronized Entry get(String id) {
+        return entries.get(normalizeId(id));
     }
 
     public synchronized Collection<Entry> getEntries() {
@@ -85,6 +93,13 @@ public class CorpseRegistry extends WorldSavedData {
         for (int i = 0; i < list.tagCount(); i++) {
             Entry entry = Entry.fromNBT(list.getCompoundTagAt(i));
             if (entry != null) {
+                entry.id = normalizeId(entry.id);
+                if (entry.id.length() != ID_LENGTH) {
+                    entry.id = shortenLegacyId(entry.id);
+                }
+                while (entries.containsKey(entry.id)) {
+                    entry.id = generateId();
+                }
                 entries.put(entry.getId(), entry);
             }
         }
@@ -101,7 +116,7 @@ public class CorpseRegistry extends WorldSavedData {
     }
 
     public static class Entry {
-        private UUID id;
+        private String id;
         private UUID playerUUID;
         private String playerName;
         private long timestamp;
@@ -115,9 +130,9 @@ public class CorpseRegistry extends WorldSavedData {
             items = NonNullList.create();
         }
 
-        public static Entry fromDeath(Death death) {
+        public static Entry fromDeath(String recoveryId, Death death) {
             Entry entry = new Entry();
-            entry.id = death.getId();
+            entry.id = normalizeId(recoveryId);
             entry.playerUUID = death.getPlayerUUID();
             entry.playerName = death.getPlayerName();
             entry.timestamp = death.getTimestamp();
@@ -131,12 +146,16 @@ public class CorpseRegistry extends WorldSavedData {
 
         @Nullable
         public static Entry fromNBT(NBTTagCompound compound) {
-            if (!compound.hasKey("IdMost") || !compound.hasKey("IdLeast")) {
+            if (!compound.hasKey("RecoveryId") && (!compound.hasKey("IdMost") || !compound.hasKey("IdLeast"))) {
                 return null;
             }
 
             Entry entry = new Entry();
-            entry.id = new UUID(compound.getLong("IdMost"), compound.getLong("IdLeast"));
+            if (compound.hasKey("RecoveryId")) {
+                entry.id = compound.getString("RecoveryId");
+            } else {
+                entry.id = shortenLegacyId(new UUID(compound.getLong("IdMost"), compound.getLong("IdLeast")).toString());
+            }
             entry.playerUUID = new UUID(compound.getLong("PlayerUuidMost"), compound.getLong("PlayerUuidLeast"));
             entry.playerName = compound.getString("PlayerName");
             entry.timestamp = compound.getLong("Timestamp");
@@ -158,8 +177,7 @@ public class CorpseRegistry extends WorldSavedData {
 
         public NBTTagCompound toNBT() {
             NBTTagCompound compound = new NBTTagCompound();
-            compound.setLong("IdMost", id.getMostSignificantBits());
-            compound.setLong("IdLeast", id.getLeastSignificantBits());
+            compound.setString("RecoveryId", id);
             compound.setLong("PlayerUuidMost", playerUUID.getMostSignificantBits());
             compound.setLong("PlayerUuidLeast", playerUUID.getLeastSignificantBits());
             compound.setString("PlayerName", playerName == null ? "" : playerName);
@@ -189,7 +207,7 @@ public class CorpseRegistry extends WorldSavedData {
             return copies;
         }
 
-        public UUID getId() {
+        public String getId() {
             return id;
         }
 
@@ -224,5 +242,38 @@ public class CorpseRegistry extends WorldSavedData {
         public NonNullList<ItemStack> getItems() {
             return copyItems(items);
         }
+    }
+
+    public static String normalizeId(String id) {
+        return id == null ? "" : id.trim().toUpperCase(Locale.ROOT);
+    }
+
+    public static boolean isValidId(String id) {
+        String normalized = normalizeId(id);
+        return normalized.length() == ID_LENGTH && normalized.matches("[A-Z0-9]+");
+    }
+
+    public static String shortenLegacyId(String uuidString) {
+        String normalized = normalizeId(uuidString.replace("-", ""));
+        if (normalized.length() >= ID_LENGTH) {
+            return normalized.substring(0, ID_LENGTH);
+        }
+        StringBuilder builder = new StringBuilder(normalized);
+        while (builder.length() < ID_LENGTH) {
+            builder.append('0');
+        }
+        return builder.toString();
+    }
+
+    private String generateId() {
+        String id;
+        do {
+            StringBuilder builder = new StringBuilder(ID_LENGTH);
+            for (int i = 0; i < ID_LENGTH; i++) {
+                builder.append(ID_ALPHABET.charAt(RANDOM.nextInt(ID_ALPHABET.length())));
+            }
+            id = builder.toString();
+        } while (entries.containsKey(id));
+        return id;
     }
 }

@@ -1,3 +1,4 @@
+- Reduced corpse recovery IDs to 6 characters
 - Added persistent recovery IDs for every new corpse
 - Added /corpse list with owner and death time
 - Added /corpse <id> <player> to restore registered corpse loot to an online player

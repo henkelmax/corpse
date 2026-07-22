@@ -14,7 +14,6 @@ import net.minecraft.world.WorldServer;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 public class CorpseLootService {
 
@@ -39,7 +38,7 @@ public class CorpseLootService {
     }
 
     @Nullable
-    public static CorpseRegistry.Entry claimById(MinecraftServer server, UUID id, EntityPlayerMP recipient) {
+    public static CorpseRegistry.Entry claimById(MinecraftServer server, String id, EntityPlayerMP recipient) {
         CorpseRegistry registry = CorpseRegistry.get(server.getWorld(0));
         CorpseRegistry.Entry entry = registry.claim(id);
         if (entry == null) {
@@ -77,7 +76,7 @@ public class CorpseLootService {
     }
 
     @Nullable
-    public static EntityCorpse findCorpse(MinecraftServer server, UUID id) {
+    public static EntityCorpse findCorpse(MinecraftServer server, String id) {
         for (WorldServer world : server.worlds) {
             if (world == null) {
                 continue;
@@ -95,7 +94,7 @@ public class CorpseLootService {
         return null;
     }
 
-    public static List<EntityCorpse> findCorpses(MinecraftServer server, UUID id) {
+    public static List<EntityCorpse> findCorpses(MinecraftServer server, String id) {
         List<EntityCorpse> corpses = new ArrayList<>();
         for (WorldServer world : server.worlds) {
             if (world == null) {

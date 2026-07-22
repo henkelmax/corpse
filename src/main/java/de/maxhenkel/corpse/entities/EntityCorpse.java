@@ -3,6 +3,7 @@ package de.maxhenkel.corpse.entities;
 import com.google.common.base.Optional;
 import de.maxhenkel.corpse.CorpseLootService;
 import de.maxhenkel.corpse.Death;
+import de.maxhenkel.corpse.data.CorpseRegistry;
 import de.maxhenkel.corpse.proxy.CommonProxy;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.MoverType;
@@ -27,7 +28,7 @@ import java.util.UUID;
 public class EntityCorpse extends EntityCorpseInventoryBase {
 
     private static final DataParameter<Optional<UUID>> ID = EntityDataManager.createKey(EntityCorpse.class, DataSerializers.OPTIONAL_UNIQUE_ID);
-    private static final DataParameter<Optional<UUID>> CORPSE_ID = EntityDataManager.createKey(EntityCorpse.class, DataSerializers.OPTIONAL_UNIQUE_ID);
+    private static final DataParameter<String> CORPSE_ID = EntityDataManager.createKey(EntityCorpse.class, DataSerializers.STRING);
     private static final DataParameter<String> NAME = EntityDataManager.createKey(EntityCorpse.class, DataSerializers.STRING);
     private static final DataParameter<Float> ROTATION = EntityDataManager.createKey(EntityCorpse.class, DataSerializers.FLOAT);
     private static final DataParameter<Integer> AGE = EntityDataManager.createKey(EntityCorpse.class, DataSerializers.VARINT);
@@ -46,9 +47,13 @@ public class EntityCorpse extends EntityCorpseInventoryBase {
     }
 
     public static EntityCorpse createFromDeath(EntityPlayer player, Death death) {
+        return createFromDeath(player, death, "");
+    }
+
+    public static EntityCorpse createFromDeath(EntityPlayer player, Death death, String recoveryId) {
         EntityCorpse corpse = new EntityCorpse(player.world);
         corpse.setCorpseUUID(death.getPlayerUUID());
-        corpse.setCorpseId(death.getId());
+        corpse.setCorpseId(recoveryId);
         corpse.setCorpseName(death.getPlayerName());
         corpse.setItems(death.getItems());
         corpse.setPosition(death.getPosX(), death.getPosY() < 0D ? 0D : death.getPosY(), death.getPosZ());
@@ -183,25 +188,20 @@ public class EntityCorpse extends EntityCorpseInventoryBase {
         }
     }
 
-    public UUID getCorpseId() {
-        Optional<UUID> uuid = dataManager.get(CORPSE_ID);
-        if (uuid.isPresent()) {
-            return uuid.get();
-        } else {
-            return NULL_UUID;
-        }
+    public String getCorpseId() {
+        return dataManager.get(CORPSE_ID);
     }
 
     public boolean hasCorpseId() {
-        UUID uuid = getCorpseId();
-        return uuid != null && !NULL_UUID.equals(uuid);
+        String id = getCorpseId();
+        return id != null && !id.trim().isEmpty();
     }
 
-    public void setCorpseId(UUID uuid) {
-        if (uuid == null) {
-            dataManager.set(CORPSE_ID, Optional.of(NULL_UUID));
+    public void setCorpseId(String id) {
+        if (id == null) {
+            dataManager.set(CORPSE_ID, "");
         } else {
-            dataManager.set(CORPSE_ID, Optional.of(uuid));
+            dataManager.set(CORPSE_ID, CorpseRegistry.normalizeId(id));
         }
     }
 
@@ -234,7 +234,7 @@ public class EntityCorpse extends EntityCorpseInventoryBase {
     protected void entityInit() {
         super.entityInit();
         dataManager.register(ID, Optional.of(NULL_UUID));
-        dataManager.register(CORPSE_ID, Optional.of(NULL_UUID));
+        dataManager.register(CORPSE_ID, "");
         dataManager.register(NAME, "");
         dataManager.register(ROTATION, 0F);
         dataManager.register(AGE, 0);
@@ -248,10 +248,9 @@ public class EntityCorpse extends EntityCorpseInventoryBase {
             compound.setLong("IDMost", uuid.getMostSignificantBits());
             compound.setLong("IDLeast", uuid.getLeastSignificantBits());
         }
-        UUID corpseId = getCorpseId();
-        if (corpseId != null) {
-            compound.setLong("RecoveryIDMost", corpseId.getMostSignificantBits());
-            compound.setLong("RecoveryIDLeast", corpseId.getLeastSignificantBits());
+        String corpseId = getCorpseId();
+        if (corpseId != null && !corpseId.trim().isEmpty()) {
+            compound.setString("RecoveryId", corpseId);
         }
         compound.setString("Name", getCorpseName());
         compound.setFloat("Rotation", getCorpseRotation());
@@ -264,8 +263,10 @@ public class EntityCorpse extends EntityCorpseInventoryBase {
         if (compound.hasKey("IDMost") && compound.hasKey("IDLeast")) {
             setCorpseUUID(new UUID(compound.getLong("IDMost"), compound.getLong("IDLeast")));
         }
-        if (compound.hasKey("RecoveryIDMost") && compound.hasKey("RecoveryIDLeast")) {
-            setCorpseId(new UUID(compound.getLong("RecoveryIDMost"), compound.getLong("RecoveryIDLeast")));
+        if (compound.hasKey("RecoveryId")) {
+            setCorpseId(compound.getString("RecoveryId"));
+        } else if (compound.hasKey("RecoveryIDMost") && compound.hasKey("RecoveryIDLeast")) {
+            setCorpseId(CorpseRegistry.shortenLegacyId(new UUID(compound.getLong("RecoveryIDMost"), compound.getLong("RecoveryIDLeast")).toString()));
         }
         setCorpseName(compound.getString("Name"));
         setCorpseRotation(compound.getFloat("Rotation"));
