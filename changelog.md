@@ -1,1 +1,5 @@
-- Fixed version number
+- Added persistent recovery IDs for every new corpse
+- Added /corpse list with owner and death time
+- Added /corpse <id> <player> to restore registered corpse loot to an online player
+- Replaced corpse loot transfer GUI with right-click loot claiming
+- Cleared and removed physical corpses after successful recovery to prevent duplicated loot

@@ -32,11 +32,11 @@ public class DeathManager {
     }
 
     public static List<Death> getDeaths(EntityPlayerMP player) {
-        return getDeaths(player);
+        return getDeaths(player, player.getUniqueID());
     }
 
     public static List<Death> getDeaths(EntityPlayerMP context, EntityPlayerMP player) {
-        return getDeaths(context, player);
+        return getDeaths(context, player.getUniqueID());
     }
 
     public static List<Death> getDeaths(EntityPlayerMP context, UUID playerUUID) {
@@ -60,6 +60,10 @@ public class DeathManager {
             }
             return false;
         });
+
+        if (deaths == null) {
+            return Collections.emptyList();
+        }
 
         return Arrays.stream(deaths)
                 .map(f -> {

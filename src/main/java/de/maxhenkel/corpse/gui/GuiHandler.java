@@ -17,12 +17,9 @@ public class GuiHandler implements IGuiHandler {
     public Object getServerGuiElement(int id, EntityPlayer player, World world, int x, int y, int z) {
 
         if (id == GUI_CORPSE) {
-            EntityCorpse corpse = getCorpse(world, x, y, z);
-            if (corpse != null) {
-                return new ContainerCorpse(player.inventory, corpse, true);
-            }
+            return null;
         } else if (id == GUI_DEATH_HISTORY) {
-            return new ContainerCorpse(player.inventory, EntityCorpse.createFromDeath(player, CommonProxy.getDeathToShow(player)), player.capabilities.isCreativeMode);
+            return new ContainerCorpse(player.inventory, EntityCorpse.createFromDeath(player, CommonProxy.getDeathToShow(player)), false);
         }
 
         return null;
@@ -32,12 +29,9 @@ public class GuiHandler implements IGuiHandler {
     public Object getClientGuiElement(int id, EntityPlayer player, World world, int x, int y, int z) {
 
         if (id == GUI_CORPSE) {
-            EntityCorpse corpse = getCorpse(world, x, y, z);
-            if (corpse != null) {
-                return new GUICorpse(player.inventory, corpse, true);
-            }
+            return null;
         } else if (id == GUI_DEATH_HISTORY) {
-            return new GUICorpse(player.inventory, EntityCorpse.createFromDeath(player, CommonProxy.getDeathToShow(player)), player.capabilities.isCreativeMode);
+            return new GUICorpse(player.inventory, EntityCorpse.createFromDeath(player, CommonProxy.getDeathToShow(player)), false);
         }
 
         return null;

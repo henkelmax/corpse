@@ -24,6 +24,14 @@ version = mod_version
 group = mod_packagename
 archivesBaseName = mod_id
 
+def secretOrEmpty(String envName, String fileName) {
+    if (System.env[envName] != null) {
+        return System.env[envName]
+    }
+    def secretFile = file(fileName)
+    return secretFile.exists() ? secretFile.text.trim() : ''
+}
+
 sourceCompatibility = targetCompatibility = '1.8'
 compileJava {
     sourceCompatibility = targetCompatibility = '1.8'
@@ -72,7 +80,7 @@ repositories {
 }
 
 curseforge {
-    apiKey = System.env.CURSEFORGE_API_KEY != null ? System.env.CURSEFORGE_API_KEY : file('curseforge_api_key.txt').text
+    apiKey = secretOrEmpty('CURSEFORGE_API_KEY', 'curseforge_api_key.txt')
     project {
         id = curse_id
         changelogType = 'markdown'
@@ -94,7 +102,7 @@ forgeUpdate {
     }
 
     serverURL = 'https://update.maxhenkel.de/'
-    apiKey = System.env.FORGE_UPDATE_API_KEY != null ? System.env.FORGE_UPDATE_API_KEY : file('forge_update_api_key.txt').text
+    apiKey = secretOrEmpty('FORGE_UPDATE_API_KEY', 'forge_update_api_key.txt')
     modID = mod_id
     gameVersion = mod_minecraft_version
     modVersion = mod_version

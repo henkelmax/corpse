@@ -2,6 +2,7 @@ package de.maxhenkel.corpse.events;
 
 import de.maxhenkel.corpse.Death;
 import de.maxhenkel.corpse.DeathManager;
+import de.maxhenkel.corpse.data.CorpseRegistry;
 import de.maxhenkel.corpse.entities.EntityCorpse;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
@@ -51,6 +52,7 @@ public class DeathEvents {
 
             Death death = Death.fromPlayer(player, stacks);
             DeathManager.addDeath(player, death);
+            CorpseRegistry.get(player.world).register(death);
 
             player.world.spawnEntity(EntityCorpse.createFromDeath(player, death));
         } catch (Exception e) {
