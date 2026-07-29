@@ -1,2 +1,1 @@
-- Updated to 26.2
-- Updated Russian translation
+- Fixed crash with newer NeoForge versions
