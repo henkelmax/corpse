@@ -5,6 +5,7 @@ import de.maxhenkel.corelib.inventory.ItemListInventory;
 import de.maxhenkel.corelib.inventory.LockedSlot;
 import de.maxhenkel.corpse.Main;
 import de.maxhenkel.corpse.entities.CorpseEntity;
+import de.maxhenkel.corpse.integration.accessories.AccessoriesIntegration;
 import net.minecraft.core.NonNullList;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
@@ -65,7 +66,7 @@ public class CorpseInventoryContainer extends CorpseContainerBase implements ITr
     }
 
     @Override
-    public void transferItems() {
+    public void transferItems(ServerPlayer sender) {
         if (!isEditable()) {
             return;
         }
@@ -81,6 +82,11 @@ public class CorpseInventoryContainer extends CorpseContainerBase implements ITr
         fill(additionalItems, armorInventory, playerInventory.armor);
         fill(additionalItems, offHandInventory, playerInventory.offhand);
 
+        //attempt to equip accessories in the additional inventory before they are queued to be thrown into the players main inventory
+        if(AccessoriesIntegration.isLoaded()) {
+            AccessoriesIntegration.Transfer(sender, corpse.getDeath().getAdditionalItems());
+        }
+        
         additionalItems.addAll(corpse.getDeath().getAdditionalItems());
         NonNullList<ItemStack> restItems = NonNullList.create();
         for (ItemStack stack : additionalItems) {

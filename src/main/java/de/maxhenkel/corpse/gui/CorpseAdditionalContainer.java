@@ -4,6 +4,9 @@ import de.maxhenkel.corelib.inventory.ItemListInventory;
 import de.maxhenkel.corelib.inventory.LockedSlot;
 import de.maxhenkel.corpse.Main;
 import de.maxhenkel.corpse.entities.CorpseEntity;
+import de.maxhenkel.corpse.integration.accessories.AccessoriesIntegration;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
@@ -39,10 +42,15 @@ public class CorpseAdditionalContainer extends CorpseContainerBase implements IT
     }
 
     @Override
-    public void transferItems() {
+    public void transferItems(ServerPlayer sender) {
         if (!isEditable()) {
             return;
         }
+        
+        if(AccessoriesIntegration.isLoaded()) {
+            AccessoriesIntegration.Transfer(sender, corpse.getDeath().getAdditionalItems());
+        }
+        
         for (int i = 0; i < inventory.getContainerSize(); i++) {
             ItemStack stack = inventory.getItem(i);
             for (int j = 0; j < playerWrapper.getSlots(); j++) {
