@@ -99,7 +99,6 @@ public class CorpseInventoryContainer extends CorpseContainerBase implements ITr
         corpse.getDeath().getAdditionalItems().addAll(restItems);
         if (!corpse.getDeath().getAdditionalItems().isEmpty()) {
             Guis.openAdditionalItems(player, this);
-            System.out.println(restItems);
         }
     }
 
