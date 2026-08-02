@@ -2,7 +2,9 @@ package de.maxhenkel.corpse.net;
 
 import de.maxhenkel.corelib.net.Message;
 import de.maxhenkel.corpse.Main;
+import de.maxhenkel.corpse.gui.CorpseAdditionalContainer;
 import de.maxhenkel.corpse.gui.ITransferrable;
+import de.maxhenkel.corpse.integration.accessories.AccessoriesIntegration;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.protocol.PacketFlow;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
@@ -29,7 +31,7 @@ public class MessageTransferItems implements Message<MessageTransferItems> {
             return;
         }
         if ((sender.containerMenu instanceof ITransferrable transferrable) && !sender.isDeadOrDying()) {
-            transferrable.transferItems();
+            transferrable.transferItems(sender);
         }
     }
 
