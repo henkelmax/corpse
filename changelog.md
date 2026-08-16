@@ -1,1 +1,1 @@
-- Fixed crash with newer NeoForge versions
+- Updated to latest NeoForge version

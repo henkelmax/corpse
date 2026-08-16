@@ -8,7 +8,7 @@ version = "${mod_version}"
 displayName = "Corpse"
 updateJSONURL = "https://update.maxhenkel.de/neoforge/corpse"
 displayURL = "https://www.curseforge.com/minecraft/mc-mods/corpse"
-logoFile = "icon.png"
+iconFile = "icon.png"
 authors = "Max Henkel"
 description = '''
 This mod brings a corpse into the game.
