@@ -37,13 +37,13 @@ public class CorpseRenderer extends EntityRenderer<CorpseEntity, CorpseRenderSta
 
         stack.pushPose();
 
-        stack.mulPose(Axis.YP.rotationDegrees(-state.yRot));
+        stack.rotate(Axis.YP.rotationDegrees(-state.yRot));
 
         if (CorpseMod.SERVER_CONFIG.spawnCorpseOnFace.get()) {
-            stack.mulPose(Axis.XP.rotationDegrees(90F));
+            stack.rotate(Axis.XP.rotationDegrees(90F));
             stack.translate(0D, -1D, -2.01D / 16D);
         } else {
-            stack.mulPose(Axis.XP.rotationDegrees(-90F));
+            stack.rotate(Axis.XP.rotationDegrees(-90F));
             stack.translate(0D, -1D, 2.01D / 16D);
         }
 

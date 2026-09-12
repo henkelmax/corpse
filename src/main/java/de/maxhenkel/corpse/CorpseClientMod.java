@@ -16,7 +16,7 @@ import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import net.neoforged.neoforge.common.NeoForge;
-import org.lwjgl.glfw.GLFW;
+import org.lwjgl.sdl.SDLScancode;
 
 @Mod(value = CorpseMod.MODID, dist = Dist.CLIENT)
 @EventBusSubscriber(modid = CorpseMod.MODID, value = Dist.CLIENT)
@@ -39,7 +39,7 @@ public class CorpseClientMod {
 
     @SubscribeEvent
     static void onRegisterKeyBinds(RegisterKeyMappingsEvent event) {
-        KEY_DEATH_HISTORY = new KeyMapping("key.corpse.death_history", GLFW.GLFW_KEY_U, KeyMapping.Category.MISC);
+        KEY_DEATH_HISTORY = new KeyMapping("key.corpse.death_history", SDLScancode.SDL_SCANCODE_U, KeyMapping.Category.MISC);
         event.register(KEY_DEATH_HISTORY);
     }
 

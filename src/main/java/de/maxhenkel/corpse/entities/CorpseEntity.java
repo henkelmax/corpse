@@ -87,8 +87,9 @@ public class CorpseEntity extends CorpseBoundingBoxBase {
             if (!CorpseMod.SERVER_CONFIG.fallIntoVoid.get() && getY() < level().getMinY()) {
                 teleportTo(getX(), level().getMinY(), getZ());
             }
-
-            move(MoverType.SELF, getDeltaMovement());
+            if (!level().isClientSide()) {
+                move(MoverType.SELF, getDeltaMovement());
+            }
         }
 
         if (level().isClientSide()) {
