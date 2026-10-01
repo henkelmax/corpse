@@ -59,7 +59,7 @@ public class CorpseMod {
     public static ServerConfig SERVER_CONFIG;
 
     public CorpseMod(IEventBus eventBus) {
-        SERVER_CONFIG = CommonRegistry.registerConfig(MODID, ModConfig.Type.SERVER, ServerConfig.class);
+        SERVER_CONFIG = CommonRegistry.registerConfig(MODID, ModConfig.Type.SYNCED, ServerConfig.class);
 
         ITEM_REGISTER.register(eventBus);
         MENU_REGISTER.register(eventBus);
