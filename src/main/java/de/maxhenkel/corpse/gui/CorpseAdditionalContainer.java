@@ -45,6 +45,9 @@ public class CorpseAdditionalContainer extends CorpseContainerBase implements IT
         }
         for (int i = 0; i < inventory.getContainerSize(); i++) {
             ItemStack stack = inventory.getItem(i);
+            if (stack.isEmpty()) {
+                continue;
+            }
             for (int j = 0; j < playerWrapper.getSlots(); j++) {
                 stack = playerWrapper.insertItem(j, stack, false);
                 inventory.setItem(i, stack);

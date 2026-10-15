@@ -1,1 +1,1 @@
-- Updated Russian translation
+- Fixed error when transferring additional items with empty slots
