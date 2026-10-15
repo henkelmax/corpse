@@ -48,6 +48,9 @@ public class CorpseAdditionalContainer extends CorpseContainerBase implements IT
         try (Transaction transaction = Transaction.open(null)) {
             for (int i = 0; i < inventory.getContainerSize(); i++) {
                 ItemStack stack = inventory.getItem(i);
+                if (stack.isEmpty()) {
+                    continue;
+                }
                 int inserted = playerWrapper.insert(ItemResource.of(stack), stack.getCount(), transaction);
                 int invAmount = stack.getCount() - inserted;
                 if (invAmount <= 0) {
