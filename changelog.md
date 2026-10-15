@@ -1,1 +1,1 @@
-- Updated to latest NeoForge version
+- Fixed error when transferring additional items with empty slots
