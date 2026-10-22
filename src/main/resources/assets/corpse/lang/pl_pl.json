@@ -18,7 +18,5 @@
   "tooltip.corpse.item_count": "Zawiera stacków: %s",
   "button.corpse.transfer_items": "Przenieś",
   "button.corpse.additional_items": "Dodatkowe",
-  "button.corpse.add_waypoint": "Dodaj waypoint",
-  "waypoint.death.name": "Miejsce śmierci",
   "config.jade.plugin_corpse.corpse": "Zwłoki"
 }
