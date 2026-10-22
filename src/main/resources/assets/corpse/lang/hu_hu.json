@@ -18,7 +18,5 @@
   "tooltip.corpse.item_count": "%s tárgyhalmot tartalmaz",
   "button.corpse.transfer_items": "Tárgyak átvitele",
   "button.corpse.additional_items": "További tárgyak",
-  "button.corpse.add_waypoint": "Jelölő hozzáadása",
-  "waypoint.death.name": "Halál helyszíne",
   "config.jade.plugin_corpse.corpse": "Holt test"
 }
