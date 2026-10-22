@@ -18,7 +18,5 @@
   "tooltip.corpse.item_count": "Зберігав %s стак(-ів)",
   "button.corpse.transfer_items": "Перемістити предмети",
   "button.corpse.additional_items": "Додаткові предмети",
-  "button.corpse.add_waypoint": "Додати вейпойнт",
-  "waypoint.death.name": "Місце смерті",
   "config.jade.plugin_corpse.corpse": "Corpse"
 }
